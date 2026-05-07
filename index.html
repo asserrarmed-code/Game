@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مَارَاثُون الضَّاد - النسخة النهائية</title>
+    <title>مَارَاثُون الضَّاد - النسخة الكاملة المصححة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -225,7 +225,6 @@
     function useLife(tid, type) {
         if (!teamLifelines[tid][type]) return;
         
-        // إخفاء الأيقونة والزر فوراً
         const icon = document.getElementById(`ico-${tid}-${type}`);
         if(icon) icon.style.display = 'none';
         document.getElementById(`btn-${tid}-${type}`).classList.add('btn-disabled');
@@ -239,7 +238,7 @@
             currentMultiplier = 2;
             alert("🚀 تم تفعيل المضاعفة!");
         } else if(type === 'stp') {
-            clearInterval(timer); // سطر إيقاف العداد
+            clearInterval(timer);
             alert("⏱️ تم إيقاف العداد!");
         }
     }
@@ -314,7 +313,19 @@
 
     function reveal() {
         clearInterval(timer);
+        const p = phasesData[currentPhase];
+        if(p.type !== 'free') {
+            const d = p.questions[currentQ % p.questions.length];
+            if(d && d.o) {
+                const opts = document.querySelectorAll('.opt');
+                if(opts[d.a]) {
+                    opts[d.a].style.background = 'var(--success)';
+                    opts[d.a].style.color = 'white';
+                }
+            }
+        }
         document.getElementById('manual-answer-display').style.color = 'var(--success)';
+        document.getElementById('manual-answer-display').style.fontWeight = '900';
     }
 
     function next() {

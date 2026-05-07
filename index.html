@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مَارَاثُون الضَّاد - النسخة النهائية المعتمدة</title>
+    <title>مَارَاثُون الضَّاد - النسخة النهائية المعتمدة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -123,7 +123,7 @@
 
     <div class="header-top">
         <div class="logo-box"><img src="logo-cup.png"></div>
-        <div class="title-area"><h1>مَارَاثُون الضَّاد</h1></div>
+        <div class="title-area"><h1>مَارَاثُون الضَّاد</h1></div>
         <div class="logo-box"><img src="logo.png"></div>
     </div>
 
@@ -173,7 +173,7 @@
 
     <div id="instModal" class="modal">
         <div class="modal-content">
-            <h2 style="color:var(--moroccan-blue); border-bottom:2px solid var(--moroccan-gold)">📖 دليل مَارَاثُون الضَّاد</h2>
+            <h2 style="color:var(--moroccan-blue); border-bottom:2px solid var(--moroccan-gold)">📖 دليل مَارَاثُون الضَّاد</h2>
             <p><strong>1. النمط الموحد (6 أسئلة):</strong> للجميع، الأسرع في الضغط يجيب.</p>
             <p><strong>2. النمط الموجه:</strong> سؤال مخصص لكل فريق بالدور (3 أسئلة للفريق).</p>
             <p><strong>3. الاختيار الحر:</strong> الفريق يختار المكون ويجيب يدوياً.</p>
@@ -188,23 +188,52 @@
 
     <footer class="page-footer-relative">
         مِنْ تَصْمِيمِ وَإِعْدَادِ الأستاذ محمد أسرار <br>
-        مَدْرَسَةُ مَيْمُونَة أُمِّ الْمُؤْمِنِينَ - مُدِيرِيَّةُ مُرَاكُش
+        مَدْرَسَةُ مَيْمُونَة أُمِّ الْمُؤْمِنِينَ - مُدِيرِيَّةُ مُرَاكُش
     </footer>
 
 <script>
     let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
     let votedOnThisQuestion = [], currentMultiplier = 1;
     let teamLifelines = []; 
+    let masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
 
-    const masterStock = { 
-        "تراكيب": ["أعرب 'المسافرين' في: وصل المسافرون إلا المسافرين.", "حوّل الجملة 'أن تجتهد خير لك' إلى مصدر مؤول.", "ما هو إعراب 'خمسة' في: اشتريت خمسة أقلام؟"],
-        "صرف": ["صغ اسم المكان من فعل 'سجد'.", "ما هو وزن كلمة 'استغفار'؟", "حوّل الفعل 'دعا' إلى اسم فاعل."],
-        "إملاء": ["لماذا كتبت الهمزة متطرفة في كلمة 'دفء'؟", "اكتب كلمة 'ابن' في: 'يا ... الأكرمين'.", "كيف تكتب الألف اللينة في فعل 'دنا'؟"]
+    // بنك الأسئلة للمخزون الرقمي (سيتم السحب منه حسب عدد المجموعات)
+    const extraQuestions = {
+        "تراكيب": [
+            "أعرب 'المسافرين' في: وصل المسافرون إلا المسافرين.",
+            "حوّل الجملة 'أن تجتهد خير لك' إلى مصدر مؤول.",
+            "ما هو إعراب 'خمسة' في: اشتريت خمسة أقلام؟",
+            "استخرج التمييز من: طاب المكان هواءً.",
+            "أعرب 'أباك' في: رأيت أباك.",
+            "حوّل 'المعلمون يخلصون' إلى جملة شرطية بـ 'إن'.",
+            "ما هو المفعول المطلق في: ركضت ركضاً سريعاً؟",
+            "أعرب 'ذو' في: جاء ذو العلم."
+        ],
+        "صرف": [
+            "صغ اسم المكان من فعل 'سجد'.",
+            "ما هو وزن كلمة 'استغفار'؟",
+            "حوّل الفعل 'دعا' إلى اسم فاعل.",
+            "صغ اسم الآلة من 'نشر'.",
+            "ما هو وزن كلمة 'انطلق'؟",
+            "صغ اسم التفضيل من فعل 'كرم'.",
+            "ما هو المصدر من فعل 'استخرج'؟",
+            "حول 'باع' إلى فعل مضارع مسند لياء المخاطبة."
+        ],
+        "إملاء": [
+            "لماذا كتبت الهمزة متطرفة في كلمة 'دفء'؟",
+            "اكتب كلمة 'ابن' في: 'يا ... الأكرمين'.",
+            "كيف تكتب الألف اللينة في فعل 'دنا'؟",
+            "لماذا كتبت الهمزة في كلمة 'نشأ'؟",
+            "كيف تكتب الهمزة في كلمة 'بئر'؟",
+            "أعط مثالاً لكلمة يحذف حرفها رسماً ويبقى نطقاً.",
+            "كيف نكتب الألف اللينة في 'رمى'؟",
+            "علل كتابة الهمزة على الواو في 'سؤال'."
+        ]
     };
 
     const phasesData = [
         { 
-            name: "النمط 1: الموحد", 
+            name: "النمط 1: الموحد (6 أسئلة)", 
             type: "all", 
             time: 15, 
             questions: [
@@ -216,10 +245,28 @@
                 {q: "جمع 'قلم'؟", o:["قلمان", "أقلام"], a:1}
             ]
         },
-        { name: "النمط 2: الموجه", type: "target", time: 15, questions: [{q: "إعراب 'الولدين' في رأيت الولدين؟", o:["مفعول به", "فاعل"], a:0}]},
+        { 
+            name: "النمط 2: الموجه (3 لكل فريق)", 
+            type: "target", 
+            time: 15, 
+            questions: [
+                {q: "إعراب 'الولدين' في رأيت الولدين؟", o:["مفعول به", "فاعل"], a:0},
+                {q: "جمع التكسير لـ 'نافذة'؟", o:["نوافذ", "نافذات"], a:0},
+                {q: "وزن 'منشار' هو..", o:["مفعل", "مفعال"], a:1},
+                {q: "إعراب 'أخاك' في ساعد أخاك؟", o:["فاعل", "مفعول به"], a:1},
+                {q: "همزة 'اسم' هي..", o:["قطع", "وصل"], a:1},
+                {q: "أداة تجزم فعلين مضارعين:", o:["لم", "إن"], a:1},
+                {q: "تحذف ألف ابن في: محمد... علي", o:["ابن", "بن"], a:1},
+                {q: "إعراب 'المسافرون' في وصل المسافرون:", o:["فاعل", "مفعول"], a:0},
+                {q: "اسم التفضيل من 'صغر':", o:["أصغر", "صغير"], a:0},
+                {q: "مثنى 'عصا':", o:["عصاتان", "عصوان"], a:1},
+                {q: "المصدر المؤول لـ 'أن تصوموا':", o:["صيامكم", "صوم"], a:0},
+                {q: "إعراب 'مستخرج' في: هو مستخرجُ الفوسفاط:", o:["اسم فاعل", "اسم مفعول"], a:0}
+            ]
+        },
         { name: "النمط 3: الاختيار الحر", type: "free", time: 15 },
         { 
-            name: "النمط 4: السرعة", 
+            name: "النمط 4: السرعة (4 أسئلة)", 
             type: "all", 
             time: 8, 
             questions: [
@@ -242,6 +289,18 @@
         for(let i=0; i<count; i++) container.innerHTML += `<input type="text" id="tn-${i}" value="المجموعة ${i+1}" style="padding:8px; width:100px; text-align:center;">`;
     }
 
+    // الدالة المسؤولة عن ربط المخزون بعدد المجموعات
+    function setupMasterStock(teamCount) {
+        masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
+        // كل مجموعة لها جولتان في الاختيار الحر، سنوزعها على المكونات
+        const totalQuestionsNeeded = teamCount * 2;
+        const perComponent = Math.ceil(totalQuestionsNeeded / 3) + 1; 
+
+        for(let key in extraQuestions) {
+            masterStock[key] = [...extraQuestions[key]].slice(0, perComponent);
+        }
+    }
+
     function startMarathon() {
         const count = parseInt(document.getElementById('team-count').value);
         teamNames = [], scores = [], teamLifelines = [];
@@ -250,6 +309,7 @@
             scores.push(0);
             teamLifelines.push({ del: true, dou: true, stp: true });
         }
+        setupMasterStock(count); // تفعيل الربط التلقائي
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
         document.getElementById('back-to-setup').style.display = 'flex';
@@ -291,7 +351,6 @@
         const count = teamNames.length;
         if(phasesData[currentPhase].type === 'target') { for(let i=0; i<count; i++) for(let j=0; j<3; j++) phaseTurns.push(i); }
         else if(phasesData[currentPhase].type === 'free') { for(let i=0; i<count; i++) for(let j=0; j<2; j++) phaseTurns.push(i); }
-        phaseTurns.sort(() => Math.random() - 0.5);
     }
 
     function init() {
@@ -335,6 +394,7 @@
     }
 
     function selectComponent(key) {
+        if(masterStock[key].length === 0) { alert("انتهت أسئلة هذا المكون!"); return; }
         document.getElementById('component-selection').style.display = 'none';
         document.getElementById('manual-zone').style.display = 'block';
         document.getElementById('q-text').innerText = `[${key}] ${masterStock[key].shift()}`;
@@ -349,7 +409,7 @@
     function reveal() {
         clearInterval(timer);
         const p = phasesData[currentPhase];
-        if(p.type !== 'free') {
+        if(p.type !== 'free' && p.questions) {
             const d = p.questions[currentQ % p.questions.length];
             if(d && d.o) {
                 const opts = document.querySelectorAll('.opt');

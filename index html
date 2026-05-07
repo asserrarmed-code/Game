@@ -13,16 +13,14 @@
             --bg-light: #f4f1ea;
             --text-color: #333;
             --card-bg: #ffffff;
-            --footer-bg: #fff;
         }
 
-        /* الوضع الليلي (Sombre) */
+        /* الوضع المظلم (Sombre) */
         body.dark-mode {
             --bg-light: #0f172a;
             --text-color: #f1f5f9;
             --card-bg: #1e293b;
             --moroccan-gold: #fbbf24;
-            --footer-bg: #1e293b;
         }
 
         body {
@@ -61,10 +59,29 @@
             background: linear-gradient(90deg, var(--moroccan-blue), var(--moroccan-gold), var(--deep-red));
         }
 
+        /* تنسيق الهيدر المزدوج */
+        .header-logos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 10px auto;
+            padding: 0 20px;
+        }
+
+        .small-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--moroccan-gold);
+            object-fit: cover;
+            background: white;
+        }
+
         /* البانر العلوي */
         .banner-container {
             max-width: 1000px;
-            margin: 20px auto;
+            margin: 10px auto;
             border-radius: 20px;
             overflow: hidden;
             border: 4px solid var(--moroccan-gold);
@@ -77,7 +94,7 @@
 
         .container {
             max-width: 900px;
-            margin: 0 auto 100px auto; /* هام لترك مساحة للفوتر */
+            margin: 0 auto 80px auto;
             padding: 20px;
             flex: 1;
         }
@@ -94,23 +111,12 @@
         h2 { font-family: 'Amiri', serif; color: var(--moroccan-blue); border-bottom: 2px solid var(--moroccan-gold); display: inline-block; padding-bottom: 5px; }
         body.dark-mode h2 { color: var(--moroccan-gold); }
 
-        /* قوانين المسابقة */
         .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: right; margin-top: 15px; }
         .rule-item { background: rgba(197, 160, 89, 0.1); padding: 15px; border-radius: 10px; border-right: 5px solid var(--moroccan-blue); }
 
-        /* مدخلات المجموعات */
         .team-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
-        .team-box { display: flex; flex-direction: column; gap: 5px; }
-        input[type="text"] {
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-            font-family: 'Cairo';
-            text-align: center;
-        }
-        input:focus { border-color: var(--moroccan-gold); outline: none; }
+        input[type="text"] { padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-family: 'Cairo'; text-align: center; width: 100%; }
 
-        /* أزرار التحكم */
         .start-btn {
             display: block; width: 100%; max-width: 300px; margin: 30px auto;
             padding: 15px; background: var(--moroccan-blue); color: white;
@@ -119,21 +125,15 @@
         }
         .start-btn:hover { background: var(--moroccan-gold); transform: translateY(-3px); }
 
-        /* التذييل (Footer) */
         footer {
-            background: var(--footer-bg);
+            background: var(--card-bg);
             color: var(--text-color);
             text-align: center;
             padding: 20px;
             border-top: 4px solid var(--moroccan-gold);
             font-weight: bold;
             font-size: 0.95rem;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
         }
-
-        /* شاشة المسابقة */
-        #quiz-area { display: none; text-align: center; }
-        .timer { font-size: 4rem; font-weight: 900; color: var(--deep-red); margin: 20px 0; }
     </style>
 </head>
 <body>
@@ -142,8 +142,16 @@
 
 <button class="theme-btn" onclick="toggleMode()" id="modeIcon">🌙</button>
 
+<div class="header-logos">
+    <img src="logo-cup.png" alt="لوغو المسابقة" class="small-logo">
+    <div style="text-align: center;">
+        <h3 style="margin: 0; color: var(--moroccan-blue); font-family: 'Amiri'; font-size: 1.8rem;">ماراثون الضاد</h3>
+    </div>
+    <img src="logo.png" alt="لوغو المنصة" class="small-logo">
+</div>
+
 <div class="banner-container">
-    <img src="banner.png" alt="بانر كأس اللغة العربية">
+    <img src="banner-cup.png" alt="بانر مسابقة كأس اللغة العربية">
 </div>
 
 <div class="container">
@@ -153,40 +161,27 @@
             <div class="rules-grid">
                 <div class="rule-item">⏱️ <b>الزمن:</b> 20 ثانية لكل سؤال.</div>
                 <div class="rule-item">🛡️ <b>المساعدات:</b> تستخدم مرة واحدة فقط.</div>
-                <div class="rule-item">⚖️ <b>التحكيم:</b> قرار الأستاذ غير قابل للمراجعة.</div>
-                <div class="rule-item">🏆 <b>الفوز:</b> للمجموعة الأكثر نقاطاً في النهاية.</div>
+                <div class="rule-item">⚖️ <b>التحكيم:</b> قرار الأستاذ نهائي.</div>
+                <div class="rule-item">🏆 <b>الفوز:</b> للمجموعة الأكثر نقاطاً.</div>
             </div>
         </div>
 
         <div class="card">
-            <h2>👥 تسجيل المجموعات المتنافسة</h2>
-            <p>أدخل أسماء المجموعات الأربع المشاركة اليوم:</p>
+            <h2>👥 تسجيل المجموعات</h2>
             <div class="team-inputs">
-                <div class="team-box">
-                    <label>المجموعة 1:</label>
-                    <input type="text" id="t1" placeholder="مثلاً: فرسان الضاد">
-                </div>
-                <div class="team-box">
-                    <label>المجموعة 2:</label>
-                    <input type="text" id="t2" placeholder="مثلاً: أبطال اللغة">
-                </div>
-                <div class="team-box">
-                    <label>المجموعة 3:</label>
-                    <input type="text" id="t3" placeholder="مثلاً: براعم ميمونة">
-                </div>
-                <div class="team-box">
-                    <label>المجموعة 4:</label>
-                    <input type="text" id="t4" placeholder="مثلاً: رواد مراكش">
-                </div>
+                <input type="text" id="t1" placeholder="اسم المجموعة 1">
+                <input type="text" id="t2" placeholder="اسم المجموعة 2">
+                <input type="text" id="t3" placeholder="اسم المجموعة 3">
+                <input type="text" id="t4" placeholder="اسم المجموعة 4">
             </div>
-            <button class="start-btn" onclick="startCompetition()">انطلاق الماراثون 🚀</button>
+            <button class="start-btn" onclick="startCompetition()">بدء التحدي 🚀</button>
         </div>
     </div>
 
-    <div id="quiz-area" class="card">
-        <div class="timer" id="time-display">20</div>
-        <h3 id="question-text" style="font-size: 2rem;">هل أنتم مستعدون للسؤال الأول؟</h3>
-        </div>
+    <div id="quiz-area" class="card" style="display:none; text-align:center;">
+        <div id="time-display" style="font-size: 4rem; font-weight: 900; color: var(--deep-red);">20</div>
+        <h3 id="question-text">استعدوا للسؤال الأول...</h3>
+    </div>
 </div>
 
 <footer>
@@ -198,28 +193,12 @@
         const body = document.body;
         const icon = document.getElementById('modeIcon');
         body.classList.toggle('dark-mode');
-        
-        if (body.classList.contains('dark-mode')) {
-            icon.innerText = '☀️';
-            localStorage.setItem('theme', 'dark');
-        } else {
-            icon.innerText = '🌙';
-            localStorage.setItem('theme', 'light');
-        }
-    }
-
-    // حفظ التفضيلات
-    if(localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.getElementById('modeIcon').innerText = '☀️';
+        icon.innerText = body.classList.contains('dark-mode') ? '☀️' : '🌙';
     }
 
     function startCompetition() {
-        const t1 = document.getElementById('t1').value || "المجموعة 1";
-        // التحقق من إدخال الأسئلة ثم الانتقال
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-area').style.display = 'block';
-        alert("بالتوفيق لمجموعة " + t1 + " وباقي المجموعات!");
     }
 </script>
 

@@ -113,7 +113,7 @@
         .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 0.85rem; }
         .help-icon { font-size: 1rem; margin: 0 3px; cursor: pointer; transition: 0.3s; }
         .hidden-help { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
-        .btn-disabled { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+        .btn-disabled { opacity: 0.2; pointer-events: none; filter: grayscale(1); cursor: not-allowed; }
 
         @media (max-width: 600px) {
             .options-grid { grid-template-columns: 1fr; }
@@ -139,7 +139,7 @@
                 <h3>📜 قَوَاعِدُ التَّحَدِّي:</h3>
                 <ul style="padding-right: 20px;">
                     <li>⏳ زمن السؤال: 20 ثانية.</li>
-                    <li>🛠️ المساعدات: (❌ حذف، ❄️ تجميد، ×2 مضاعفة) لمرة واحدة.</li>
+                    <li>🛠️ المساعدات: (❌ حذف، ❄️ تجميد، ×2) لمرة واحدة.</li>
                     <li>👨‍🏫 الحكم: الأستاذ أسرار هو المرجع.</li>
                 </ul>
             </div>
@@ -187,7 +187,8 @@
 
 <script>
     let teamNames = [], scores = [], multiplier = [], currentPhase = 0, currentQ = 0, timer, targetList = [];
-    let isScoredForThisQuestion = false;
+    // تغيير الجوهر: مصفوفة لتتبع حالة "القفل" لكل مجموعة في السؤال الحالي
+    let teamScoringStatus = []; 
 
     const phasesData = [
         { name: "النمط 1: الموحد (5 أسئلة)", type: "all", questions: [
@@ -239,7 +240,7 @@
 
     function startMarathon() {
         const count = parseInt(document.getElementById('team-count').value);
-        teamNames = []; scores = []; multiplier = []; targetList = [];
+        teamNames = []; scores = []; multiplier = []; targetList = []; teamScoringStatus = [];
         const sb = document.getElementById('dynamic-scoreboard');
         const adminBtns = document.getElementById('admin-score-btns');
         const helpTarget = document.getElementById('help-target');
@@ -247,15 +248,14 @@
 
         for(let i=0; i<count; i++) {
             const name = document.getElementById(`tn-${i}`).value;
-            teamNames.push(name); scores.push(0); multiplier.push(1);
+            teamNames.push(name); scores.push(0); multiplier.push(1); teamScoringStatus.push(false);
             sb.innerHTML += `<div class="team-box" id="t-card-${i}"><span id="s-${i}" class="score-val" style="font-size:1.8rem; font-weight:900; color:var(--deep-red)">0</span><div style="font-weight:bold; font-size:0.8rem">${name}</div><div id="h-row-${i}"><span id="h-${i}-del" class="help-icon">❌</span><span id="h-${i}-frz" class="help-icon">❄️</span><span id="h-${i}-dbl" class="help-icon">×2</span></div></div>`;
             adminBtns.innerHTML += `
-                <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-                    <button class="score-btn" onclick="modifyScore(${i}, 10)" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">+10</button>
-                    <button class="score-btn" onclick="modifyScore(${i}, -5)" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">-5</button>
+                <div id="ctrl-group-${i}" style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                    <button class="score-btn plus-btn" onclick="modifyScore(${i}, 10)" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">+10</button>
+                    <button class="score-btn minus-btn" onclick="modifyScore(${i}, -5)" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">-5</button>
                 </div>`;
             helpTarget.innerHTML += `<option value="${i}">${name}</option>`;
-            // إضافة 3 فرص لكل مجموعة في قائمة الاستهداف بناءً على العدد المختار فقط
             for(let j=0; j<3; j++) targetList.push(i);
         }
         targetList = targetList.sort(() => Math.random() - 0.5);
@@ -268,8 +268,11 @@
         const p = phasesData[currentPhase];
         const d = p.questions[currentQ];
         const isOpen = (d.o.length === 0);
-        isScoredForThisQuestion = false;
+        
+        // إعادة ضبط حالة التعطيل لكل المجموعات عند بداية كل سؤال جديد
+        teamScoringStatus = teamScoringStatus.map(() => false);
         document.querySelectorAll('.score-btn').forEach(btn => btn.classList.remove('btn-disabled'));
+
         document.getElementById('q-text').innerText = d.q;
         document.getElementById('phase-label').innerText = p.name;
         document.getElementById('answer-input').value = '';
@@ -281,12 +284,12 @@
         document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
 
         if(p.type === 'target') {
-            const tid = targetList[currentQ % targetList.length]; // الحماية ضد تجاوز طول القائمة
+            const tid = targetList[currentQ % targetList.length];
             ann.style.display = 'inline-block';
             ann.innerHTML = `🎯 الدور على مجموعة: <br><span style="font-size:2rem; text-decoration:underline;">${teamNames[tid]}</span>`;
             document.getElementById(`t-card-${tid}`).classList.add('active-turn');
         } else if(p.type === 'free') {
-            const tid = currentQ % teamNames.length; // الحماية في النمط الحر أيضاً
+            const tid = currentQ % teamNames.length;
             ann.style.display = 'inline-block';
             ann.innerHTML = `🎯 اختيار المكون لمجموعة: <br><span style="font-size:2rem; text-decoration:underline;">${teamNames[tid]}</span>`;
             document.getElementById(`t-card-${tid}`).classList.add('active-turn');
@@ -323,14 +326,19 @@
     }
 
     function modifyScore(i, v) {
-        if(isScoredForThisQuestion) return;
+        // التحقق مما إذا كانت هذه المجموعة تحديداً قد نالت تعديلاً في هذا السؤال
+        if(teamScoringStatus[i]) return;
+
         let points = (v > 0) ? (v * multiplier[i]) : v;
         if(currentPhase === 3 && v > 0) points += 5;
         scores[i] += points;
         multiplier[i] = 1; 
         document.getElementById(`s-${i}`).innerText = scores[i];
-        isScoredForThisQuestion = true;
-        document.querySelectorAll('.score-btn').forEach(btn => btn.classList.add('btn-disabled'));
+
+        // قفل أزرار هذه المجموعة فقط
+        teamScoringStatus[i] = true;
+        const groupContainer = document.getElementById(`ctrl-group-${i}`);
+        groupContainer.querySelectorAll('.score-btn').forEach(btn => btn.classList.add('btn-disabled'));
     }
 
     function reveal() {

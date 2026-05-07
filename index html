@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كأس اللغة العربية | الأستاذ أسرار محمد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --moroccan-blue: #006847; 
+            --moroccan-gold: #c5a059;
+            --deep-red: #8b0000;
+            --bg-light: #f4f1ea;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --footer-bg: #fff;
+        }
+
+        /* الوضع الليلي (Sombre) */
+        body.dark-mode {
+            --bg-light: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --moroccan-gold: #fbbf24;
+            --footer-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            color: var(--text-color);
+            transition: 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* زر الإضاءة (أيقونة فقط) */
+        .theme-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 2px solid var(--moroccan-gold);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .top-border {
+            height: 10px;
+            background: linear-gradient(90deg, var(--moroccan-blue), var(--moroccan-gold), var(--deep-red));
+        }
+
+        /* البانر العلوي */
+        .banner-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 4px solid var(--moroccan-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .banner-container img {
+            width: 100%;
+            display: block;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto 100px auto; /* هام لترك مساحة للفوتر */
+            padding: 20px;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        h2 { font-family: 'Amiri', serif; color: var(--moroccan-blue); border-bottom: 2px solid var(--moroccan-gold); display: inline-block; padding-bottom: 5px; }
+        body.dark-mode h2 { color: var(--moroccan-gold); }
+
+        /* قوانين المسابقة */
+        .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: right; margin-top: 15px; }
+        .rule-item { background: rgba(197, 160, 89, 0.1); padding: 15px; border-radius: 10px; border-right: 5px solid var(--moroccan-blue); }
+
+        /* مدخلات المجموعات */
+        .team-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .team-box { display: flex; flex-direction: column; gap: 5px; }
+        input[type="text"] {
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-family: 'Cairo';
+            text-align: center;
+        }
+        input:focus { border-color: var(--moroccan-gold); outline: none; }
+
+        /* أزرار التحكم */
+        .start-btn {
+            display: block; width: 100%; max-width: 300px; margin: 30px auto;
+            padding: 15px; background: var(--moroccan-blue); color: white;
+            border: none; border-radius: 50px; font-size: 1.3rem; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
+        }
+        .start-btn:hover { background: var(--moroccan-gold); transform: translateY(-3px); }
+
+        /* التذييل (Footer) */
+        footer {
+            background: var(--footer-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+            border-top: 4px solid var(--moroccan-gold);
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* شاشة المسابقة */
+        #quiz-area { display: none; text-align: center; }
+        .timer { font-size: 4rem; font-weight: 900; color: var(--deep-red); margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div class="top-border"></div>
+
+<button class="theme-btn" onclick="toggleMode()" id="modeIcon">🌙</button>
+
+<div class="banner-container">
+    <img src="banner.png" alt="بانر كأس اللغة العربية">
+</div>
+
+<div class="container">
+    <div id="setup-screen">
+        <div class="card">
+            <h2>📜 ميثاق وقوانين المسابقة</h2>
+            <div class="rules-grid">
+                <div class="rule-item">⏱️ <b>الزمن:</b> 20 ثانية لكل سؤال.</div>
+                <div class="rule-item">🛡️ <b>المساعدات:</b> تستخدم مرة واحدة فقط.</div>
+                <div class="rule-item">⚖️ <b>التحكيم:</b> قرار الأستاذ غير قابل للمراجعة.</div>
+                <div class="rule-item">🏆 <b>الفوز:</b> للمجموعة الأكثر نقاطاً في النهاية.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>👥 تسجيل المجموعات المتنافسة</h2>
+            <p>أدخل أسماء المجموعات الأربع المشاركة اليوم:</p>
+            <div class="team-inputs">
+                <div class="team-box">
+                    <label>المجموعة 1:</label>
+                    <input type="text" id="t1" placeholder="مثلاً: فرسان الضاد">
+                </div>
+                <div class="team-box">
+                    <label>المجموعة 2:</label>
+                    <input type="text" id="t2" placeholder="مثلاً: أبطال اللغة">
+                </div>
+                <div class="team-box">
+                    <label>المجموعة 3:</label>
+                    <input type="text" id="t3" placeholder="مثلاً: براعم ميمونة">
+                </div>
+                <div class="team-box">
+                    <label>المجموعة 4:</label>
+                    <input type="text" id="t4" placeholder="مثلاً: رواد مراكش">
+                </div>
+            </div>
+            <button class="start-btn" onclick="startCompetition()">انطلاق الماراثون 🚀</button>
+        </div>
+    </div>
+
+    <div id="quiz-area" class="card">
+        <div class="timer" id="time-display">20</div>
+        <h3 id="question-text" style="font-size: 2rem;">هل أنتم مستعدون للسؤال الأول؟</h3>
+        </div>
+</div>
+
+<footer>
+    إعداد وتطوير الأستاذ محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش
+</footer>
+
+<script>
+    function toggleMode() {
+        const body = document.body;
+        const icon = document.getElementById('modeIcon');
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+            icon.innerText = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            icon.innerText = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    // حفظ التفضيلات
+    if(localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('modeIcon').innerText = '☀️';
+    }
+
+    function startCompetition() {
+        const t1 = document.getElementById('t1').value || "المجموعة 1";
+        // التحقق من إدخال الأسئلة ثم الانتقال
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-area').style.display = 'block';
+        alert("بالتوفيق لمجموعة " + t1 + " وباقي المجموعات!");
+    }
+</script>
+
+</body>
+</html>

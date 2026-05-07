@@ -113,7 +113,6 @@
         .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 0.85rem; }
         .help-icon { font-size: 1rem; margin: 0 3px; cursor: pointer; transition: 0.3s; }
         .hidden-help { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
-
         .btn-disabled { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
 
         @media (max-width: 600px) {
@@ -134,19 +133,16 @@
             <div class="title-area"><h1>مَارَاثُون الضَّاد</h1></div>
             <div class="logo-box"><img src="logo.png" alt="المنصة"></div>
         </div>
-
         <div class="welcome-banner"><img src="banner-cup.png" alt="البانر"></div>
-        
         <div class="card">
             <div class="rules-list">
                 <h3>📜 قَوَاعِدُ التَّحَدِّي:</h3>
                 <ul style="padding-right: 20px;">
                     <li>⏳ زمن السؤال: 20 ثانية.</li>
                     <li>🛠️ المساعدات: (❌ حذف، ❄️ تجميد، ×2 مضاعفة) لمرة واحدة.</li>
-                    <li>👨‍🏫 الحكم: الأستاذ أسرار هو المرجع في الإجابات المفتوحة.</li>
+                    <li>👨‍🏫 الحكم: الأستاذ أسرار هو المرجع.</li>
                 </ul>
             </div>
-
             <div style="background: #fdfdfd; padding: 20px; border-radius: 15px; border: 1px solid #eee;">
                 <h3 style="margin-top:0">👥 إعداد المجموعات</h3>
                 <select id="team-count" onchange="updateTeamInputs(this.value)" style="padding:10px; border-radius:8px;">
@@ -165,23 +161,18 @@
             <div class="logo-box"><img src="logo-cup.png"></div>
             <div class="title-area">
                 <h2 style="margin:0; color:var(--moroccan-blue); font-size: 1.5rem;">كأْسُ اللُّغَةِ العَرَبِيَّةِ</h2>
-                <p id="target-team-display" style="margin:0; font-weight:bold; font-size:0.8rem;"></p>
             </div>
             <div class="logo-box"><img src="logo.png"></div>
         </div>
-
         <div id="dynamic-scoreboard" class="scoreboard"></div>
-
         <div class="card">
             <div id="target-announcer"></div>
-            <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:5px 20px; border-radius:50px; font-size:0.8rem; margin-bottom:10px; display:inline-block;">طَوْرُ الإِحْمَاءِ</div>
+            <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:5px 20px; border-radius:50px; font-size:0.8rem; margin-bottom:10px; display:inline-block;"></div>
             <div id="timer" style="font-size: 3.5rem; font-weight: 900; color: var(--danger);">20</div>
             <div id="q-text" style="font-size: 1.8rem; margin: 20px 0; font-family:'Amiri'; line-height:1.3; font-weight: bold;"></div>
-            
             <div class="options-grid" id="opt-container"></div>
             <div id="manual-zone" style="display:none;"><div id="manual-answer-display" style="font-size:2.5rem; color:var(--moroccan-blue); border-bottom:3px dashed var(--moroccan-gold); padding:10px; display:inline-block; font-weight: bold;">...</div></div>
         </div>
-
         <div class="admin-panel">
             <select id="help-target" style="padding:5px; border-radius:5px;"></select>
             <button class="btn-admin" style="background:#475569; color:white" onclick="execHelp('del')">❌ حذف</button>
@@ -195,55 +186,42 @@
     </div>
 
 <script>
-    let teamNames = [], scores = [], multiplier = [], currentTurn = 0;
-    let currentPhase = 0, currentQ = 0, timer, targetList = [];
-    let isScoredForThisQuestion = false; // متغير جديد لمنع التكرار
+    let teamNames = [], scores = [], multiplier = [], currentPhase = 0, currentQ = 0, timer, targetList = [];
+    let isScoredForThisQuestion = false;
 
     const phasesData = [
-        { 
-            name: "النمط 1: الموحد (5 أسئلة)", type: "all", 
-            questions: [
-                { q: "ما هو إعراب 'أباك' في: 'رأيتُ أباك'؟", o: ["مفعول به منصوب بالألف", "فاعل مرفوع", "مضاف إليه"], a: 0 },
-                { q: "عين الفعل المعتل الناقص فيما يلي:", o: ["وعد", "قال", "سعى"], a: 2 },
-                { q: "ما هي علامة نصب الأفعال الخمسة؟", o: ["ثبوت النون", "حذف النون", "الفتحة"], a: 1 },
-                { q: "اسم الآلة من 'حرث' هو:", o: ["حارث", "محراث", "حريث"], a: 1 },
-                { q: "نوع الهمزة في كلمة 'أكرم' هي:", o: ["وصل", "قطع"], a: 1 }
-            ]
-        },
-        { 
-            name: "النمط 2: الموجه (3 لكل مجموعة)", type: "target", 
-            questions: [
-                { q: "صغ اسم الفاعل من فعل 'استخرج'.", o: ["مستخرج", "مستخرِج", "خارج"], a: 1 },
-                { q: "إعراب 'المعلمون' في 'حضر المعلمون'.", o: ["فاعل بالواو", "مبتدأ", "خبر"], a: 0 },
-                { q: "كلمة يخالف نطقها رسمها هي:", o: ["لكن", "مدرسة", "كتاب"], a: 0 },
-                { q: "إعراب 'خمسة' في 'رأيت خمسة رجال'.", o: ["مفعول به", "فاعل", "نعت"], a: 0 },
-                { q: "اسم المفعول من فعل 'قاد' هو:", o: ["مقيود", "مقود", "قائد"], a: 1 },
-                { q: "تكتب 'ابن' في 'يا ... آدم' بهذا الشكل:", o: ["ابن", "بن"], a: 1 },
-                { q: "نوع الحال في 'دخل التلميذ يضحك' هو:", o: ["مفرد", "جملة فعلية", "شبه جملة"], a: 1 },
-                { q: "صغ اسم التفضيل من فعل 'طاب'.", o: ["أطيب", "طائب", "مستطاب"], a: 0 },
-                { q: "ما هو الوزن الصرفي لكلمة 'جعفر'؟", o: ["فعلل", "فعل", "فعلى"], a: 0 },
-                { q: "أتمم بتمييز مناسب: 'اشتريت لتراً...'", o: ["حليبٍ", "حليباً", "حليبٌ"], a: 1 },
-                { q: "جمع التكسير لكلمة 'كتاب' هو:", o: ["كتاتيب", "كتب", "كاتبون"], a: 1 },
-                { q: "همزة كلمة 'إكرام' هي همزة:", o: ["وصل", "قطع"], a: 1 }
-            ]
-        },
-        { 
-            name: "النمط 3: الحر (سؤال لكل مجموعة)", type: "free", 
-            questions: [
-                { q: "[تراكيب] صغ الجملة المؤولة من: 'أريد أن أنجح'.", o: [], a: "أريد النجاح" },
-                { q: "[صرف] ما هو اسم المكان من فعل 'وعد'؟", o: [], a: "موعد" },
-                { q: "[إملاء] كيف تكتب الهمزة في كلمة 'شاطِـ...'؟", o: [], a: "على الياء" },
-                { q: "[تراكيب] أعرب كلمة 'أخوك' في: 'جاء أخوك'.", o: [], a: "فاعل مرفوع بالواو" }
-            ]
-        },
-        { 
-            name: "النمط 4: السرعة (3 أسئلة)", type: "speed", 
-            questions: [
-                { q: "ما هو الفعل المضارع المنصوب في: 'لن يخرجَ'؟", o: ["يخرج", "لن", "مستتر"], a: 0 },
-                { q: "ما هو الميزان الصرفي لفعل 'انطلق'؟", o: ["انفعل", "افعل", "فعل"], a: 0 },
-                { q: "أعرب 'تلميذاً' في: 'عندي عشرون تلميذاً'.", o: ["نعت", "تمييز منصوب", "مضاف إليه"], a: 1 }
-            ]
-        }
+        { name: "النمط 1: الموحد (5 أسئلة)", type: "all", questions: [
+            { q: "ما هو إعراب 'أباك' في: 'رأيتُ أباك'؟", o: ["مفعول به منصوب بالألف", "فاعل مرفوع", "مضاف إليه"], a: 0 },
+            { q: "عين الفعل المعتل الناقص فيما يلي:", o: ["وعد", "قال", "سعى"], a: 2 },
+            { q: "ما هي علامة نصب الأفعال الخمسة؟", o: ["ثبوت النون", "حذف النون", "الفتحة"], a: 1 },
+            { q: "اسم الآلة من 'حرث' هو:", o: ["حارث", "محراث", "حريث"], a: 1 },
+            { q: "نوع الهمزة في كلمة 'أكرم' هي:", o: ["وصل", "قطع"], a: 1 }
+        ]},
+        { name: "النمط 2: الموجه (3 لكل مجموعة)", type: "target", questions: [
+            { q: "صغ اسم الفاعل من فعل 'استخرج'.", o: ["مستخرج", "مستخرِج", "خارج"], a: 1 },
+            { q: "إعراب 'المعلمون' في 'حضر المعلمون'.", o: ["فاعل بالواو", "مبتدأ", "خبر"], a: 0 },
+            { q: "كلمة يخالف نطقها رسمها هي:", o: ["لكن", "مدرسة", "كتاب"], a: 0 },
+            { q: "إعراب 'خمسة' في 'رأيت خمسة رجال'.", o: ["مفعول به", "فاعل", "نعت"], a: 0 },
+            { q: "اسم المفعول من فعل 'قاد' هو:", o: ["مقيود", "مقود", "قائد"], a: 1 },
+            { q: "تكتب 'ابن' في 'يا ... آدم' بهذا الشكل:", o: ["ابن", "بن"], a: 1 },
+            { q: "نوع الحال في 'دخل التلميذ يضحك' هو:", o: ["مفرد", "جملة فعلية", "شبه جملة"], a: 1 },
+            { q: "صغ اسم التفضيل من فعل 'طاب'.", o: ["أطيب", "طائب", "مستطاب"], a: 0 },
+            { q: "ما هو الوزن الصرفي لكلمة 'جعفر'؟", o: ["فعلل", "فعل", "فعلى"], a: 0 },
+            { q: "أتمم بتمييز مناسب: 'اشتريت لتراً...'", o: ["حليبٍ", "حليباً", "حليبٌ"], a: 1 },
+            { q: "جمع التكسير لكلمة 'كتاب' هو:", o: ["كتاتيب", "كتب", "كاتبون"], a: 1 },
+            { q: "همزة كلمة 'إكرام' هي همزة:", o: ["وصل", "قطع"], a: 1 }
+        ]},
+        { name: "النمط 3: الحر (سؤال لكل مجموعة)", type: "free", questions: [
+            { q: "[تراكيب] صغ الجملة المؤولة من: 'أريد أن أنجح'.", o: [], a: "أريد النجاح" },
+            { q: "[صرف] ما هو اسم المكان من فعل 'وعد'؟", o: [], a: "موعد" },
+            { q: "[إملاء] كيف تكتب الهمزة في كلمة 'شاطِـ...'؟", o: [], a: "على الياء" },
+            { q: "[تراكيب] أعرب كلمة 'أخوك' في: 'جاء أخوك'.", o: [], a: "فاعل مرفوع بالواو" }
+        ]},
+        { name: "النمط 4: السرعة (3 أسئلة)", type: "speed", questions: [
+            { q: "ما هو الفعل المضارع المنصوب في: 'لن يخرجَ'؟", o: ["يخرج", "لن", "مستتر"], a: 0 },
+            { q: "ما هو الميزان الصرفي لفعل 'انطلق'؟", o: ["انفعل", "افعل", "فعل"], a: 0 },
+            { q: "أعرب 'تلميذاً' في: 'عندي عشرون تلميذاً'.", o: ["نعت", "تمييز منصوب", "مضاف إليه"], a: 1 }
+        ]}
     ];
 
     function toggleTheme() {
@@ -271,17 +249,15 @@
             const name = document.getElementById(`tn-${i}`).value;
             teamNames.push(name); scores.push(0); multiplier.push(1);
             sb.innerHTML += `<div class="team-box" id="t-card-${i}"><span id="s-${i}" class="score-val" style="font-size:1.8rem; font-weight:900; color:var(--deep-red)">0</span><div style="font-weight:bold; font-size:0.8rem">${name}</div><div id="h-row-${i}"><span id="h-${i}-del" class="help-icon">❌</span><span id="h-${i}-frz" class="help-icon">❄️</span><span id="h-${i}-dbl" class="help-icon">×2</span></div></div>`;
-            
             adminBtns.innerHTML += `
                 <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
                     <button class="score-btn" onclick="modifyScore(${i}, 10)" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">+10</button>
                     <button class="score-btn" onclick="modifyScore(${i}, -5)" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">-5</button>
                 </div>`;
-            
             helpTarget.innerHTML += `<option value="${i}">${name}</option>`;
+            // إضافة 3 فرص لكل مجموعة في قائمة الاستهداف بناءً على العدد المختار فقط
             for(let j=0; j<3; j++) targetList.push(i);
         }
-        
         targetList = targetList.sort(() => Math.random() - 0.5);
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
@@ -292,15 +268,12 @@
         const p = phasesData[currentPhase];
         const d = p.questions[currentQ];
         const isOpen = (d.o.length === 0);
-        
-        isScoredForThisQuestion = false; // تصفير حالة الضغط عند كل سؤال جديد
-        document.querySelectorAll('.score-btn').forEach(btn => btn.classList.remove('btn-disabled')); // تفعيل الأزرار
-
+        isScoredForThisQuestion = false;
+        document.querySelectorAll('.score-btn').forEach(btn => btn.classList.remove('btn-disabled'));
         document.getElementById('q-text').innerText = d.q;
         document.getElementById('phase-label').innerText = p.name;
         document.getElementById('answer-input').value = '';
         document.getElementById('manual-answer-display').innerText = '...';
-        document.getElementById('manual-answer-display').style.color = 'var(--moroccan-blue)';
         document.getElementById('opt-container').style.display = isOpen ? 'none' : 'grid';
         document.getElementById('manual-zone').style.display = isOpen ? 'block' : 'none';
 
@@ -308,14 +281,15 @@
         document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
 
         if(p.type === 'target') {
-            const currentTargetIdx = targetList[currentQ];
+            const tid = targetList[currentQ % targetList.length]; // الحماية ضد تجاوز طول القائمة
             ann.style.display = 'inline-block';
-            ann.innerText = `🎯 الدور على: ${teamNames[currentTargetIdx]}`;
-            document.getElementById(`t-card-${currentTargetIdx}`).classList.add('active-turn');
+            ann.innerHTML = `🎯 الدور على مجموعة: <br><span style="font-size:2rem; text-decoration:underline;">${teamNames[tid]}</span>`;
+            document.getElementById(`t-card-${tid}`).classList.add('active-turn');
         } else if(p.type === 'free') {
+            const tid = currentQ % teamNames.length; // الحماية في النمط الحر أيضاً
             ann.style.display = 'inline-block';
-            ann.innerText = `🎯 اختيار المكون: ${teamNames[currentQ]}`;
-            document.getElementById(`t-card-${currentQ}`).classList.add('active-turn');
+            ann.innerHTML = `🎯 اختيار المكون لمجموعة: <br><span style="font-size:2rem; text-decoration:underline;">${teamNames[tid]}</span>`;
+            document.getElementById(`t-card-${tid}`).classList.add('active-turn');
         } else {
             ann.style.display = 'none';
         }
@@ -338,7 +312,6 @@
 
     function execHelp(type) {
         const team = document.getElementById('help-target').value;
-        const icon = document.getElementById(`h-${team}-${type}`);
         if(type === 'frz') clearInterval(timer);
         else if(type === 'dbl') multiplier[team] = 2;
         else if(type === 'del' && document.getElementById('opt-container').style.display !== 'none') {
@@ -346,20 +319,18 @@
             const correct = phasesData[currentPhase].questions[currentQ].a;
             let h = 0; opts.forEach((o, i) => { if(i !== correct && h < 2) { o.style.visibility = 'hidden'; h++; } });
         }
-        icon.classList.add('hidden-help');
+        document.getElementById(`h-${team}-${type}`).classList.add('hidden-help');
     }
 
     function modifyScore(i, v) {
-        if(isScoredForThisQuestion) return; // منع التعديل إذا تم استخدامه مسبقاً في هذا السؤال
-
+        if(isScoredForThisQuestion) return;
         let points = (v > 0) ? (v * multiplier[i]) : v;
         if(currentPhase === 3 && v > 0) points += 5;
         scores[i] += points;
         multiplier[i] = 1; 
         document.getElementById(`s-${i}`).innerText = scores[i];
-
-        isScoredForThisQuestion = true; // تعيين الحالة كتم الإنجاز
-        document.querySelectorAll('.score-btn').forEach(btn => btn.classList.add('btn-disabled')); // تعطيل كافة أزرار النقاط
+        isScoredForThisQuestion = true;
+        document.querySelectorAll('.score-btn').forEach(btn => btn.classList.add('btn-disabled'));
     }
 
     function reveal() {
@@ -371,10 +342,7 @@
 
     function next() { 
         currentQ++; 
-        if(currentQ >= phasesData[currentPhase].questions.length) { 
-            currentQ = 0; 
-            currentPhase++; 
-        } 
+        if(currentQ >= phasesData[currentPhase].questions.length) { currentQ = 0; currentPhase++; } 
         if(currentPhase >= phasesData.length) return alert("انتهى الماراثون بنجاح! 🏆"); 
         init(); 
     }

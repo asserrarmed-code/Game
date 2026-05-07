@@ -17,7 +17,6 @@
             --danger: #ef4444; 
         }
 
-        /* أنماط الوضع الليلي - Sombre */
         body.dark-mode {
             --bg-light: #0f172a;
             --card: #1e293b;
@@ -34,7 +33,6 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* زر الوضع الليلي العائم */
         .theme-toggle {
             position: fixed; top: 15px; left: 15px; z-index: 2000;
             background: var(--moroccan-gold); border: none;
@@ -44,7 +42,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* الهيدر المتجاوب */
         .header-top { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 15px; max-width: 1000px; margin: 0 auto; gap: 10px;
@@ -61,7 +58,6 @@
         .title-area h1 { font-family: 'Amiri', serif; font-size: clamp(1.5rem, 4vw, 2.5rem); margin: 0; color: var(--moroccan-blue); }
         body.dark-mode .title-area h1 { color: var(--moroccan-gold); }
 
-        /* البانر المتجاوب */
         .welcome-banner {
             max-width: 1000px; margin: 10px auto; border-radius: 15px; 
             border: 3px solid var(--moroccan-gold); overflow: hidden;
@@ -71,12 +67,18 @@
 
         .container { width: 95%; max-width: 900px; margin: 0 auto; padding-bottom: 160px; }
 
-        /* البطاقات والشاشات */
         .card {
             background: var(--card); padding: clamp(15px, 5vw, 35px); border-radius: 25px; 
             border-top: 8px solid var(--moroccan-blue);
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center;
         }
+
+        #target-announcer {
+            background: var(--danger); color: white; padding: 12px 25px; border-radius: 15px;
+            font-weight: 900; font-size: 1.6rem; margin-bottom: 20px; display: none;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
         .rules-list { 
             text-align: right; background: rgba(0, 104, 71, 0.05); 
@@ -84,23 +86,23 @@
             border-right: 6px solid var(--moroccan-blue); font-size: 0.95rem;
         }
 
-        /* شبكة الفرق والخيارات */
         .scoreboard { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
             gap: 10px; margin: 20px 0; 
         }
         .team-box { 
             background: var(--card); padding: 10px; border-radius: 15px; 
-            border: 1px solid #ddd; text-align: center; transition: 0.3s;
+            border: 1px solid #ddd; text-align: center; transition: 0.4s;
         }
-        .team-box.active-turn { border: 2px solid var(--moroccan-blue); transform: scale(1.02); }
+        .team-box.active-turn { border: 4px solid var(--danger); transform: scale(1.05); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
 
         .options-grid { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 15px; margin: 25px 0; 
         }
 
-        /* لوحة التحكم السفلية - ذكية التجاوب */
+        .opt { background: #f8fafc; color: #334155; border: 2px solid #e2e8f0; padding: 15px; border-radius: 15px; cursor: pointer; font-family: 'Cairo'; font-size: 1.1rem; font-weight: bold; transition: 0.3s; }
+
         .admin-panel { 
             position: fixed; bottom: 0; left: 0; right: 0;
             background: #1e293b; color: white; padding: 10px; 
@@ -109,8 +111,10 @@
         }
 
         .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 0.85rem; }
-        .help-icon { font-size: 1rem; margin: 0 3px; cursor: pointer; }
+        .help-icon { font-size: 1rem; margin: 0 3px; cursor: pointer; transition: 0.3s; }
         .hidden-help { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
+
+        .btn-disabled { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
 
         @media (max-width: 600px) {
             .options-grid { grid-template-columns: 1fr; }
@@ -161,7 +165,7 @@
             <div class="logo-box"><img src="logo-cup.png"></div>
             <div class="title-area">
                 <h2 style="margin:0; color:var(--moroccan-blue); font-size: 1.5rem;">كأْسُ اللُّغَةِ العَرَبِيَّةِ</h2>
-                <p style="margin:0; font-weight:bold; font-size:0.8rem;">الوحدتان 5 و 6</p>
+                <p id="target-team-display" style="margin:0; font-weight:bold; font-size:0.8rem;"></p>
             </div>
             <div class="logo-box"><img src="logo.png"></div>
         </div>
@@ -169,12 +173,13 @@
         <div id="dynamic-scoreboard" class="scoreboard"></div>
 
         <div class="card">
+            <div id="target-announcer"></div>
             <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:5px 20px; border-radius:50px; font-size:0.8rem; margin-bottom:10px; display:inline-block;">طَوْرُ الإِحْمَاءِ</div>
             <div id="timer" style="font-size: 3.5rem; font-weight: 900; color: var(--danger);">20</div>
-            <div id="q-text" style="font-size: 1.8rem; margin: 20px 0; font-family:'Amiri'; line-height:1.3;"></div>
+            <div id="q-text" style="font-size: 1.8rem; margin: 20px 0; font-family:'Amiri'; line-height:1.3; font-weight: bold;"></div>
             
             <div class="options-grid" id="opt-container"></div>
-            <div id="manual-zone" style="display:none;"><div id="manual-answer-display" style="font-size:2.5rem; color:var(--moroccan-blue); border-bottom:3px dashed var(--moroccan-gold); padding:10px; display:inline-block;">...</div></div>
+            <div id="manual-zone" style="display:none;"><div id="manual-answer-display" style="font-size:2.5rem; color:var(--moroccan-blue); border-bottom:3px dashed var(--moroccan-gold); padding:10px; display:inline-block; font-weight: bold;">...</div></div>
         </div>
 
         <div class="admin-panel">
@@ -191,13 +196,54 @@
 
 <script>
     let teamNames = [], scores = [], multiplier = [], currentTurn = 0;
-    let currentPhase = 0, currentQ = 0, timer, targetOpenIdx = -1;
+    let currentPhase = 0, currentQ = 0, timer, targetList = [];
+    let isScoredForThisQuestion = false; // متغير جديد لمنع التكرار
 
     const phasesData = [
-        { name: "طَوْرُ التَّحَدِّي", questions: [
-            { q: "ما هو الوزن الصرفي لاسم الآلة 'مِحراث'؟", o: ["مِفْعَال", "مِفْعَل", "مِفْعَلَة", "فَعَّالَة"], a: 0 },
-            { q: "حول الفعل 'سأل' إلى اسم مفعول.", o: [], a: "مسؤول" }
-        ]}
+        { 
+            name: "النمط 1: الموحد (5 أسئلة)", type: "all", 
+            questions: [
+                { q: "ما هو إعراب 'أباك' في: 'رأيتُ أباك'؟", o: ["مفعول به منصوب بالألف", "فاعل مرفوع", "مضاف إليه"], a: 0 },
+                { q: "عين الفعل المعتل الناقص فيما يلي:", o: ["وعد", "قال", "سعى"], a: 2 },
+                { q: "ما هي علامة نصب الأفعال الخمسة؟", o: ["ثبوت النون", "حذف النون", "الفتحة"], a: 1 },
+                { q: "اسم الآلة من 'حرث' هو:", o: ["حارث", "محراث", "حريث"], a: 1 },
+                { q: "نوع الهمزة في كلمة 'أكرم' هي:", o: ["وصل", "قطع"], a: 1 }
+            ]
+        },
+        { 
+            name: "النمط 2: الموجه (3 لكل مجموعة)", type: "target", 
+            questions: [
+                { q: "صغ اسم الفاعل من فعل 'استخرج'.", o: ["مستخرج", "مستخرِج", "خارج"], a: 1 },
+                { q: "إعراب 'المعلمون' في 'حضر المعلمون'.", o: ["فاعل بالواو", "مبتدأ", "خبر"], a: 0 },
+                { q: "كلمة يخالف نطقها رسمها هي:", o: ["لكن", "مدرسة", "كتاب"], a: 0 },
+                { q: "إعراب 'خمسة' في 'رأيت خمسة رجال'.", o: ["مفعول به", "فاعل", "نعت"], a: 0 },
+                { q: "اسم المفعول من فعل 'قاد' هو:", o: ["مقيود", "مقود", "قائد"], a: 1 },
+                { q: "تكتب 'ابن' في 'يا ... آدم' بهذا الشكل:", o: ["ابن", "بن"], a: 1 },
+                { q: "نوع الحال في 'دخل التلميذ يضحك' هو:", o: ["مفرد", "جملة فعلية", "شبه جملة"], a: 1 },
+                { q: "صغ اسم التفضيل من فعل 'طاب'.", o: ["أطيب", "طائب", "مستطاب"], a: 0 },
+                { q: "ما هو الوزن الصرفي لكلمة 'جعفر'؟", o: ["فعلل", "فعل", "فعلى"], a: 0 },
+                { q: "أتمم بتمييز مناسب: 'اشتريت لتراً...'", o: ["حليبٍ", "حليباً", "حليبٌ"], a: 1 },
+                { q: "جمع التكسير لكلمة 'كتاب' هو:", o: ["كتاتيب", "كتب", "كاتبون"], a: 1 },
+                { q: "همزة كلمة 'إكرام' هي همزة:", o: ["وصل", "قطع"], a: 1 }
+            ]
+        },
+        { 
+            name: "النمط 3: الحر (سؤال لكل مجموعة)", type: "free", 
+            questions: [
+                { q: "[تراكيب] صغ الجملة المؤولة من: 'أريد أن أنجح'.", o: [], a: "أريد النجاح" },
+                { q: "[صرف] ما هو اسم المكان من فعل 'وعد'؟", o: [], a: "موعد" },
+                { q: "[إملاء] كيف تكتب الهمزة في كلمة 'شاطِـ...'؟", o: [], a: "على الياء" },
+                { q: "[تراكيب] أعرب كلمة 'أخوك' في: 'جاء أخوك'.", o: [], a: "فاعل مرفوع بالواو" }
+            ]
+        },
+        { 
+            name: "النمط 4: السرعة (3 أسئلة)", type: "speed", 
+            questions: [
+                { q: "ما هو الفعل المضارع المنصوب في: 'لن يخرجَ'؟", o: ["يخرج", "لن", "مستتر"], a: 0 },
+                { q: "ما هو الميزان الصرفي لفعل 'انطلق'؟", o: ["انفعل", "افعل", "فعل"], a: 0 },
+                { q: "أعرب 'تلميذاً' في: 'عندي عشرون تلميذاً'.", o: ["نعت", "تمييز منصوب", "مضاف إليه"], a: 1 }
+            ]
+        }
     ];
 
     function toggleTheme() {
@@ -215,7 +261,7 @@
 
     function startMarathon() {
         const count = parseInt(document.getElementById('team-count').value);
-        teamNames = []; scores = []; multiplier = [];
+        teamNames = []; scores = []; multiplier = []; targetList = [];
         const sb = document.getElementById('dynamic-scoreboard');
         const adminBtns = document.getElementById('admin-score-btns');
         const helpTarget = document.getElementById('help-target');
@@ -225,9 +271,18 @@
             const name = document.getElementById(`tn-${i}`).value;
             teamNames.push(name); scores.push(0); multiplier.push(1);
             sb.innerHTML += `<div class="team-box" id="t-card-${i}"><span id="s-${i}" class="score-val" style="font-size:1.8rem; font-weight:900; color:var(--deep-red)">0</span><div style="font-weight:bold; font-size:0.8rem">${name}</div><div id="h-row-${i}"><span id="h-${i}-del" class="help-icon">❌</span><span id="h-${i}-frz" class="help-icon">❄️</span><span id="h-${i}-dbl" class="help-icon">×2</span></div></div>`;
-            adminBtns.innerHTML += `<div style="text-align:center"><button onclick="modifyScore(${i}, 10)" style="background:var(--success); color:white; border:none; padding:5px 8px; margin:1px; border-radius:4px;">+10</button><button onclick="modifyScore(${i}, -5)" style="background:var(--danger); color:white; border:none; padding:5px 8px; margin:1px; border-radius:4px;">-5</button></div>`;
+            
+            adminBtns.innerHTML += `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                    <button class="score-btn" onclick="modifyScore(${i}, 10)" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">+10</button>
+                    <button class="score-btn" onclick="modifyScore(${i}, -5)" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.7rem;">-5</button>
+                </div>`;
+            
             helpTarget.innerHTML += `<option value="${i}">${name}</option>`;
+            for(let j=0; j<3; j++) targetList.push(i);
         }
+        
+        targetList = targetList.sort(() => Math.random() - 0.5);
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
         init();
@@ -235,15 +290,36 @@
 
     function init() {
         const p = phasesData[currentPhase];
-        if(currentQ === 0) targetOpenIdx = Math.floor(Math.random() * p.questions.length);
         const d = p.questions[currentQ];
         const isOpen = (d.o.length === 0);
+        
+        isScoredForThisQuestion = false; // تصفير حالة الضغط عند كل سؤال جديد
+        document.querySelectorAll('.score-btn').forEach(btn => btn.classList.remove('btn-disabled')); // تفعيل الأزرار
+
         document.getElementById('q-text').innerText = d.q;
         document.getElementById('phase-label').innerText = p.name;
         document.getElementById('answer-input').value = '';
         document.getElementById('manual-answer-display').innerText = '...';
+        document.getElementById('manual-answer-display').style.color = 'var(--moroccan-blue)';
         document.getElementById('opt-container').style.display = isOpen ? 'none' : 'grid';
         document.getElementById('manual-zone').style.display = isOpen ? 'block' : 'none';
+
+        const ann = document.getElementById('target-announcer');
+        document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
+
+        if(p.type === 'target') {
+            const currentTargetIdx = targetList[currentQ];
+            ann.style.display = 'inline-block';
+            ann.innerText = `🎯 الدور على: ${teamNames[currentTargetIdx]}`;
+            document.getElementById(`t-card-${currentTargetIdx}`).classList.add('active-turn');
+        } else if(p.type === 'free') {
+            ann.style.display = 'inline-block';
+            ann.innerText = `🎯 اختيار المكون: ${teamNames[currentQ]}`;
+            document.getElementById(`t-card-${currentQ}`).classList.add('active-turn');
+        } else {
+            ann.style.display = 'none';
+        }
+
         if(!isOpen) {
             const cont = document.getElementById('opt-container');
             cont.innerHTML = '';
@@ -257,7 +333,9 @@
         let tl = s; document.getElementById('timer').innerText = tl;
         timer = setInterval(() => { tl--; document.getElementById('timer').innerText = tl; if(tl <= 0) clearInterval(timer); }, 1000);
     }
+
     function syncAnswer(v) { document.getElementById('manual-answer-display').innerText = v || '...'; }
+
     function execHelp(type) {
         const team = document.getElementById('help-target').value;
         const icon = document.getElementById(`h-${team}-${type}`);
@@ -270,17 +348,36 @@
         }
         icon.classList.add('hidden-help');
     }
+
     function modifyScore(i, v) {
-        scores[i] += (v > 0) ? (v * multiplier[i]) : v;
-        multiplier[i] = 1; document.getElementById(`s-${i}`).innerText = scores[i];
+        if(isScoredForThisQuestion) return; // منع التعديل إذا تم استخدامه مسبقاً في هذا السؤال
+
+        let points = (v > 0) ? (v * multiplier[i]) : v;
+        if(currentPhase === 3 && v > 0) points += 5;
+        scores[i] += points;
+        multiplier[i] = 1; 
+        document.getElementById(`s-${i}`).innerText = scores[i];
+
+        isScoredForThisQuestion = true; // تعيين الحالة كتم الإنجاز
+        document.querySelectorAll('.score-btn').forEach(btn => btn.classList.add('btn-disabled')); // تعطيل كافة أزرار النقاط
     }
+
     function reveal() {
         clearInterval(timer);
         const d = phasesData[currentPhase].questions[currentQ];
         if(d.o.length > 0) document.querySelectorAll('.opt')[d.a].style.background = 'var(--success)';
         else document.getElementById('manual-answer-display').style.color = 'var(--success)';
     }
-    function next() { currentQ++; if(currentQ >= phasesData[currentPhase].questions.length) { currentQ = 0; currentPhase++; } if(currentPhase >= phasesData.length) return alert("انتهى!"); init(); }
+
+    function next() { 
+        currentQ++; 
+        if(currentQ >= phasesData[currentPhase].questions.length) { 
+            currentQ = 0; 
+            currentPhase++; 
+        } 
+        if(currentPhase >= phasesData.length) return alert("انتهى الماراثون بنجاح! 🏆"); 
+        init(); 
+    }
     updateTeamInputs(4);
 </script>
 </body>

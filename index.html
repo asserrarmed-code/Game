@@ -310,7 +310,7 @@
         document.getElementById('manual-zone').style.display = 'none';
         document.getElementById('target-announcer').style.display = 'none';
         document.getElementById('finish-screen').style.display = 'none';
-        if(!p) { finishMarathon(); return; }
+        if(!p) { return; } 
         document.getElementById('phase-label').innerText = p.name;
         document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
         clearInterval(timer);
@@ -390,13 +390,34 @@
         }
     }
 
+    // الدالة المحقونة للربط مع شاشة النهاية
     function next() {
         const p = phasesData[currentPhase];
         if(!p) return;
+
         currentQ++;
         let limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
-        if(currentQ >= limit) { currentQ = 0; currentPhase++; if(currentPhase < phasesData.length) prepareTurns(); }
-        init();
+
+        if(currentQ >= limit) { 
+            currentQ = 0; 
+            currentPhase++; 
+            if(currentPhase < phasesData.length) prepareTurns(); 
+        }
+
+        if(currentPhase >= phasesData.length) {
+            // إخفاء العناصر غير الضرورية وإظهار شاشة النهاية المصممة
+            document.getElementById('q-text').style.display = 'none';
+            document.getElementById('timer').innerText = "🏁";
+            document.getElementById('manual-zone').style.display = 'none';
+            document.getElementById('phase-label').style.display = 'none';
+            document.getElementById('target-announcer').style.display = 'none';
+            document.getElementById('opt-container').innerHTML = '';
+            
+            // تفعيل حاوية النهاية الخاصة بك
+            document.getElementById('finish-screen').style.display = 'block'; 
+        } else {
+            init();
+        }
     }
 
     function syncAnswer(v) { document.getElementById('manual-answer-display').innerText = v || '...'; }

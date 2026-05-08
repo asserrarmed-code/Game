@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>النهائي الكبير: مُعترك الضاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+        :root { 
+            --final-gold: #c5a059; 
+            --final-black: #0f172a; 
+            --card-dark: #1e293b; 
+            --text-gold: #f3e5ab;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        body { 
+            background-color: var(--final-black); 
+            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            color: white; font-family: 'Cairo', sans-serif; 
+            margin: 0; padding: 0; height: 100vh; 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        #setup-screen {
+            position: fixed; inset: 0; background: var(--final-black); z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+        }
+        .setup-card {
+            background: var(--card-dark); padding: 30px; border-radius: 20px; border: 3px solid var(--final-gold);
+            text-align: center; width: 100%; max-width: 500px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .setup-card input {
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 2px solid var(--final-gold);
+            font-family: 'Cairo'; font-weight: bold; font-size: 1.1rem; text-align: center; background: white; color: black;
+        }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; width: 100%; max-width: 1000px; margin: 0 auto; }
+        .logo-box { width: clamp(45px, 8vh, 70px); height: clamp(45px, 8vh, 70px); background: white; border-radius: 50%; border: 3px solid var(--final-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .title-area h1 { font-family: 'Amiri', serif; font-size: clamp(1.2rem, 4.5vh, 2rem); margin: 0; color: var(--final-gold); text-shadow: 0 0 10px rgba(197,160,89,0.5); }
+        
+        .container { width: 95%; max-width: 900px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 160px; z-index: 2; display: none; }
+        .card { background: var(--card-dark); padding: 25px; border-radius: 20px; border-top: 6px solid var(--final-gold); box-shadow: 0 0 30px rgba(197,160,89,0.1); text-align: center; position: relative; }
+        
+        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        .team-box { background: #0f172a; padding: 15px; border-radius: 15px; border: 3px solid #334155; color: var(--text-gold); text-align: center; transition: 0.3s; }
+        .active-team { border-color: var(--final-gold); box-shadow: 0 0 20px var(--final-gold); transform: scale(1.02); }
+        
+        #challenge-alert { font-size: 1.3rem; color: var(--final-gold); font-weight: 900; animation: pulse 1.5s infinite; display: none; margin-bottom: 15px; border: 2px dashed var(--final-gold); padding: 10px; border-radius: 15px; }
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.03);} 100% {transform: scale(1);} }
+
+        .admin-panel { position: fixed; bottom: 0; left: 0; right: 0; background: #020617; padding: 15px; border-top: 5px solid var(--final-gold); display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 10000; min-height: 145px; }
+        .btn-admin { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; transition: 0.2s; }
+        .btn-admin:hover { transform: scale(1.05); }
+
+        /* ستايل أزرار المكونات */
+        .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .btn-cat { background: var(--final-gold); color: black; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; border: none; font-family: 'Cairo'; }
+        .btn-cat:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
+        #timer { font-size: clamp(2.5rem, 8vh, 4rem); color: var(--danger); font-weight: 900; line-height: 1; margin: 10px 0; }
+        #q-text { font-size: clamp(1.3rem, 4vh, 1.8rem); font-family: 'Amiri'; color: white; font-weight: bold; line-height: 1.4; }
+
+        .footer-credit { position: fixed; bottom: 148px; left: 0; right: 0; font-size: 0.8rem; color: rgba(197,160,89,0.5); font-weight: bold; text-align: center; }
+        .answer-box { margin-top: 20px; padding: 15px; border-radius: 15px; background: rgba(197,160,89,0.1); border: 1px solid var(--final-gold); display: none; }
+        #manual-answer-display { color: var(--final-gold); font-size: 1.6rem; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+    <div id="setup-screen">
+        <div class="setup-card">
+            <h2 style="color:var(--final-gold)">إعداد فرسان النهائي</h2>
+            <p>أدخل أسماء المجموعتين المتنافستين:</p>
+            <input type="text" id="name1" placeholder="اسم المجموعة الأولى">
+            <input type="text" id="name2" placeholder="اسم المجموعة الثانية">
+            <button class="btn-admin" style="background:var(--final-gold); color:black; width:100%; margin-top:15px; font-size:1.2rem;" onclick="startFinal()">بدء المعترك النهائي ⚔️</button>
+        </div>
+    </div>
+
+    <div class="header-top">
+        <div class="logo-box"><img src="logo-cup.png" alt="Cup"></div>
+        <div class="title-area"><h1>🏆 النهائي الكبير: ملحمة الضاد 🏆</h1></div>
+        <div class="logo-box"><img src="logo.png" alt="School"></div>
+    </div>
+
+    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مدرسة ميمونة أم المؤمنين-مديرية مراكش-</div>
+
+    <div id="quiz-screen" class="container">
+        <div id="dynamic-scoreboard" class="scoreboard"></div>
+        <div class="card">
+            <div id="challenge-alert">⚔️ تحدي الفرسان ⚔️</div>
+            <div id="phase-label" style="background:var(--final-gold); color:black; padding:5px 25px; border-radius:50px; font-size:1rem; display:inline-block; margin-bottom:10px; font-weight:900;"></div>
+            <div id="timer">15</div>
+            <div id="q-text">المعترك النهائي يوشك على البداية...</div>
+            
+            <div id="choice-container" class="category-grid" style="display:none;"></div>
+
+            <div class="answer-box" id="manual-zone">
+                <div id="manual-answer-display">...</div>
+            </div>
+        </div>
+        
+        <div class="admin-panel">
+            <div style="border-left: 2px solid #334155; padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+                <input type="text" id="answer-input" style="padding:10px; width:150px; border-radius:8px; text-align:center; font-weight:bold;" placeholder="الجواب...">
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-admin" style="background:var(--success); color:white" onclick="reveal()">✅ كشف</button>
+                    <button class="btn-admin" style="background:var(--final-gold); color:black" onclick="next()">التالي ➡️</button>
+                </div>
+            </div>
+            <div id="admin-score-controls" style="display:flex; gap:10px;"></div>
+        </div>
+    </div>
+
+<script>
+    let currentPhase = 0, currentQ = 0, timer, scores = [0,0], teamNames = ["المجموعة 1", "المجموعة 2"];
+    let votedOnThisQuestion = [false, false];
+    let selectionCount = [0, 0]; // تتبع عدد الاختيارات لكل مجموعة
+    let activeTeam = Math.floor(Math.random() * 2); // اختيار عشوائي للبداية
+
+    const finalPhases = [
+        { 
+            name: "1. نمط التحدي الفردي (المواجهة القسرية)", 
+            type: "individual", time: 15, 
+            questions: [
+                {q: "أعرب الجملة التالية إعراباً تاماً: (لعلّ أخاك ذو مروءةٍ).", a: "أخاك: اسم لعل منصوب بالألف / ذو: خبر لعل مرفوع بالواو"},
+                {q: "صغ اسم التفضيل من فعل 'اشتدَّ' مع التعليل.", a: "أكثرُ اشتداداً (لأنه فعل غير ثلاثي)"},
+                {q: "علل كتابة الهمزة في كلمة 'تبوُّؤُك'.", a: "كتبت على الواو لأنها مضمومة وما قبلها مضموم"}
+            ]
+        },
+        { 
+            name: "2. نمط المواجهة الموجهة", 
+            type: "target", time: 15, 
+            questions: [
+                {q: "ما هو إعراب 'سنين' في: (فلبثتم في عذابٍ سنين)؟", a: "ظرف زمان منصوب بالياء (ملحق بالجمع)"},
+                {q: "استخرج الممنوع من الصرف: (مررت بمساجدَ أثريةٍ).", a: "مساجد (صيغة منتهى الجموع)"},
+                {q: "صغ اسم الآلة من 'سار' و 'ذاع' وحدد الوزن.", a: "سيارة (فعالة) / مذياع (مفعال)"}
+            ]
+        },
+        { 
+            name: "3. نمط الاختيار الحر (مخزون النوابغ)", 
+            type: "choice", time: 15, 
+            categories: {
+                "تراكيب": [
+                    {q: "هات جملة تتضمن مفعولاً معه ومفعولاً لأجله.", a: "سرتُ والنهرَ رغبةً في التأمل"},
+                    {q: "أعرب: (ما أصعبَ الامتحانَ!)", a: "ما: تعجبية / أصعب: فعل ماض / الامتحان: مفعول به"}
+                ],
+                "صرف": [
+                    {q: "ما هو المصدر من الأفعال: (استبقى - اصطفى)؟", a: "استبقاء - اصطفاء"},
+                    {q: "صغ اسم الزمان أو المكان من (وعد) و (رمى).", a: "مَوْعِد (زمان) / مَرْمَى (مكان)"}
+                ],
+                "إملاء": [
+                    {q: "علل كتابة الألف اللينة في (دعا) و (سعى).", a: "دعا: أصلها واو / سعى: أصلها ياء"},
+                    {q: "لماذا كتبت الهمزة المتطرفة على السطر في (عبء)؟", a: "لأن ما قبلها سكون حي"}
+                ]
+            }
+        },
+        { 
+            name: "4. جولة الحسم (السرعة القاتلة)", 
+            type: "speed", time: 10, 
+            questions: [
+                {q: "ما هو الفعل المعتل من 'يعدُ'؟ (وعد أم عدا)؟", a: "عدا (مضارعه يعدو)"},
+                {q: "أعرب 'ابن' في: (يا ابنَ الأكرمين).", a: "منادى مضاف منصوب بالفتحة"},
+                {q: "ما نوع 'لا' في: (لا تجسسوا)؟", a: "لا الناهية الجازمة"},
+                {q: "جمع كلمة 'دلو' هو...", a: "دلاء أو أدْلٍ"}
+            ]
+        }
+    ];
+
+    function startFinal() {
+        const n1 = document.getElementById('name1').value || "المجموعة 1";
+        const n2 = document.getElementById('name2').value || "المجموعة 2";
+        teamNames = [n1, n2];
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'flex';
+        renderScoreboard();
+        init();
+    }
+
+    function renderScoreboard() {
+        const sb = document.getElementById('dynamic-scoreboard');
+        const ctrl = document.getElementById('admin-score-controls');
+        sb.innerHTML = ''; ctrl.innerHTML = '';
+        teamNames.forEach((n, i) => {
+            sb.innerHTML += `<div class="team-box" id="t-card-${i}"><span id="s-${i}" style="font-size:2.5rem; font-weight:900;">${scores[i]}</span><br><div style="font-size:1.3rem; font-weight:900;">${n}</div></div>`;
+            ctrl.innerHTML += `<div style="text-align:center; background:#1e293b; padding:10px; border-radius:10px; border:1px solid var(--final-gold);">
+                <div style="font-size:0.8rem; color:var(--final-gold);">${n}</div>
+                <button class="btn-admin" style="background:var(--success); color:white; padding:5px 10px;" onclick="modifyScore(${i}, 10)">+10</button>
+                <button class="btn-admin" style="background:var(--danger); color:white; padding:5px 10px;" onclick="modifyScore(${i}, -5)">-5</button>
+            </div>`;
+        });
+    }
+
+    function modifyScore(i, v) {
+        if(votedOnThisQuestion[i]) return;
+        scores[i] += v;
+        document.getElementById(`s-${i}`).innerText = scores[i];
+        votedOnThisQuestion[i] = true;
+        document.getElementById(`t-card-${i}`).style.opacity = "0.5";
+    }
+
+    function init() {
+        votedOnThisQuestion = [false, false];
+        document.querySelectorAll('.team-box').forEach(b => {
+            b.style.opacity = "1";
+            b.classList.remove('active-team');
+        });
+
+        const p = finalPhases[currentPhase];
+        const alertBox = document.getElementById('challenge-alert');
+        const qText = document.getElementById('q-text');
+        const choiceContainer = document.getElementById('choice-container');
+        
+        document.getElementById('phase-label').innerText = p.name;
+        document.getElementById('manual-zone').style.display = "none";
+        choiceContainer.style.display = "none";
+        clearInterval(timer);
+        document.getElementById('timer').innerText = "--";
+
+        if (p.type === 'choice') {
+            alertBox.style.display = "block";
+            alertBox.innerText = `🎲 الدور العشوائي لـ: ${teamNames[activeTeam]}`;
+            document.getElementById(`t-card-${activeTeam}`).classList.add('active-team');
+            qText.innerText = "اختر المكون المناسب من المخزون الرقمي:";
+            renderCategories();
+            choiceContainer.style.display = "grid";
+        } else {
+            const q = p.questions[currentQ];
+            qText.innerText = q.q;
+            
+            if (p.type === 'individual') {
+                alertBox.style.display = "block";
+                alertBox.innerText = "⚔️ تحدي الفرسان: ممنوع المساعدة! ⚔️";
+            } else if (p.type === 'target') {
+                const targetIndex = currentQ % 2;
+                alertBox.style.display = "block";
+                alertBox.innerText = `🎯 السؤال موجه لـ: ${teamNames[targetIndex]}`;
+                document.getElementById(`t-card-${targetIndex}`).classList.add('active-team');
+            } else {
+                alertBox.style.display = "none";
+            }
+            startTimer(p.time);
+        }
+    }
+
+    function renderCategories() {
+        const container = document.getElementById('choice-container');
+        const p = finalPhases[currentPhase];
+        container.innerHTML = '';
+        
+        Object.keys(p.categories).forEach(cat => {
+            const isUsed = p.categories[cat].length === 0;
+            const btn = document.createElement('button');
+            btn.className = 'btn-cat';
+            btn.innerText = cat;
+            btn.disabled = isUsed;
+            btn.onclick = () => selectQuestion(cat);
+            container.appendChild(btn);
+        });
+    }
+
+    function selectQuestion(cat) {
+        const p = finalPhases[currentPhase];
+        const qObj = p.categories[cat].shift(); // سحب السؤال من المخزون
+        
+        document.getElementById('choice-container').style.display = "none";
+        document.getElementById('q-text').innerText = `[${cat}] ${qObj.q}`;
+        
+        // حفظ السؤال الحالي للكشف
+        p.currentChoiceAnswer = qObj.a;
+        
+        selectionCount[activeTeam]++;
+        
+        // تبديل الدور إذا أنهى الفريق اختيارين
+        if (selectionCount[activeTeam] >= 2) {
+            activeTeam = 1 - activeTeam;
+        } else {
+            activeTeam = 1 - activeTeam; // تبديل دور بسيط لكل سؤال
+        }
+        
+        startTimer(p.time);
+    }
+
+    function startTimer(seconds) {
+        clearInterval(timer);
+        let timeLimit = seconds;
+        document.getElementById('timer').innerText = timeLimit;
+        timer = setInterval(() => {
+            timeLimit--;
+            document.getElementById('timer').innerText = timeLimit;
+            if(timeLimit <= 0) clearInterval(timer);
+        }, 1000);
+    }
+
+    function reveal() {
+        clearInterval(timer);
+        const p = finalPhases[currentPhase];
+        const answer = (p.type === 'choice') ? p.currentChoiceAnswer : p.questions[currentQ].a;
+        document.getElementById('manual-answer-display').innerText = answer;
+        document.getElementById('manual-zone').style.display = "block";
+    }
+
+    function next() {
+        const p = finalPhases[currentPhase];
+        if (p.type === 'choice') {
+            // التحقق إذا فرغ المخزون أو انتهت الاختيارات
+            const totalRemaining = Object.values(p.categories).flat().length;
+            if (totalRemaining === 0 || (selectionCount[0] >= 2 && selectionCount[1] >= 2)) {
+                currentPhase++;
+                init();
+            } else {
+                init(); // إعادة عرض الاختيارات
+            }
+        } else {
+            currentQ++;
+            if(currentQ >= p.questions.length) {
+                currentQ = 0; currentPhase++;
+            }
+            if(currentPhase >= finalPhases.length) {
+                document.getElementById('q-text').innerText = "🏆 انتهى النهائي! مبروك للأبطال 🏆";
+                document.getElementById('timer').innerText = "🏁";
+            } else {
+                init();
+            }
+        }
+    }
+</script>
+</body>
+</html>

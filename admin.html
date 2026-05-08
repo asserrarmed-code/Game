@@ -3,133 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | معترك الضاد</title>
+    <title>إدارة معترك الضاد - تخصيص الأسئلة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --gold: #c5a059; --green: #006847; --dark-blue: #0f172a; 
-            --card-bg: #1e293b; --success: #10b981; --danger: #ef4444;
+        :root {
+            --primary: #006847; --gold: #c5a059; --bg: #f4f1ea; --dark: #1e293b;
         }
-        body { 
-            font-family: 'Cairo', sans-serif; background: var(--dark-blue); 
-            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
-            color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
+        body {
+            font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--dark);
         }
-        .admin-container {
-            background: var(--card-bg); border: 3px solid var(--gold); border-radius: 25px;
-            padding: 30px; width: 95%; max-width: 900px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-        .header { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 25px; padding-bottom: 10px; }
-        .header h1 { color: var(--gold); margin: 0; font-size: 1.8rem; }
+        .admin-container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary); }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 30px; }
         
-        .steps { background: rgba(197, 160, 89, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px; border-right: 5px solid var(--gold); }
-        .steps p { margin: 5px 0; font-size: 0.95rem; }
-
-        textarea {
-            width: 100%; height: 350px; background: #020617; color: #10b981;
-            border: 2px solid #334155; border-radius: 12px; padding: 15px;
-            font-family: 'Courier New', monospace; font-size: 0.85rem; direction: ltr;
-            resize: vertical; outline: none; transition: border-color 0.3s;
-        }
-        textarea:focus { border-color: var(--gold); }
-
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        /* قسم دليل الاستخدام */
+        .guide-section { background: #eef2ff; border-right: 5px solid #4f46e5; padding: 15px; border-radius: 10px; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.7; }
+        .guide-section h3 { margin-top: 0; color: #4f46e5; }
         
-        .btn {
-            padding: 15px; border: none; border-radius: 50px; font-family: 'Cairo';
-            font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-save { background: var(--green); color: white; }
-        .btn-clear { background: var(--danger); color: white; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); opacity: 0.9; }
-
-        .status-msg { margin-top: 15px; text-align: center; font-weight: bold; min-height: 25px; }
-        
-        .footer { margin-top: 30px; font-size: 0.8rem; color: rgba(197, 160, 89, 0.6); }
+        .editor-area { width: 100%; height: 400px; font-family: monospace; padding: 15px; border: 2px solid #ddd; border-radius: 10px; direction: ltr; text-align: left; background: #fafafa; font-size: 14px; margin-bottom: 20px; }
+        .controls { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; font-size: 1rem; text-decoration: none; display: inline-block; }
+        .btn-save { background: var(--primary); color: white; }
+        .btn-reset { background: #ef4444; color: white; }
+        .btn-home { background: var(--dark); color: white; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+        .status-msg { text-align: center; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="admin-container">
-        <div class="header">
-            <h1>⚙️ إدارة أسئلة معترك الضاد</h1>
-            <p>قم بتحديث محتوى المسابقة بضغطة زر واحدة</p>
-        </div>
+<div class="admin-container">
+    <h1>⚙️ لوحة تحكم الأسئلة</h1>
 
-        <div class="steps">
-            <p><strong>1.</strong> استخدم الـ Prompt في الذكاء الاصطناعي لتوليد الأسئلة.</p>
-            <p><strong>2.</strong> انسخ كود الـ JSON الناتج بالكامل.</p>
-            <p><strong>3.</strong> الصق الكود في المربع أدناه واضغط "حفظ".</p>
-        </div>
-
-        <textarea id="jsonInput" placeholder='{"phase1": [...], "stock": {...}}'></textarea>
-
-        <div id="msg" class="status-msg"></div>
-
-        <div class="controls">
-            <button class="btn btn-save" onclick="saveData()">💾 حفظ الأسئلة</button>
-            <button class="btn btn-clear" onclick="clearData()">🗑️ مسح الذاكرة</button>
-        </div>
-        
-        <button class="btn" style="background: #475569; color: white; width: 100%; margin-top: 15px;" onclick="location.href='test-index.html'">🔍 معاينة المسابقة التجريبية</button>
+    <div class="guide-section">
+        <h3>📖 دليل الأستاذ لتعديل الأسئلة:</h3>
+        <ul>
+            <li><strong>كيفية التعديل:</strong> ستجد بالأسفل "كود" يحتوي على الأسئلة. قم بتغيير النص الموجود بين علامات التنصيص فقط.</li>
+            <li><strong>المربعات:</strong> تأكد من عدم مسح الأقواس <code>[ ]</code> أو الفواصل <code>,</code> لكي لا يتوقف البرنامج.</li>
+            <li><strong>الحفظ:</strong> بعد التعديل، اضغط على <b>"حفظ التغييرات"</b>. سيظهر لك تنبيه للتأكيد.</li>
+            <li><strong>العودة للأصل:</strong> إذا حدث خطأ، اضغط على <b>"إعادة الأسئلة الافتراضية"</b> لاسترجاع أسئلة النظام.</li>
+        </ul>
     </div>
 
-    <div class="footer">من إعداد وتصميم الأستاذ محمد أسرار</div>
+    <textarea id="json-editor" class="editor-area"></textarea>
 
-    <script>
-        function saveData() {
-            const input = document.getElementById('jsonInput').value.trim();
-            const msg = document.getElementById('msg');
+    <div class="controls">
+        <button class="btn btn-save" onclick="saveData()">💾 حفظ التغييرات</button>
+        <button class="btn btn-reset" onclick="resetData()">🔄 إعادة الأسئلة الافتراضية</button>
+        <a href="index.html" class="btn btn-home">🎮 الذهاب للمسابقة</a>
+    </div>
 
-            if (!input) {
-                showMsg("❌ يرجى لصق الكود أولاً!", "danger");
-                return;
-            }
+    <div id="status" class="status-msg"></div>
+</div>
 
+<script>
+    // الأسئلة الافتراضية للنظام
+    const defaultData = {
+        phase1: [
+            {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2},
+            {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء", "واو", "ألف", "نون"], a:1},
+            {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["فعل وفاعل", "اسمين علمين", "بداية السطر", "حرفي جر"], a:1}
+        ],
+        phase2: [
+            {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
+            {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1}
+        ],
+        phase4: [
+            {q: "ما هو الوزن الصرفي الصحيح لكلمة 'صِـلَة'؟", a: "عِـلَة"},
+            {q: "حوّل الفعل 'رأى' إلى فعل أمر للمفرد المذكر.", a: "رَ"}
+        ],
+        stock: {
+            "تراكيب": [{q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي مرفوع"}],
+            "صرف": [{q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"}],
+            "إملاء": [{q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"}]
+        }
+    };
+
+    const editor = document.getElementById('json-editor');
+    const status = document.getElementById('status');
+
+    // تحميل البيانات عند فتح الصفحة
+    function loadCurrentData() {
+        const saved = localStorage.getItem('moatark_questions');
+        const dataToDisplay = saved ? JSON.parse(saved) : defaultData;
+        editor.value = JSON.stringify(dataToDisplay, null, 4);
+    }
+
+    // [Prompt] وظيفة حفظ البيانات مع تنبيه تأكيدي
+    function saveData() {
+        // رسالة تأكيد (Prompt)
+        const confirmation = confirm("هل أنت متأكد من حفظ الأسئلة الجديدة؟ سيتم تطبيقها فوراً في المسابقة.");
+        
+        if (confirmation) {
             try {
-                // التأكد من صحة التنسيق البرمجي
-                const data = JSON.parse(input);
+                const newData = JSON.parse(editor.value);
+                localStorage.setItem('moatark_questions', JSON.stringify(newData));
+                status.innerText = "✅ تم حفظ البيانات بنجاح!";
+                status.style.color = "green";
                 
-                // حفظ البيانات في localStorage
-                localStorage.setItem('moatark_questions', JSON.stringify(data));
-                
-                showMsg("✅ تم الحفظ بنجاح! الأسئلة جاهزة الآن.", "success");
-                
-                // تنبيه الأستاذ بالانتقال
-                setTimeout(() => {
-                    if(confirm("هل تريد الانتقال لصفحة التجربة الآن؟")) {
-                        window.location.href = 'test-index.html';
-                    }
-                }, 1000);
-
-            } catch (error) {
-                console.error(error);
-                showMsg("❌ خطأ في تنسيق الكود! تأكد من نسخ الكود كاملاً.", "danger");
+                // إخفاء الرسالة بعد 3 ثواني
+                setTimeout(() => { status.innerText = ""; }, 3000);
+            } catch (e) {
+                alert("خطأ في تنسيق الكود! يرجى التأكد من عدم حذف الفواصل أو الأقواس.");
+                status.innerText = "❌ فشل الحفظ: خطأ في التنسيق";
+                status.style.color = "red";
             }
         }
+    }
 
-        function clearData() {
-            if(confirm("هل أنت متأكد من مسح جميع الأسئلة المخصصة والعودة للأسئلة الافتراضية؟")) {
-                localStorage.removeItem('moatark_questions');
-                document.getElementById('jsonInput').value = "";
-                showMsg("🗑️ تم مسح البيانات المخصصة.", "success");
-            }
+    function resetData() {
+        if(confirm("هل تريد حقاً مسح كل تعديلاتك والعودة لأسئلة النظام الأصلية؟")) {
+            localStorage.removeItem('moatark_questions');
+            editor.value = JSON.stringify(defaultData, null, 4);
+            status.innerText = "🔄 تمت إعادة الأسئلة الأصلية.";
+            status.style.color = "blue";
         }
+    }
 
-        function showMsg(text, type) {
-            const msgDiv = document.getElementById('msg');
-            msgDiv.innerText = text;
-            msgDiv.style.color = type === "success" ? "var(--success)" : "var(--danger)";
-        }
+    loadCurrentData();
+</script>
 
-        // استرجاع البيانات القديمة إذا كانت موجودة عند فتح الصفحة
-        window.onload = function() {
-            const saved = localStorage.getItem('moatark_questions');
-            if (saved) {
-                document.getElementById('jsonInput').value = JSON.stringify(JSON.parse(saved), null, 2);
-            }
-        }
-    </script>
 </body>
 </html>

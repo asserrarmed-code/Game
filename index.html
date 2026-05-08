@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مَارَاثُون الضَّاد - النسخة الاحترافية</title>
+    <title>مَارَاثُون الضَّاد - النسخة العشوائية الكاملة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
@@ -35,7 +35,7 @@
         .container { 
             width: 95%; max-width: 900px; margin: 0 auto; flex: 1; 
             display: flex; flex-direction: column; justify-content: center; 
-            padding-bottom: 175px; 
+            padding-bottom: 180px; 
             overflow-y: auto; 
         }
 
@@ -44,31 +44,30 @@
         .scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; flex-shrink: 0; }
         @media (max-width: 600px) { .scoreboard { grid-template-columns: repeat(2, 1fr); } }
 
-        .team-box { background: var(--card); padding: 5px; border-radius: 12px; border: 2px solid #ddd; position: relative; }
-        .team-box.active-turn { border-color: var(--danger); border-width: 3px; transform: scale(1.03); }
+        .team-box { background: var(--card); padding: 5px; border-radius: 12px; border: 2px solid #ddd; position: relative; transition: all 0.3s; }
+        .team-box.active-turn { border-color: var(--danger); border-width: 4px; transform: scale(1.05); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
         
         .lifeline-icons { position: absolute; top: -8px; right: 2px; display: flex; gap: 2px; }
         .lifeline-icons span { background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: opacity 0.3s; }
-        .used-life-icon { opacity: 0.1; filter: grayscale(1); } /* شكل الوسيلة بعد الاستخدام */
+        .used-life-icon { opacity: 0.1; filter: grayscale(1); }
 
         .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0; }
         .opt, .component-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 10px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: clamp(0.8rem, 2vh, 1rem); }
         
-        /* لوحة التحكم الكبيرة */
         .admin-panel { 
             position: fixed; bottom: 0; left: 0; right: 0; 
             background: #1e293b; color: white; padding: 15px 10px; 
             border-top: 5px solid var(--moroccan-gold); 
             display: flex; flex-wrap: nowrap; overflow-x: auto; 
             justify-content: center; align-items: center; gap: 15px; 
-            z-index: 10000; min-height: 135px;
+            z-index: 10000; min-height: 140px;
             padding-bottom: env(safe-area-inset-bottom, 15px);
         }
 
         .admin-group { 
             border: 2px solid #475569; padding: 10px 8px; border-radius: 15px; 
             display: flex; flex-direction: column; align-items: center; flex-shrink: 0; 
-            min-width: 120px; background: rgba(255,255,255,0.08);
+            min-width: 125px; background: rgba(255,255,255,0.08);
         }
 
         .btn-admin { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 0.95rem; }
@@ -78,7 +77,7 @@
         #q-text { font-size: clamp(1rem, 3vh, 1.4rem); line-height: 1.3; margin-bottom: 8px; font-family: 'Amiri'; font-weight: bold; }
         
         #answer-input { 
-            padding: 15px; width: 140px; font-size: 1.1rem; border-radius: 10px; 
+            padding: 15px; width: 145px; font-size: 1.1rem; border-radius: 10px; 
             border: 3px solid var(--moroccan-gold); text-align: center; font-weight: 900; 
             background: #ffffff; color: #000;
         }
@@ -118,7 +117,7 @@
     <div id="quiz-screen" class="container" style="display:none;">
         <div id="dynamic-scoreboard" class="scoreboard"></div>
         <div class="card">
-            <div id="target-announcer" style="background: var(--danger); color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.1rem; margin-bottom: 10px; display: none;"></div>
+            <div id="target-announcer" style="background: var(--danger); color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.1rem; margin-bottom: 10px; display: none; font-weight: 900;"></div>
             <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:2px 12px; border-radius:50px; font-size:0.75rem; display:inline-block; margin-bottom:5px;"></div>
             <div id="timer">15</div>
             <div id="q-text"></div>
@@ -146,9 +145,9 @@
             <h2 style="color:var(--moroccan-blue); border-bottom:2px solid var(--moroccan-gold); font-size:1.2rem; margin-top:0;">📖 دليل المسابقة</h2>
             <div style="font-size:0.85rem; line-height:1.4;">
                 <p><strong>1. الموحد:</strong> للجميع، الأسرع يجيب.</p>
-                <p><strong>2. الموجه:</strong> سؤال مخصص لكل فريق بالدور.</p>
-                <p><strong>3. الحر:</strong> اختيار المكون والإجابة يدوياً.</p>
-                <p><strong>4. السرعة:</strong> وقت قصير جداً (8 ثوانٍ).</p>
+                <p><strong>2. الموجه:</strong> سؤال مخصص لكل فريق (عشوائي).</p>
+                <p><strong>3. الحر:</strong> اختيار المكون (عشوائي المجموعة).</p>
+                <p><strong>4. السرعة:</strong> للجميع، وقت قصير جداً.</p>
                 <hr>
                 <p>💡 حذف | 🚀 ضعف | ⏱️ وقف العداد</p>
             </div>
@@ -162,17 +161,45 @@
     let teamLifelines = []; 
     let masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
 
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[array[j] ? j : i]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     const extraQuestions = {
-        "تراكيب": ["أعرب 'المسافرين' في: وصل المسافرون إلا المسافرين.", "حوّل الجملة 'أن تجتهد خير لك' إلى مصدر مؤول.", "ما هو إعراب 'خمسة' في: اشتريت خمسة أقلام؟", "استخرج التمييز من: طاب المكان هواءً.", "أعرب 'أباك' في: رأيت أباك.", "ما هو المفعول المطلق في: ركضت ركضاً سريعاً؟"],
-        "صرف": ["صغ اسم المكان من فعل 'سجد'.", "ما هو وزن كلمة 'استغفار'؟", "حوّل الفعل 'دعا' إلى اسم فاعل.", "صغ اسم الآلة من 'نشر'.", "ما هو وزن كلمة 'انطلق'؟", "صغ اسم التفضيل من فعل 'كرم'."],
-        "إملاء": ["لماذا كتبت الهمزة متطرفة في كلمة 'دفء'؟", "اكتب كلمة 'ابن' في: 'يا ... الأكرمين'.", "كيف تكتب الألف اللينة في فعل 'دنا'؟", "لماذا كتبت الهمزة في كلمة 'نشأ'؟", "كيف تكتب الهمزة في كلمة 'بئر'؟", "علل كتابة الهمزة على الواو في 'سؤال'."]
+        "تراكيب": ["أعرب 'المسافرين' في: وصل المسافرون إلا المسافرين.", "حوّل الجملة 'أن تجتهد خير لك' إلى مصدر مؤول.", "ما هو إعراب 'خمسة' في: اشتريت خمسة أقلام؟", "استخرج التمييز من: طاب المكان هواءً.", "أعرب 'أباك' في: رأيت أباك."],
+        "صرف": ["صغ اسم المكان من فعل 'سجد'.", "ما هو وزن كلمة 'استغفار'؟", "حوّل الفعل 'دعا' إلى اسم فاعل.", "صغ اسم الآلة من 'نشر'.", "صغ اسم التفضيل من فعل 'كرم'."],
+        "إملاء": ["لماذا كتبت الهمزة متطرفة في كلمة 'دفء'؟", "اكتب كلمة 'ابن' في: 'يا ... الأكرمين'.", "كيف تكتب الألف اللينة في فعل 'دنا'؟", "لماذا كتبت الهمزة في كلمة 'نشأ'؟", "علل كتابة الهمزة على الواو في 'سؤال'."]
     };
 
     const phasesData = [
-        { name: "النمط 1: الموحد", type: "all", time: 15, questions: [{q: "إعراب 'خالد' في: جاء خالدٌ؟", o:["فاعل", "مفعول به", "مبتدأ", "خبر"], a:0}, {q: "نوع الهمزة في 'إخراج'؟", o:["همزة وصل", "همزة قطع", "همزة متوسطة", "همزة متطرفة"], a:1}, {q: "ما هو مثنى 'سماء'؟", o:["سماءان", "سماوان", "سموات", "سمات"], a:1}, {q: "ما هو وزن كلمة 'مُصْطَفًى'؟", o:["مُفْتَعَل", "مُسْتَفْعِل", "مُفْعَل", "مُفْتَعِل"], a:0}, {q: "أداة تجزم فعلين مضارعين هي:", o:["لَمْ", "لَمَّا", "إِنْ", "لا الناهية"], a:2}, {q: "الاسم الذي يحذف حرفه رسماً ويبقى نطقاً هو:", o:["هؤلاء", "هاتف", "كتاب", "سماء"], a:0}] },
-        { name: "النمط 2: الموجه", type: "target", time: 15, questions: [{q: "إعراب 'الولدين' في: رأيتُ الولدينِ؟", o:["فاعل", "مفعول به", "مبتدأ", "مضاف إليه"], a:1}, {q: "جمع التكسير لـ 'نافذة'؟", o:["نافذات", "نافذون", "نوافذ", "أنفذة"], a:2}, {q: "وزن 'منشار' هو:", o:["مِفْعَل", "مِفْعال", "فاعِل", "مَفْعول"], a:1}, {q: "إعراب 'أخاك' في: ساعدْ أخاكَ؟", o:["فاعل مرفوع", "مفعول به منصوب", "مبتدأ", "خبر"], a:1}, {q: "همزة 'اسْم' هي همزة:", o:["قطع", "وصل", "متطرفة", "لا شيء مما سبق"], a:1}, {q: "صغ اسم المكان من فعل 'سجد':", o:["سجود", "سجاد", "مَسْجِد", "ساجد"], a:2}, {q: "تحذف ألف ابن في: 'محمد... علي'", o:["ابن", "بن", "إبن", "بين"], a:1}, {q: "إعراب 'المسافرون' في: وصل المسافرون:", o:["فاعل مرفوع بالواو", "مفعول به", "مبتدأ", "فاعل مرفوع بالضمة"], a:0}] },
+        { name: "النمط 1: الموحد", type: "all", time: 15, questions: [
+            {q: "إعراب 'خالد' في: جاء خالدٌ؟", o:["فاعل", "مفعول به", "مبتدأ", "خبر"], a:0},
+            {q: "نوع الهمزة في 'إخراج'؟", o:["همزة وصل", "همزة قطع", "همزة متوسطة", "همزة متطرفة"], a:1},
+            {q: "ما هو مثنى 'سماء'؟", o:["سماءان", "سماوان", "سموات", "سمات"], a:1}
+        ]},
+        { name: "النمط 2: الموجه", type: "target", time: 15, questions: [
+            {q: "إعراب 'الولدين' في: رأيتُ الولدينِ؟", o:["فاعل", "مفعول به", "مبتدأ", "مضاف إليه"], a:1},
+            {q: "جمع التكسير لـ 'نافذة'؟", o:["نافذات", "نافذون", "نوافذ", "أنفذة"], a:2},
+            {q: "وزن 'منشار' هو:", o:["مِفْعَل", "مِفْعال", "فاعِل", "مَفْعول"], a:1},
+            {q: "إعراب 'أخاك' في: ساعدْ أخاكَ؟", o:["فاعل مرفوع", "مفعول به منصوب", "مبتدأ", "خبر"], a:1},
+            {q: "همزة 'اسْم' هي همزة:", o:["قطع", "وصل", "متطرفة", "لا شيء مما سبق"], a:1},
+            {q: "صغ اسم المكان من فعل 'سجد':", o:["سجود", "سجاد", "مَسْجِد", "ساجد"], a:2},
+            {q: "تحذف ألف ابن في: 'محمد... علي'", o:["ابن", "بن", "إبن", "بين"], a:1},
+            {q: "إعراب 'المسافرون' في: وصل المسافرون:", o:["فاعل مرفوع بالواو", "مفعول به", "مبتدأ", "فاعل مرفوع بالضمة"], a:0},
+            {q: "اسم التفضيل من فعل 'صغُر':", o:["صغير", "أصغر", "صاغر", "تصغير"], a:1},
+            {q: "مثنى 'عصا' هو:", o:["عصاتان", "عصيان", "عصوان", "عصوانِ"], a:2},
+            {q: "المصدر المؤول لـ 'أن تصوموا' هو:", o:["صيامكم", "صوم", "صائمون", "تصومون"], a:0},
+            {q: "إعراب 'مستخرج' في: 'هو مستخرجُ الفوسفاط':", o:["اسم فاعل", "اسم مفعول", "اسم مكان", "اسم زمان"], a:0}
+        ]},
         { name: "النمط 3: الاختيار الحر", type: "free", time: 15 },
-        { name: "النمط 4: السرعة", type: "all", time: 8, questions: [{q: "إعراب 'لَنْ' هو حرف:", o:["نصب", "جزم", "جر", "عطف"], a:0}, {q: "اسم التفضيل من 'كرُم':", o:["كارم", "أكرم", "كريمة", "إكرام"], a:1}, {q: "كيف تكتب الألف اللينة في 'مشى'؟", o:["ممدودة (ا)", "مقصورة (ى)", "بواو", "بياء"], a:1}, {q: "علامة جزم الأفعال الخمسة هي:", o:["السكون", "حذف النون", "ثبوت النون", "الفتحة"], a:1}] }
+        { name: "النمط 4: السرعة", type: "all", time: 8, questions: [
+            {q: "إعراب 'لَنْ' هو حرف:", o:["نصب", "جزم", "جر", "عطف"], a:0},
+            {q: "اسم التفضيل من 'كرُم':", o:["كارم", "أكرم", "كريمة", "إكرام"], a:1}
+        ]}
     ];
 
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
@@ -186,11 +213,9 @@
         for(let i=0; i<count; i++) container.innerHTML += `<input type="text" id="tn-${i}" value="المجموعة ${i+1}" style="padding:8px; width:75px; text-align:center; font-size:0.75rem; border-radius:5px;">`;
     }
 
-    function setupMasterStock(teamCount) {
+    function setupMasterStock() {
         masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
-        const totalQuestionsNeeded = teamCount * 2;
-        const perComponent = Math.ceil(totalQuestionsNeeded / 3) + 1; 
-        for(let key in extraQuestions) { masterStock[key] = [...extraQuestions[key]].slice(0, perComponent); }
+        for(let key in extraQuestions) { masterStock[key] = shuffle([...extraQuestions[key]]); }
     }
 
     function startMarathon() {
@@ -201,7 +226,9 @@
             scores.push(0);
             teamLifelines.push({ del: true, dou: true, stp: true });
         }
-        setupMasterStock(count);
+        setupMasterStock();
+        phasesData.forEach(p => { if(p.questions) shuffle(p.questions); });
+        
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'flex';
         document.getElementById('back-to-setup').style.display = 'flex';
@@ -220,28 +247,24 @@
         });
     }
 
-    /* دالة استخدام الوسائل المساعدة مع إخفاء الأيقونة في الأعلى والأسفل */
     function useLife(tid, type) {
         if (!teamLifelines[tid][type]) return;
-        
-        // 1. إخفاء الأيقونة العلوية (فوق نقاط المجموعة)
         const topIcon = document.getElementById(`ico-${tid}-${type}`);
         if(topIcon) topIcon.classList.add('used-life-icon');
-        
-        // 2. إيقاف تفعيل الزر في لوحة التحكم (الأسفل)
         const adminBtn = document.getElementById(`btn-${tid}-${type}`);
         if(adminBtn) adminBtn.classList.add('btn-disabled');
-
         teamLifelines[tid][type] = false;
 
-        // تنفيذ الوظيفة البرمجية للوسيلة
         if(type === 'del') { 
             const opts = document.querySelectorAll('.opt'); 
             const p = phasesData[currentPhase];
             if(p.questions) {
-                const correctIdx = p.questions[currentQ % p.questions.length].a;
-                let hidden = 0;
-                opts.forEach((o, idx) => { if(idx !== correctIdx && hidden < 1) { o.style.opacity = '0.2'; o.disabled = true; hidden++; } });
+                const qObj = p.questions[currentQ];
+                if(qObj && qObj.o) {
+                   const correctIdx = qObj.a;
+                   let hidden = 0;
+                   opts.forEach((o, idx) => { if(idx !== correctIdx && hidden < 1) { o.style.opacity = '0.2'; o.disabled = true; hidden++; } });
+                }
             }
         }
         else if(type === 'dou') currentMultiplier = 2;
@@ -258,8 +281,16 @@
     function prepareTurns() {
         phaseTurns = [];
         const count = teamNames.length;
-        if(phasesData[currentPhase].type === 'target') { for(let i=0; i<count; i++) for(let j=0; j<3; j++) phaseTurns.push(i); }
-        else if(phasesData[currentPhase].type === 'free') { for(let i=0; i<count; i++) for(let j=0; j<2; j++) phaseTurns.push(i); }
+        const p = phasesData[currentPhase];
+        if(p.type === 'target') { 
+            for(let i=0; i<count; i++) for(let j=0; j<3; j++) phaseTurns.push(i); 
+            shuffle(phaseTurns);
+        }
+        else if(p.type === 'free') { 
+            // جعل أدوار النمط 3 عشوائية أيضاً (دورين لكل مجموعة)
+            for(let i=0; i<count; i++) for(let j=0; j<2; j++) phaseTurns.push(i); 
+            shuffle(phaseTurns);
+        }
     }
 
     function init() {
@@ -282,7 +313,7 @@
             document.getElementById('target-announcer').innerHTML = `🎯 الدور: ${teamNames[tid]}`;
             document.getElementById(`t-card-${tid}`).classList.add('active-turn');
             if(p.type === 'free') showFreeSelection();
-            else displayQuestion(p.questions[currentQ % p.questions.length]);
+            else displayQuestion(p.questions[currentQ]); 
         } else {
             displayQuestion(p.questions[currentQ]);
         }
@@ -319,7 +350,7 @@
         clearInterval(timer);
         const p = phasesData[currentPhase];
         if(p.type !== 'free' && p.questions) {
-            const d = p.questions[currentQ % p.questions.length];
+            const d = p.questions[currentQ];
             if(d && d.o) {
                 const opts = document.querySelectorAll('.opt');
                 if(opts[d.a]) { opts[d.a].style.background = 'var(--success)'; opts[d.a].style.color = 'white'; }
@@ -332,7 +363,13 @@
     function next() {
         currentQ++;
         let limit = (phasesData[currentPhase].type === 'target' || phasesData[currentPhase].type === 'free') ? phaseTurns.length : (phasesData[currentPhase].questions ? phasesData[currentPhase].questions.length : 0);
-        if(currentQ >= limit) { currentQ = 0; currentPhase++; if(currentPhase < phasesData.length) prepareTurns(); }
+        
+        if(currentQ >= limit) { 
+            currentQ = 0; 
+            currentPhase++; 
+            if(currentPhase < phasesData.length) prepareTurns(); 
+        }
+
         if(currentPhase >= phasesData.length) alert("انتهت المسابقة 🏆");
         else init();
     }

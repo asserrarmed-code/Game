@@ -21,12 +21,13 @@
         .header-top { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-shrink: 0; width: 100%; max-width: 1000px; margin: 0 auto; }
         .logo-box { width: clamp(40px, 7vh, 65px); height: clamp(40px, 7vh, 65px); background: white; border-radius: 50%; border: 2px solid var(--moroccan-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .logo-box img { width: 100%; height: 100%; object-fit: cover; }
-        .title-area h1 { font-family: 'Amiri', serif; font-size: clamp(1.1rem, 4vh, 1.8rem); margin: 0; color: var(--moroccan-blue); }
+        
+        .title-area { flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 0 10px; }
+        .title-area img { width: 100%; max-height: clamp(50px, 10vh, 100px); object-fit: contain; }
         
         .top-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; flex-shrink: 0; }
         .icon-btn { background: var(--moroccan-gold); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 1rem; }
         
-        /* نافذة الدليل الشامل */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 20000; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); border: 3px solid var(--moroccan-gold); width: 90%; max-width: 500px; padding: 25px; border-radius: 20px; text-align: right; position: relative; color: var(--text); line-height: 1.6; }
         .modal-content h2 { color: var(--moroccan-blue); border-bottom: 2px solid var(--moroccan-gold); padding-bottom: 10px; margin-top: 0; }
@@ -40,7 +41,7 @@
         .team-box { background: var(--card); padding: 5px; border-radius: 12px; border: 2px solid #ddd; position: relative; transition: all 0.3s; }
         .team-box.active-turn { border-color: var(--danger); border-width: 4px; transform: scale(1.05); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
         .lifeline-icons { position: absolute; top: -8px; right: 2px; display: flex; gap: 2px; }
-        .lifeline-icons span { background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: opacity 0.3s; }
+        .lifeline-icons span { background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.3s; cursor: pointer; }
         .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0; }
         .opt, .component-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 10px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: clamp(0.8rem, 2vh, 1rem); }
         .admin-panel { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: white; padding: 15px 10px; border-top: 5px solid var(--moroccan-gold); display: flex; flex-wrap: nowrap; overflow-x: auto; justify-content: center; align-items: center; gap: 15px; z-index: 10000; min-height: 140px; padding-bottom: env(safe-area-inset-bottom, 15px); }
@@ -61,7 +62,7 @@
 
     <div class="header-top">
         <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
-        <div class="title-area"><h1>مُعترك الضاد: مَلحمة الظواهر اللغوية</h1></div>
+        <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
         <div class="logo-box"><img src="logo.png" alt="Logo"></div>
     </div>
 
@@ -133,6 +134,10 @@
     let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
     let votedOnThisQuestion = [], currentModelAnswer = "";
     let masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
+    
+    // متغيرات وسائل المساعدة المحقونة
+    let lifelinesState = []; 
+    let rocketActive = -1;
 
     const phasesData = [
         { name: "النمط 1: الاستجابة الجماعية (6 أسئلة)", type: "all", time: 20, questions: [
@@ -216,12 +221,41 @@
         }
     }
 
+    // دالة استخدام وسيلة المساعدة (محقونة)
+    function useLifeline(teamIdx, type, element) {
+        if (lifelinesState[teamIdx][type]) return;
+        
+        if (type === 'del') { 
+            const p = phasesData[currentPhase];
+            if (p && p.questions && p.questions[currentQ]?.o) {
+                const correctIdx = p.questions[currentQ].a;
+                const opts = Array.from(document.querySelectorAll('.opt'));
+                let wrongIndices = opts.map((_, i) => i).filter(i => i !== correctIdx);
+                shuffle(wrongIndices).slice(0, 2).forEach(idx => {
+                    opts[idx].style.visibility = 'hidden';
+                });
+            }
+        } 
+        else if (type === 'dou') { 
+            rocketActive = teamIdx;
+        } 
+        else if (type === 'stp') { 
+            clearInterval(timer);
+        }
+
+        lifelinesState[teamIdx][type] = true;
+        element.style.opacity = "0.2";
+        element.style.filter = "grayscale(100%)";
+        element.style.cursor = "default";
+    }
+
     function startMarathon() {
         const count = parseInt(document.getElementById('team-count').value);
-        teamNames = [], scores = [];
+        teamNames = [], scores = [], lifelinesState = [];
         for(let i=0; i<count; i++) {
             teamNames.push(document.getElementById(`tn-${i}`).value);
             scores.push(0);
+            lifelinesState.push({ del: false, dou: false, stp: false });
         }
         setupMasterStock();
         document.getElementById('setup-screen').style.display = 'none';
@@ -237,14 +271,30 @@
         const adminCtrl = document.getElementById('admin-score-controls');
         sb.innerHTML = ''; adminCtrl.innerHTML = '';
         teamNames.forEach((name, i) => {
-            sb.innerHTML += `<div class="team-box" id="t-card-${i}"><div class="lifeline-icons"><span id="ico-${i}-del">💡</span><span id="ico-${i}-dou">🚀</span><span id="ico-${i}-stp">⏱️</span></div><span id="s-${i}" style="font-size:1.4rem; font-weight:900;">0</span><div style="font-size:0.7rem">${name}</div></div>`;
+            sb.innerHTML += `
+                <div class="team-box" id="t-card-${i}">
+                    <div class="lifeline-icons">
+                        <span id="ico-${i}-del" onclick="useLifeline(${i}, 'del', this)">💡</span>
+                        <span id="ico-${i}-dou" onclick="useLifeline(${i}, 'dou', this)">🚀</span>
+                        <span id="ico-${i}-stp" onclick="useLifeline(${i}, 'stp', this)">⏱️</span>
+                    </div>
+                    <span id="s-${i}" style="font-size:1.4rem; font-weight:900;">0</span>
+                    <div style="font-size:0.7rem">${name}</div>
+                </div>`;
             adminCtrl.innerHTML += `<div class="admin-group"><div style="font-size:0.8rem; color:var(--moroccan-gold); font-weight:900; margin-bottom:6px;">${name}</div><div style="display:flex; gap:6px"><button class="btn-admin" style="background:var(--success); color:white" onclick="modifyScore(${i}, 10)">+10</button><button class="btn-admin" style="background:var(--danger); color:white" onclick="modifyScore(${i}, -5)">-5</button></div></div>`;
         });
     }
 
     function modifyScore(i, v) {
         if(votedOnThisQuestion[i]) return;
-        scores[i] += v;
+        
+        let finalValue = v;
+        if (rocketActive === i) {
+            finalValue = (v > 0) ? 20 : -10;
+            rocketActive = -1;
+        }
+        
+        scores[i] += finalValue;
         document.getElementById(`s-${i}`).innerText = scores[i];
         votedOnThisQuestion[i] = true;
     }
@@ -255,7 +305,6 @@
         const p = phasesData[currentPhase];
         if(!p) return;
         if(p.type === 'target') {
-            // التعديل: 3 أدوار لكل مجموعة فقط
             for(let i=0; i<count; i++) for(let j=0; j<3; j++) phaseTurns.push(i);
             shuffle(phaseTurns);
         } else if(p.type === 'free') {
@@ -268,6 +317,7 @@
         votedOnThisQuestion = teamNames.map(() => false);
         const p = phasesData[currentPhase];
         currentModelAnswer = "";
+        rocketActive = -1; // إعادة ضبط الصاروخ في كل سؤال جديد
         
         document.getElementById('q-text').innerText = '';
         document.getElementById('opt-container').innerHTML = '';

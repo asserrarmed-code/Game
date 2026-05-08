@@ -3,65 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم معترك الضاد</title>
+    <title>لوحة التحكم | معترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #c5a059; --blue: #006847; --dark: #0f172a; }
+        :root { 
+            --gold: #c5a059; --green: #006847; --dark-blue: #0f172a; 
+            --card-bg: #1e293b; --success: #10b981; --danger: #ef4444;
+        }
         body { 
-            font-family: 'Cairo', sans-serif; background: var(--dark); color: white; 
-            display: flex; flex-direction: column; align-items: center; padding: 20px;
+            font-family: 'Cairo', sans-serif; background: var(--dark-blue); 
+            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
         }
-        .admin-card {
-            background: #1e293b; border: 3px solid var(--gold); border-radius: 20px;
-            padding: 25px; width: 100%; max-width: 800px; text-align: center;
+        .admin-container {
+            background: var(--card-bg); border: 3px solid var(--gold); border-radius: 25px;
+            padding: 30px; width: 95%; max-width: 900px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
+        .header { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 25px; padding-bottom: 10px; }
+        .header h1 { color: var(--gold); margin: 0; font-size: 1.8rem; }
+        
+        .steps { background: rgba(197, 160, 89, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px; border-right: 5px solid var(--gold); }
+        .steps p { margin: 5px 0; font-size: 0.95rem; }
+
         textarea {
-            width: 100%; height: 300px; background: #0f172a; color: #10b981;
-            border: 2px solid var(--gold); border-radius: 10px; padding: 15px;
-            font-family: monospace; font-size: 0.9rem; direction: ltr; margin-top: 15px;
+            width: 100%; height: 350px; background: #020617; color: #10b981;
+            border: 2px solid #334155; border-radius: 12px; padding: 15px;
+            font-family: 'Courier New', monospace; font-size: 0.85rem; direction: ltr;
+            resize: vertical; outline: none; transition: border-color 0.3s;
         }
-        .btn-save {
-            background: var(--blue); color: white; border: none; padding: 15px 40px;
-            border-radius: 50px; font-weight: 900; cursor: pointer; margin-top: 20px;
-            font-size: 1.2rem; transition: 0.3s;
+        textarea:focus { border-color: var(--gold); }
+
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        
+        .btn {
+            padding: 15px; border: none; border-radius: 50px; font-family: 'Cairo';
+            font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-save:hover { transform: scale(1.05); background: #008f61; }
-        .instructions { text-align: right; background: rgba(197,160,89,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .btn-save { background: var(--green); color: white; }
+        .btn-clear { background: var(--danger); color: white; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); opacity: 0.9; }
+
+        .status-msg { margin-top: 15px; text-align: center; font-weight: bold; min-height: 25px; }
+        
+        .footer { margin-top: 30px; font-size: 0.8rem; color: rgba(197, 160, 89, 0.6); }
     </style>
 </head>
 <body>
 
-    <div class="admin-card">
-        <h2 style="color: var(--gold);">⚙️ لوحة شحن الأسئلة الذكية</h2>
-        
-        <div class="instructions">
-            <p>1️⃣ انسخ الـ Prompt (الأمر) الذي سأعطيك إياه.</p>
-            <p>2️⃣ أعطه للذكاء الاصطناعي مع تحديد الدروس.</p>
-            <p>3️⃣ انسخ الكود الناتج (JSON) وضعه في الصندوق أدناه.</p>
+    <div class="admin-container">
+        <div class="header">
+            <h1>⚙️ إدارة أسئلة معترك الضاد</h1>
+            <p>قم بتحديث محتوى المسابقة بضغطة زر واحدة</p>
         </div>
 
-        <textarea id="jsonInput" placeholder="ضع كود الأسئلة هنا..."></textarea>
+        <div class="steps">
+            <p><strong>1.</strong> استخدم الـ Prompt في الذكاء الاصطناعي لتوليد الأسئلة.</p>
+            <p><strong>2.</strong> انسخ كود الـ JSON الناتج بالكامل.</p>
+            <p><strong>3.</strong> الصق الكود في المربع أدناه واضغط "حفظ".</p>
+        </div>
+
+        <textarea id="jsonInput" placeholder='{"phase1": [...], "stock": {...}}'></textarea>
+
+        <div id="msg" class="status-msg"></div>
+
+        <div class="controls">
+            <button class="btn btn-save" onclick="saveData()">💾 حفظ الأسئلة</button>
+            <button class="btn btn-clear" onclick="clearData()">🗑️ مسح الذاكرة</button>
+        </div>
         
-        <button class="btn-save" onclick="saveData()">حفظ الأسئلة وانطلاق 🚀</button>
-        <p id="msg" style="margin-top:10px; font-weight:bold;"></p>
+        <button class="btn" style="background: #475569; color: white; width: 100%; margin-top: 15px;" onclick="location.href='test-index.html'">🔍 معاينة المسابقة التجريبية</button>
     </div>
+
+    <div class="footer">من إعداد وتصميم الأستاذ محمد أسرار</div>
 
     <script>
         function saveData() {
-            const input = document.getElementById('jsonInput').value;
+            const input = document.getElementById('jsonInput').value.trim();
             const msg = document.getElementById('msg');
+
+            if (!input) {
+                showMsg("❌ يرجى لصق الكود أولاً!", "danger");
+                return;
+            }
+
             try {
-                // التأكد من أن الكود المدخل صحيح برمجياً
+                // التأكد من صحة التنسيق البرمجي
                 const data = JSON.parse(input);
-                localStorage.setItem('moatark_questions', JSON.stringify(data));
-                msg.style.color = "#10b981";
-                msg.innerText = "✅ تم حفظ الأسئلة بنجاح! يمكنك الآن فتح صفحة المسابقة.";
                 
-                // اختيارياً: الانتقال التلقائي للمسابقة بعد ثانية
-                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-            } catch (e) {
-                msg.style.color = "#ef4444";
-                msg.innerText = "❌ خطأ في الكود! تأكد من نسخ الكود كاملاً كما هو.";
+                // حفظ البيانات في localStorage
+                localStorage.setItem('moatark_questions', JSON.stringify(data));
+                
+                showMsg("✅ تم الحفظ بنجاح! الأسئلة جاهزة الآن.", "success");
+                
+                // تنبيه الأستاذ بالانتقال
+                setTimeout(() => {
+                    if(confirm("هل تريد الانتقال لصفحة التجربة الآن؟")) {
+                        window.location.href = 'test-index.html';
+                    }
+                }, 1000);
+
+            } catch (error) {
+                console.error(error);
+                showMsg("❌ خطأ في تنسيق الكود! تأكد من نسخ الكود كاملاً.", "danger");
+            }
+        }
+
+        function clearData() {
+            if(confirm("هل أنت متأكد من مسح جميع الأسئلة المخصصة والعودة للأسئلة الافتراضية؟")) {
+                localStorage.removeItem('moatark_questions');
+                document.getElementById('jsonInput').value = "";
+                showMsg("🗑️ تم مسح البيانات المخصصة.", "success");
+            }
+        }
+
+        function showMsg(text, type) {
+            const msgDiv = document.getElementById('msg');
+            msgDiv.innerText = text;
+            msgDiv.style.color = type === "success" ? "var(--success)" : "var(--danger)";
+        }
+
+        // استرجاع البيانات القديمة إذا كانت موجودة عند فتح الصفحة
+        window.onload = function() {
+            const saved = localStorage.getItem('moatark_questions');
+            if (saved) {
+                document.getElementById('jsonInput').value = JSON.stringify(JSON.parse(saved), null, 2);
             }
         }
     </script>

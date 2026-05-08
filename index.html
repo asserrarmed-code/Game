@@ -47,6 +47,28 @@
             text-align: center; width: 100%; z-index: 1; pointer-events: none;
         }
         body.dark-mode .footer-credit { color: rgba(255,255,255,0.15); }
+
+        /* ستايل زر الانتقال للنهائي الملكي */
+        .final-gate {
+            background: linear-gradient(45deg, #0f172a, #1e293b);
+            border: 3px solid #c5a059;
+            color: #c5a059;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 25px;
+            font-weight: 900;
+            box-shadow: 0 0 20px rgba(197,160,89,0.4);
+            animation: royalPulse 2s infinite;
+            cursor: pointer;
+        }
+        @keyframes royalPulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(197,160,89,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(197,160,89,0.7); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(197,160,89,0.4); }
+        }
     </style>
 </head>
 <body>
@@ -91,6 +113,12 @@
             </div>
             <div class="options-grid" id="opt-container"></div>
             <div id="manual-zone" style="display:none;"><div id="manual-answer-display" style="font-size:1.4rem; color:var(--moroccan-blue); font-weight:900;">...</div></div>
+            
+            <div id="finish-screen" style="display:none; margin-top:20px;">
+                <h2 style="color:var(--moroccan-gold); font-size:2rem;">🏆 مَلحمة الضاد 🏆</h2>
+                <p style="font-weight:bold; font-size:1.2rem;">انتهت المرحلة الأولية بنجاح!</p>
+                <a href="final.html" class="final-gate">⚔️ الانتقال للنهائي الكبير ⚔️</a>
+            </div>
         </div>
         
         <div class="admin-panel">
@@ -214,18 +242,18 @@
         });
     }
 
-    // القفل الصارم حصرياً لأزرار التنقيط في جميع الأنماط
     function modifyScore(i, v) {
-        if(votedOnThisQuestion[i]) return; // منع التعديل لنفس المجموعة في نفس السؤال
+        if(votedOnThisQuestion[i]) return;
         scores[i] += v;
         document.getElementById(`s-${i}`).innerText = scores[i];
-        votedOnThisQuestion[i] = true; // قفل المجموعة لهذا السؤال
+        votedOnThisQuestion[i] = true;
     }
 
     function prepareTurns() {
         phaseTurns = [];
         const count = teamNames.length;
         const p = phasesData[currentPhase];
+        if(!p) return;
         if(p.type === 'target') {
             for(let i=0; i<count; i++) for(let j=0; j<3; j++) phaseTurns.push(i);
             shuffle(phaseTurns);
@@ -236,16 +264,24 @@
     }
 
     function init() {
-        votedOnThisQuestion = teamNames.map(() => false); // فتح الأقفال في كل سؤال جديد
+        votedOnThisQuestion = teamNames.map(() => false);
         const p = phasesData[currentPhase];
         currentModelAnswer = "";
-        document.getElementById('phase-label').innerText = p.name;
+        
+        // إخفاء كل العناصر القديمة
         document.getElementById('q-text').innerText = '';
         document.getElementById('opt-container').innerHTML = '';
         document.getElementById('component-selection').style.display = 'none';
         document.getElementById('manual-zone').style.display = 'none';
-        document.getElementById('answer-input').value = '';
         document.getElementById('target-announcer').style.display = 'none';
+        document.getElementById('finish-screen').style.display = 'none';
+        
+        if(!p) {
+            finishMarathon();
+            return;
+        }
+
+        document.getElementById('phase-label').innerText = p.name;
         document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
         clearInterval(timer);
 
@@ -304,7 +340,7 @@
         if(currentModelAnswer !== "") {
             document.getElementById('manual-answer-display').innerText = currentModelAnswer;
             document.getElementById('manual-answer-display').style.color = 'var(--success)';
-        } else if(p.questions && p.questions[currentQ]?.o) {
+        } else if(p && p.questions && p.questions[currentQ]?.o) {
             const d = p.questions[currentQ];
             const opts = document.querySelectorAll('.opt');
             if(opts[d.a]) { opts[d.a].style.background = 'var(--success)'; opts[d.a].style.color = 'white'; }
@@ -312,10 +348,25 @@
     }
 
     function next() {
+        const p = phasesData[currentPhase];
+        if(!p) return;
+
         currentQ++;
-        let limit = (phasesData[currentPhase].type === 'target' || phasesData[currentPhase].type === 'free') ? phaseTurns.length : (phasesData[currentPhase].questions ? phasesData[currentPhase].questions.length : 0);
-        if(currentQ >= limit) { currentQ = 0; currentPhase++; if(currentPhase < phasesData.length) prepareTurns(); }
-        if(currentPhase >= phasesData.length) alert("انتهت الملحمة 🏆 بطل الضاد هو الفريق الحاصل على أعلى نقط!"); else init();
+        let limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
+        
+        if(currentQ >= limit) { 
+            currentQ = 0; currentPhase++; 
+            if(currentPhase < phasesData.length) prepareTurns(); 
+        }
+        init();
+    }
+
+    // دالة إنهاء المسابقة وإظهار زر النهائي
+    function finishMarathon() {
+        document.getElementById('phase-label').innerText = "انتهى المعترك الأول";
+        document.getElementById('timer').innerText = "🏆";
+        document.getElementById('q-text').style.display = "none";
+        document.getElementById('finish-screen').style.display = 'block';
     }
 
     function syncAnswer(v) { document.getElementById('manual-answer-display').innerText = v || '...'; }

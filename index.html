@@ -2,146 +2,115 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مَارَاثُون الضَّاد - النسخة النهائية المعتمدة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مَارَاثُون الضَّاد - النسخة الاحترافية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+
         :root { 
-            --moroccan-blue: #006847; 
-            --moroccan-gold: #c5a059;
-            --deep-red: #8b0000;
-            --bg-light: #f4f1ea;
-            --card: #ffffff;
-            --text: #333;
-            --success: #10b981; 
-            --danger: #ef4444; 
+            --moroccan-blue: #006847; --moroccan-gold: #c5a059; --deep-red: #8b0000;
+            --bg-light: #f4f1ea; --card: #ffffff; --text: #333;
+            --success: #10b981; --danger: #ef4444; 
         }
 
-        body.dark-mode {
-            --bg-light: #0f172a;
-            --card: #1e293b;
-            --text: #f1f5f9;
-            --moroccan-gold: #fbbf24;
-            --moroccan-blue: #00a873;
-        }
+        body.dark-mode { --bg-light: #0f172a; --card: #1e293b; --text: #f1f5f9; --moroccan-gold: #fbbf24; --moroccan-blue: #00a873; }
 
         body { 
             background-color: var(--bg-light);
             background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
-            color: var(--text); 
-            font-family: 'Cairo', sans-serif; 
-            margin: 0; padding: 0; min-height: 100vh;
-            display: flex; flex-direction: column;
-            transition: background 0.3s, color 0.3s;
+            color: var(--text); font-family: 'Cairo', sans-serif; 
+            margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column;
+            transition: background 0.3s; overflow: hidden;
         }
 
-        .top-controls {
-            display: flex; justify-content: center; gap: 15px; margin-top: -10px; margin-bottom: 20px;
-        }
-
-        .icon-btn {
-            background: var(--moroccan-gold); border: none;
-            width: 35px; height: 35px; border-radius: 8px;
-            cursor: pointer; font-size: 1.1rem; display: flex;
-            align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s;
-        }
-        .icon-btn:hover { transform: scale(1.1); }
-        .btn-back { background: var(--deep-red); color: white; display: none; }
-
-        .header-top { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px; max-width: 1000px; margin: 0 auto; gap: 10px; width: 100%;
-        }
-        .logo-box { 
-            flex-shrink: 0; width: clamp(60px, 10vw, 90px); height: clamp(60px, 10vw, 90px);
-            background: white; border-radius: 50%; border: 2px solid var(--moroccan-gold); 
-            display: flex; align-items: center; justify-content: center; 
-            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-shrink: 0; width: 100%; max-width: 1000px; margin: 0 auto; }
+        .logo-box { width: clamp(40px, 7vh, 65px); height: clamp(40px, 7vh, 65px); background: white; border-radius: 50%; border: 2px solid var(--moroccan-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .title-area h1 { font-family: 'Amiri', serif; font-size: clamp(1.1rem, 4vh, 1.8rem); margin: 0; color: var(--moroccan-blue); }
+
+        .top-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; flex-shrink: 0; }
+        .icon-btn { background: var(--moroccan-gold); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        .container { 
+            width: 95%; max-width: 900px; margin: 0 auto; flex: 1; 
+            display: flex; flex-direction: column; justify-content: center; 
+            padding-bottom: 175px; 
+            overflow-y: auto; 
+        }
+
+        .card { background: var(--card); padding: clamp(10px, 2.5vh, 20px); border-radius: 20px; border-top: 6px solid var(--moroccan-blue); box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center; width: 100%; }
+
+        .scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; flex-shrink: 0; }
+        @media (max-width: 600px) { .scoreboard { grid-template-columns: repeat(2, 1fr); } }
+
+        .team-box { background: var(--card); padding: 5px; border-radius: 12px; border: 2px solid #ddd; position: relative; }
+        .team-box.active-turn { border-color: var(--danger); border-width: 3px; transform: scale(1.03); }
         
-        .title-area h1 { font-family: 'Amiri', serif; font-size: clamp(1.5rem, 4vw, 2.5rem); margin: 0; color: var(--moroccan-blue); text-align: center; }
+        .lifeline-icons { position: absolute; top: -8px; right: 2px; display: flex; gap: 2px; }
+        .lifeline-icons span { background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: opacity 0.3s; }
+        .used-life-icon { opacity: 0.1; filter: grayscale(1); } /* شكل الوسيلة بعد الاستخدام */
 
-        .container { width: 95%; max-width: 900px; margin: 0 auto; flex: 1; padding-bottom: 50px; }
-
-        .card {
-            background: var(--card); padding: clamp(15px, 5vw, 35px); border-radius: 25px; 
-            border-top: 8px solid var(--moroccan-blue);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center;
-        }
-
-        .modal {
-            display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background-color: var(--card); margin: 5% auto; padding: 25px; border-radius: 20px;
-            width: 80%; max-width: 600px; border: 4px solid var(--moroccan-gold);
-            max-height: 80vh; overflow-y: auto; text-align: right;
-        }
-
-        .page-footer-relative {
-            padding: 30px 20px; text-align: center; font-size: 0.8rem;
-            color: var(--text); 
-            opacity: 0.35; 
-            width: 100%; margin-top: auto;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            pointer-events: none;
-        }
-
-        #target-announcer {
-            background: var(--danger); color: white; padding: 15px 30px; border-radius: 15px;
-            font-weight: 900; font-size: 1.8rem; margin-bottom: 20px; display: none;
-        }
-
-        .scoreboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 20px 0; }
-        .team-box { background: var(--card); padding: 10px; border-radius: 15px; border: 2px solid #ddd; text-align: center; transition: 0.4s; position: relative;}
-        .team-box.active-turn { border-color: var(--danger); border-width: 4px; transform: scale(1.05); }
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0; }
+        .opt, .component-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 10px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: clamp(0.8rem, 2vh, 1rem); }
         
-        .lifeline-icons { position: absolute; top: -12px; right: 5px; display: flex; gap: 3px; font-size: 1rem; }
-        .lifeline-icons span { background: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-
-        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 20px 0; }
-        .opt, .component-btn { 
-            background: #f8fafc; color: #334155; border: 2px solid #e2e8f0; padding: 15px; 
-            border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s;
-        }
-        
+        /* لوحة التحكم الكبيرة */
         .admin-panel { 
-            position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; 
-            color: white; padding: 10px; border-top: 4px solid var(--moroccan-gold);
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; z-index: 1000;
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: #1e293b; color: white; padding: 15px 10px; 
+            border-top: 5px solid var(--moroccan-gold); 
+            display: flex; flex-wrap: nowrap; overflow-x: auto; 
+            justify-content: center; align-items: center; gap: 15px; 
+            z-index: 10000; min-height: 135px;
+            padding-bottom: env(safe-area-inset-bottom, 15px);
         }
-        .admin-group { border: 1px solid #475569; padding: 5px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-        .btn-admin { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 0.8rem; }
-        .btn-l { padding: 2px 6px; font-size: 0.7rem; border-radius: 3px; }
-        .btn-disabled { opacity: 0.2; pointer-events: none; filter: grayscale(1); }
+
+        .admin-group { 
+            border: 2px solid #475569; padding: 10px 8px; border-radius: 15px; 
+            display: flex; flex-direction: column; align-items: center; flex-shrink: 0; 
+            min-width: 120px; background: rgba(255,255,255,0.08);
+        }
+
+        .btn-admin { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 0.95rem; }
+        .btn-disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
+
+        #timer { font-size: clamp(1.5rem, 6vh, 2.8rem); line-height: 1; margin: 2px 0; color: var(--danger); font-weight: 900; }
+        #q-text { font-size: clamp(1rem, 3vh, 1.4rem); line-height: 1.3; margin-bottom: 8px; font-family: 'Amiri'; font-weight: bold; }
+        
+        #answer-input { 
+            padding: 15px; width: 140px; font-size: 1.1rem; border-radius: 10px; 
+            border: 3px solid var(--moroccan-gold); text-align: center; font-weight: 900; 
+            background: #ffffff; color: #000;
+        }
+
+        .admin-panel::-webkit-scrollbar { height: 0; }
+        .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; border-radius: 20px; width: 85%; max-width: 500px; border: 4px solid var(--moroccan-gold); text-align: right; }
     </style>
 </head>
 <body>
 
     <div class="header-top">
-        <div class="logo-box"><img src="logo-cup.png"></div>
+        <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
         <div class="title-area"><h1>مَارَاثُون الضَّاد</h1></div>
-        <div class="logo-box"><img src="logo.png"></div>
+        <div class="logo-box"><img src="logo.png" alt="Logo"></div>
     </div>
 
     <div class="top-controls">
-        <button class="icon-btn" onclick="toggleTheme()" title="الوضع الليلي">🌙</button>
-        <button class="icon-btn btn-back" id="back-to-setup" onclick="goBack()" title="عودة">🏠</button>
-        <button class="icon-btn" onclick="openModal()" title="تعليمات">ℹ️</button>
+        <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+        <button class="icon-btn" id="back-to-setup" onclick="goBack()" style="display:none; background:var(--deep-red); color:white;">🏠</button>
+        <button class="icon-btn" onclick="openModal()">ℹ️</button>
     </div>
 
     <div id="setup-screen" class="container">
         <div class="card">
-            <h3 style="color: var(--moroccan-blue);">👥 إعداد المجموعات</h3>
-            <select id="team-count" onchange="updateTeamInputs(this.value)" style="padding:10px; border-radius:8px;">
+            <h3 style="color: var(--moroccan-blue); margin:0 0 10px 0;">👥 إعداد المجموعات</h3>
+            <select id="team-count" onchange="updateTeamInputs(this.value)" style="padding:10px; border-radius:8px; margin-bottom:15px; font-weight: bold;">
                 <option value="2">مجموعتان</option>
                 <option value="3">ثلاث مجموعات</option>
                 <option value="4" selected>أربع مجموعات</option>
             </select>
-            <div id="team-names-container" style="margin: 15px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;"></div>
+            <div id="team-names-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom:15px;"></div>
             <button class="btn-admin" style="background:var(--moroccan-blue); color:white; padding:15px 50px; font-size:1.2rem; border-radius:50px;" onclick="startMarathon()">انْطَلِقْ 🚀</button>
         </div>
     </div>
@@ -149,47 +118,43 @@
     <div id="quiz-screen" class="container" style="display:none;">
         <div id="dynamic-scoreboard" class="scoreboard"></div>
         <div class="card">
-            <div id="target-announcer"></div>
-            <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:5px 20px; border-radius:50px; font-size:0.9rem;"></div>
-            <div id="timer" style="font-size: 3.5rem; font-weight: 900; color: var(--danger);">15</div>
-            <div id="q-text" style="font-size: 1.8rem; margin: 20px 0; font-family:'Amiri'; font-weight: bold;"></div>
-            <div id="component-selection" style="display:none; gap:10px; justify-content:center; margin:20px 0;">
+            <div id="target-announcer" style="background: var(--danger); color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.1rem; margin-bottom: 10px; display: none;"></div>
+            <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:2px 12px; border-radius:50px; font-size:0.75rem; display:inline-block; margin-bottom:5px;"></div>
+            <div id="timer">15</div>
+            <div id="q-text"></div>
+            <div id="component-selection" style="display:none; gap:8px; flex-wrap:wrap; justify-content:center;">
                 <button class="component-btn" id="btn-تراكيب" onclick="selectComponent('تراكيب')">تراكيب <span id="count-تراكيب"></span></button>
                 <button class="component-btn" id="btn-صرف" onclick="selectComponent('صرف')">صرف <span id="count-صرف"></span></button>
                 <button class="component-btn" id="btn-إملاء" onclick="selectComponent('إملاء')">إملاء <span id="count-إملاء"></span></button>
             </div>
             <div class="options-grid" id="opt-container"></div>
-            <div id="manual-zone" style="display:none;"><div id="manual-answer-display" style="font-size:2rem; color:var(--moroccan-blue); font-weight:bold;">...</div></div>
+            <div id="manual-zone" style="display:none;"><div id="manual-answer-display" style="font-size:1.3rem; color:var(--moroccan-blue); font-weight:900;">...</div></div>
         </div>
+        
         <div class="admin-panel">
-            <div style="display: flex; gap: 5px; align-items: center; border-left: 2px solid #fff; padding-left: 10px;">
-                <input type="text" id="answer-input" placeholder="إجابة..." oninput="syncAnswer(this.value)" style="padding:5px; width:80px;">
-                <button class="btn-admin" style="background:var(--success); color:white" onclick="reveal()">كشف ✅</button>
-                <button class="btn-admin" style="background:var(--moroccan-gold); color:black" onclick="next()">➡️</button>
+            <div style="display: flex; gap: 12px; align-items: center; border-left: 3px solid #475569; padding-left: 15px; flex-shrink: 0;">
+                <input type="text" id="answer-input" placeholder="إجابة..." oninput="syncAnswer(this.value)">
+                <button class="btn-admin" style="background:var(--success); color:white; padding: 15px 25px;" onclick="reveal()">✅</button>
+                <button class="btn-admin" style="background:var(--moroccan-gold); color:black; padding: 15px 25px;" onclick="next()">➡️</button>
             </div>
-            <div id="admin-score-controls" style="display:flex; gap:8px;"></div>
+            <div id="admin-score-controls" style="display:flex; gap:12px; flex-wrap:nowrap;"></div>
         </div>
     </div>
 
-    <div id="instModal" class="modal">
-        <div class="modal-content">
-            <h2 style="color:var(--moroccan-blue); border-bottom:2px solid var(--moroccan-gold)">📖 دليل مَارَاثُون الضَّاد</h2>
-            <p><strong>1. النمط الموحد (6 أسئلة):</strong> للجميع، الأسرع في الضغط يجيب.</p>
-            <p><strong>2. النمط الموجه:</strong> سؤال مخصص لكل فريق بالدور (3 أسئلة للفريق).</p>
-            <p><strong>3. الاختيار الحر:</strong> الفريق يختار المكون ويجيب يدوياً.</p>
-            <p><strong>4. نمط السرعة (4 أسئلة):</strong> للجميع، الأسرع في الضغط يجيب (وقت قصير).</p>
-            <hr>
-            <p>💡 <strong>حذف:</strong> إخفاء إجابة خاطئة.</p>
-            <p>🚀 <strong>ضعف:</strong> مضاعفة الربح أو الخسارة.</p>
-            <p>⏱️ <strong>وقف:</strong> إيقاف عداد الزمن.</p>
-            <button class="btn-admin" style="background:var(--danger); color:white; width:100%" onclick="closeModal()">إغلاق</button>
+    <div id="instModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="color:var(--moroccan-blue); border-bottom:2px solid var(--moroccan-gold); font-size:1.2rem; margin-top:0;">📖 دليل المسابقة</h2>
+            <div style="font-size:0.85rem; line-height:1.4;">
+                <p><strong>1. الموحد:</strong> للجميع، الأسرع يجيب.</p>
+                <p><strong>2. الموجه:</strong> سؤال مخصص لكل فريق بالدور.</p>
+                <p><strong>3. الحر:</strong> اختيار المكون والإجابة يدوياً.</p>
+                <p><strong>4. السرعة:</strong> وقت قصير جداً (8 ثوانٍ).</p>
+                <hr>
+                <p>💡 حذف | 🚀 ضعف | ⏱️ وقف العداد</p>
+            </div>
+            <button class="btn-admin" style="background:var(--danger); color:white; width:100%; margin-top:10px; padding:8px;" onclick="closeModal()">فهمت</button>
         </div>
     </div>
-
-    <footer class="page-footer-relative">
-        مِنْ تَصْمِيمِ وَإِعْدَادِ الأستاذ محمد أسرار <br>
-        مَدْرَسَةُ مَيْمُونَة أُمِّ الْمُؤْمِنِينَ - مُدِيرِيَّةُ مُرَاكُش
-    </footer>
 
 <script>
     let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
@@ -197,79 +162,17 @@
     let teamLifelines = []; 
     let masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
 
-    // بنك الأسئلة للمخزون الرقمي (يدوي)
     const extraQuestions = {
-        "تراكيب": [
-            "أعرب 'المسافرين' في: وصل المسافرون إلا المسافرين.",
-            "حوّل الجملة 'أن تجتهد خير لك' إلى مصدر مؤول.",
-            "ما هو إعراب 'خمسة' في: اشتريت خمسة أقلام؟",
-            "استخرج التمييز من: طاب المكان هواءً.",
-            "أعرب 'أباك' في: رأيت أباك.",
-            "ما هو المفعول المطلق في: ركضت ركضاً سريعاً؟"
-        ],
-        "صرف": [
-            "صغ اسم المكان من فعل 'سجد'.",
-            "ما هو وزن كلمة 'استغفار'؟",
-            "حوّل الفعل 'دعا' إلى اسم فاعل.",
-            "صغ اسم الآلة من 'نشر'.",
-            "ما هو وزن كلمة 'انطلق'؟",
-            "صغ اسم التفضيل من فعل 'كرم'."
-        ],
-        "إملاء": [
-            "لماذا كتبت الهمزة متطرفة في كلمة 'دفء'؟",
-            "اكتب كلمة 'ابن' في: 'يا ... الأكرمين'.",
-            "كيف تكتب الألف اللينة في فعل 'دنا'؟",
-            "لماذا كتبت الهمزة في كلمة 'نشأ'؟",
-            "كيف تكتب الهمزة في كلمة 'بئر'؟",
-            "علل كتابة الهمزة على الواو في 'سؤال'."
-        ]
+        "تراكيب": ["أعرب 'المسافرين' في: وصل المسافرون إلا المسافرين.", "حوّل الجملة 'أن تجتهد خير لك' إلى مصدر مؤول.", "ما هو إعراب 'خمسة' في: اشتريت خمسة أقلام؟", "استخرج التمييز من: طاب المكان هواءً.", "أعرب 'أباك' في: رأيت أباك.", "ما هو المفعول المطلق في: ركضت ركضاً سريعاً؟"],
+        "صرف": ["صغ اسم المكان من فعل 'سجد'.", "ما هو وزن كلمة 'استغفار'؟", "حوّل الفعل 'دعا' إلى اسم فاعل.", "صغ اسم الآلة من 'نشر'.", "ما هو وزن كلمة 'انطلق'؟", "صغ اسم التفضيل من فعل 'كرم'."],
+        "إملاء": ["لماذا كتبت الهمزة متطرفة في كلمة 'دفء'؟", "اكتب كلمة 'ابن' في: 'يا ... الأكرمين'.", "كيف تكتب الألف اللينة في فعل 'دنا'؟", "لماذا كتبت الهمزة في كلمة 'نشأ'؟", "كيف تكتب الهمزة في كلمة 'بئر'؟", "علل كتابة الهمزة على الواو في 'سؤال'."]
     };
 
     const phasesData = [
-        { 
-            name: "النمط 1: الموحد (6 أسئلة) - متدرج الصعوبة", 
-            type: "all", 
-            time: 15, 
-            questions: [
-                {q: "إعراب 'خالد' في: جاء خالدٌ؟", o:["فاعل", "مفعول به", "مبتدأ", "خبر"], a:0},
-                {q: "نوع الهمزة في 'إخراج'؟", o:["همزة وصل", "همزة قطع", "همزة متوسطة", "همزة متطرفة"], a:1},
-                {q: "ما هو مثنى 'سماء'؟", o:["سماءان", "سماوان", "سموات", "سمات"], a:1},
-                {q: "ما هو وزن كلمة 'مُصْطَفًى'؟", o:["مُفْتَعَل", "مُسْتَفْعِل", "مُفْعَل", "مُفْتَعِل"], a:0},
-                {q: "أداة تجزم فعلين مضارعين هي:", o:["لَمْ", "لَمَّا", "إِنْ", "لا الناهية"], a:2},
-                {q: "الاسم الذي يحذف حرفه رسماً ويبقى نطقاً هو:", o:["هؤلاء", "هاتف", "كتاب", "سماء"], a:0}
-            ]
-        },
-        { 
-            name: "النمط 2: الموجه (3 لكل فريق) - متدرج الصعوبة", 
-            type: "target", 
-            time: 15, 
-            questions: [
-                {q: "إعراب 'الولدين' في: رأيتُ الولدينِ؟", o:["فاعل", "مفعول به", "مبتدأ", "مضاف إليه"], a:1},
-                {q: "جمع التكسير لـ 'نافذة'؟", o:["نافذات", "نافذون", "نوافذ", "أنفذة"], a:2},
-                {q: "وزن 'منشار' هو:", o:["مِفْعَل", "مِفْعال", "فاعِل", "مَفْعول"], a:1},
-                {q: "إعراب 'أخاك' في: ساعدْ أخاكَ؟", o:["فاعل مرفوع", "مفعول به منصوب", "مبتدأ", "خبر"], a:1},
-                {q: "همزة 'اسْم' هي همزة:", o:["قطع", "وصل", "متطرفة", "لا شيء مما سبق"], a:1},
-                {q: "صغ اسم المكان من فعل 'سجد':", o:["سجود", "سجاد", "مَسْجِد", "ساجد"], a:2},
-                {q: "تحذف ألف ابن في: 'محمد... علي'", o:["ابن", "بن", "إبن", "بين"], a:1},
-                {q: "إعراب 'المسافرون' في: وصل المسافرون:", o:["فاعل مرفوع بالواو", "مفعول به", "مبتدأ", "فاعل مرفوع بالضمة"], a:0},
-                {q: "اسم التفضيل من فعل 'صغُر':", o:["صغير", "أصغر", "صاغر", "تصغير"], a:1},
-                {q: "مثنى 'عصا' هو:", o:["عصاتان", "عصيان", "عصوان", "عصوانِ"], a:2},
-                {q: "المصدر المؤول لـ 'أن تصوموا' هو:", o:["صيامكم", "صوم", "صائمون", "تصومون"], a:0},
-                {q: "إعراب 'مستخرج' في: 'هو مستخرجُ الفوسفاط':", o:["اسم فاعل", "اسم مفعول", "اسم مكان", "اسم زمان"], a:0}
-            ]
-        },
+        { name: "النمط 1: الموحد", type: "all", time: 15, questions: [{q: "إعراب 'خالد' في: جاء خالدٌ؟", o:["فاعل", "مفعول به", "مبتدأ", "خبر"], a:0}, {q: "نوع الهمزة في 'إخراج'؟", o:["همزة وصل", "همزة قطع", "همزة متوسطة", "همزة متطرفة"], a:1}, {q: "ما هو مثنى 'سماء'؟", o:["سماءان", "سماوان", "سموات", "سمات"], a:1}, {q: "ما هو وزن كلمة 'مُصْطَفًى'؟", o:["مُفْتَعَل", "مُسْتَفْعِل", "مُفْعَل", "مُفْتَعِل"], a:0}, {q: "أداة تجزم فعلين مضارعين هي:", o:["لَمْ", "لَمَّا", "إِنْ", "لا الناهية"], a:2}, {q: "الاسم الذي يحذف حرفه رسماً ويبقى نطقاً هو:", o:["هؤلاء", "هاتف", "كتاب", "سماء"], a:0}] },
+        { name: "النمط 2: الموجه", type: "target", time: 15, questions: [{q: "إعراب 'الولدين' في: رأيتُ الولدينِ؟", o:["فاعل", "مفعول به", "مبتدأ", "مضاف إليه"], a:1}, {q: "جمع التكسير لـ 'نافذة'؟", o:["نافذات", "نافذون", "نوافذ", "أنفذة"], a:2}, {q: "وزن 'منشار' هو:", o:["مِفْعَل", "مِفْعال", "فاعِل", "مَفْعول"], a:1}, {q: "إعراب 'أخاك' في: ساعدْ أخاكَ؟", o:["فاعل مرفوع", "مفعول به منصوب", "مبتدأ", "خبر"], a:1}, {q: "همزة 'اسْم' هي همزة:", o:["قطع", "وصل", "متطرفة", "لا شيء مما سبق"], a:1}, {q: "صغ اسم المكان من فعل 'سجد':", o:["سجود", "سجاد", "مَسْجِد", "ساجد"], a:2}, {q: "تحذف ألف ابن في: 'محمد... علي'", o:["ابن", "بن", "إبن", "بين"], a:1}, {q: "إعراب 'المسافرون' في: وصل المسافرون:", o:["فاعل مرفوع بالواو", "مفعول به", "مبتدأ", "فاعل مرفوع بالضمة"], a:0}] },
         { name: "النمط 3: الاختيار الحر", type: "free", time: 15 },
-        { 
-            name: "النمط 4: السرعة (4 أسئلة) - خاطفة", 
-            type: "all", 
-            time: 8, 
-            questions: [
-                {q: "إعراب 'لَنْ' هو حرف:", o:["نصب", "جزم", "جر", "عطف"], a:0},
-                {q: "اسم التفضيل من 'كرُم':", o:["كارم", "أكرم", "كريمة", "إكرام"], a:1},
-                {q: "كيف تكتب الألف اللينة في 'مشى'؟", o:["ممدودة (ا)", "مقصورة (ى)", "بواو", "بياء"], a:1},
-                {q: "علامة جزم الأفعال الخمسة هي:", o:["السكون", "حذف النون", "ثبوت النون", "الفتحة"], a:1}
-            ]
-        }
+        { name: "النمط 4: السرعة", type: "all", time: 8, questions: [{q: "إعراب 'لَنْ' هو حرف:", o:["نصب", "جزم", "جر", "عطف"], a:0}, {q: "اسم التفضيل من 'كرُم':", o:["كارم", "أكرم", "كريمة", "إكرام"], a:1}, {q: "كيف تكتب الألف اللينة في 'مشى'؟", o:["ممدودة (ا)", "مقصورة (ى)", "بواو", "بياء"], a:1}, {q: "علامة جزم الأفعال الخمسة هي:", o:["السكون", "حذف النون", "ثبوت النون", "الفتحة"], a:1}] }
     ];
 
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
@@ -280,16 +183,14 @@
     function updateTeamInputs(count) {
         const container = document.getElementById('team-names-container');
         container.innerHTML = '';
-        for(let i=0; i<count; i++) container.innerHTML += `<input type="text" id="tn-${i}" value="المجموعة ${i+1}" style="padding:8px; width:100px; text-align:center;">`;
+        for(let i=0; i<count; i++) container.innerHTML += `<input type="text" id="tn-${i}" value="المجموعة ${i+1}" style="padding:8px; width:75px; text-align:center; font-size:0.75rem; border-radius:5px;">`;
     }
 
     function setupMasterStock(teamCount) {
         masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
         const totalQuestionsNeeded = teamCount * 2;
         const perComponent = Math.ceil(totalQuestionsNeeded / 3) + 1; 
-        for(let key in extraQuestions) {
-            masterStock[key] = [...extraQuestions[key]].slice(0, perComponent);
-        }
+        for(let key in extraQuestions) { masterStock[key] = [...extraQuestions[key]].slice(0, perComponent); }
     }
 
     function startMarathon() {
@@ -302,7 +203,7 @@
         }
         setupMasterStock(count);
         document.getElementById('setup-screen').style.display = 'none';
-        document.getElementById('quiz-screen').style.display = 'block';
+        document.getElementById('quiz-screen').style.display = 'flex';
         document.getElementById('back-to-setup').style.display = 'flex';
         renderInterface();
         prepareTurns();
@@ -314,25 +215,34 @@
         const adminCtrl = document.getElementById('admin-score-controls');
         sb.innerHTML = ''; adminCtrl.innerHTML = '';
         teamNames.forEach((name, i) => {
-            sb.innerHTML += `<div class="team-box" id="t-card-${i}"><div class="lifeline-icons"><span id="ico-${i}-del">💡</span><span id="ico-${i}-dou">🚀</span><span id="ico-${i}-stp">⏱️</span></div><span id="s-${i}" style="font-size:1.5rem; font-weight:900;">0</span><div style="font-size:0.8rem">${name}</div></div>`;
-            adminCtrl.innerHTML += `<div class="admin-group"><div style="font-size:0.6rem; color:var(--moroccan-gold)">${name}</div><div style="display:flex; gap:2px"><button class="btn-admin" style="background:var(--success); color:white" onclick="modifyScore(${i}, 10)">+10</button><button class="btn-admin" style="background:var(--danger); color:white" onclick="modifyScore(${i}, -5)">-5</button></div><div style="display:flex; gap:2px"><button id="btn-${i}-del" class="btn-admin btn-l" style="background:#8b5cf6; color:white" onclick="useLife(${i}, 'del')">حذف</button><button id="btn-${i}-dou" class="btn-admin btn-l" style="background:#f59e0b; color:white" onclick="useLife(${i}, 'dou')">ضعف</button><button id="btn-${i}-stp" class="btn-admin btn-l" style="background:#3b82f6; color:white" onclick="useLife(${i}, 'stp')">وقف</button></div></div>`;
+            sb.innerHTML += `<div class="team-box" id="t-card-${i}"><div class="lifeline-icons"><span id="ico-${i}-del">💡</span><span id="ico-${i}-dou">🚀</span><span id="ico-${i}-stp">⏱️</span></div><span id="s-${i}" style="font-size:1.2rem; font-weight:900;">0</span><div style="font-size:0.6rem">${name}</div></div>`;
+            adminCtrl.innerHTML += `<div class="admin-group"><div style="font-size:0.75rem; color:var(--moroccan-gold); font-weight:900; margin-bottom:6px;">${name}</div><div style="display:flex; gap:6px"><button class="btn-admin" style="background:var(--success); color:white" onclick="modifyScore(${i}, 10)">+10</button><button class="btn-admin" style="background:var(--danger); color:white" onclick="modifyScore(${i}, -5)">-5</button></div><div style="display:flex; gap:6px; margin-top:8px;"><button id="btn-${i}-del" class="btn-admin" style="background:#8b5cf6; font-size:0.7rem; padding:5px" onclick="useLife(${i}, 'del')">💡</button><button id="btn-${i}-dou" class="btn-admin" style="background:#f59e0b; font-size:0.7rem; padding:5px" onclick="useLife(${i}, 'dou')">🚀</button><button id="btn-${i}-stp" class="btn-admin" style="background:#3b82f6; font-size:0.7rem; padding:5px" onclick="useLife(${i}, 'stp')">⏱️</button></div></div>`;
         });
     }
 
+    /* دالة استخدام الوسائل المساعدة مع إخفاء الأيقونة في الأعلى والأسفل */
     function useLife(tid, type) {
         if (!teamLifelines[tid][type]) return;
-        const icon = document.getElementById(`ico-${tid}-${type}`);
-        if(icon) icon.style.display = 'none';
-        document.getElementById(`btn-${tid}-${type}`).classList.add('btn-disabled');
+        
+        // 1. إخفاء الأيقونة العلوية (فوق نقاط المجموعة)
+        const topIcon = document.getElementById(`ico-${tid}-${type}`);
+        if(topIcon) topIcon.classList.add('used-life-icon');
+        
+        // 2. إيقاف تفعيل الزر في لوحة التحكم (الأسفل)
+        const adminBtn = document.getElementById(`btn-${tid}-${type}`);
+        if(adminBtn) adminBtn.classList.add('btn-disabled');
+
         teamLifelines[tid][type] = false;
+
+        // تنفيذ الوظيفة البرمجية للوسيلة
         if(type === 'del') { 
             const opts = document.querySelectorAll('.opt'); 
             const p = phasesData[currentPhase];
-            const correctIdx = p.questions[currentQ % p.questions.length].a;
-            let hidden = 0;
-            opts.forEach((o, idx) => {
-                if(idx !== correctIdx && hidden < 1) { o.style.opacity = '0.2'; o.disabled = true; hidden++; }
-            });
+            if(p.questions) {
+                const correctIdx = p.questions[currentQ % p.questions.length].a;
+                let hidden = 0;
+                opts.forEach((o, idx) => { if(idx !== correctIdx && hidden < 1) { o.style.opacity = '0.2'; o.disabled = true; hidden++; } });
+            }
         }
         else if(type === 'dou') currentMultiplier = 2;
         else if(type === 'stp') clearInterval(timer);
@@ -412,10 +322,7 @@
             const d = p.questions[currentQ % p.questions.length];
             if(d && d.o) {
                 const opts = document.querySelectorAll('.opt');
-                if(opts[d.a]) {
-                    opts[d.a].style.background = 'var(--success)';
-                    opts[d.a].style.color = 'white';
-                }
+                if(opts[d.a]) { opts[d.a].style.background = 'var(--success)'; opts[d.a].style.color = 'white'; }
             }
         }
         document.getElementById('manual-answer-display').style.color = 'var(--success)';
@@ -426,7 +333,7 @@
         currentQ++;
         let limit = (phasesData[currentPhase].type === 'target' || phasesData[currentPhase].type === 'free') ? phaseTurns.length : (phasesData[currentPhase].questions ? phasesData[currentPhase].questions.length : 0);
         if(currentQ >= limit) { currentQ = 0; currentPhase++; if(currentPhase < phasesData.length) prepareTurns(); }
-        if(currentPhase >= phasesData.length) alert("انتهت المسابقة 🏆 هنيئاً للفائزين!");
+        if(currentPhase >= phasesData.length) alert("انتهت المسابقة 🏆");
         else init();
     }
 

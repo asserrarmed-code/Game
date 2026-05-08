@@ -71,9 +71,9 @@
             <span class="close-modal" onclick="closeGuide()">&times;</span>
             <h2 style="text-align:center;">📖 ميثاق معترك الضاد</h2>
             
-            <div class="rule-box"><strong>1. الاستجابة الجماعية:</strong> 6 أسئلة تُحل كتابياً من طرف جميع المجموعات في آن واحد (20 ثانية).</div>
-            <div class="rule-box"><strong>2. المواجهة الموجهة:</strong> لكل مجموعة 3 أسئلة خاصة تظهر عشوائياً، ولا يجوز لغيرها الإجابة (20 ثانية).</div>
-            <div class="rule-box"><strong>3. الاختيار الحر:</strong> تختار المجموعة مكونها المفضل (تراكيب، صرف، إملاء) مرتين فقط من المخزون (30 ثانية).</div>
+            <div class="rule-box"><strong>1. الاستجابة الجماعية:</strong> 6 أسئلة تُحل كتابياً من طرف جميع الفرق في آن واحد (20 ثانية).</div>
+            <div class="rule-box"><strong>2. المواجهة الموجهة:</strong> لكل فريق 3 أسئلة خاصة تظهر عشوائياً، ولا يجوز لغيره الإجابة (20 ثانية).</div>
+            <div class="rule-box"><strong>3. الاختيار الحر:</strong> يختار الفريق مكونه المفضل مرتين فقط من المخزون (30 ثانية).</div>
             <div class="rule-box"><strong>4. جولة السرعة:</strong> 4 أسئلة خاطفة للجميع، يختفي السؤال بعد 8 ثوانٍ ويُكشف الجواب يدوياً.</div>
             
             <div class="rule-box" style="border-color: var(--success);">
@@ -94,11 +94,12 @@
 
     <div id="setup-screen" class="container">
         <div class="card">
-            <h3 style="color: var(--moroccan-blue); margin:0 0 10px 0;">👥 إعداد المجموعات</h3>
-            <select id="team-count" onchange="updateTeamInputs(this.value)" style="padding:10px; border-radius:8px; margin-bottom:15px; font-weight: bold;">
-                <option value="2">مجموعتان</option>
-                <option value="3">ثلاث مجموعات</option>
-                <option value="4" selected>أربع مجموعات</option>
+            <h3 style="color: var(--moroccan-blue); margin:0 0 10px 0;">👥 إعداد الفِرَقِ المتنافسة</h3>
+            <p style="font-size: 0.9rem; color: var(--text); margin-bottom: 5px; font-weight: bold;">ادخل أسماء الفِرَقِ:</p>
+            <select id="team-count" onchange="updateTeamInputs(this.value)" style="padding:10px; border-radius:8px; margin-bottom:15px; font-weight: bold; border: 2px solid var(--moroccan-gold);">
+                <option value="2">فريقان</option>
+                <option value="3">ثلاثة فِرَق</option>
+                <option value="4" selected>أربعة فِرَق</option>
             </select>
             <div id="team-names-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom:15px;"></div>
             <button class="btn-admin" style="background:var(--moroccan-blue); color:white; padding:15px 50px; font-size:1.2rem; border-radius:50px;" onclick="startMarathon()">انْطَلِقْ 🚀</button>
@@ -146,14 +147,14 @@
 
     const phasesData = [
         { name: "النمط 1: الاستجابة الجماعية (6 أسئلة)", type: "all", time: 20, questions: [
-            {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2},
+            {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2},
             {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء", "واو", "ألف", "نون"], a:1},
             {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["فعل وفاعل", "اسمين علمين", "بداية السطر", "حرفي جر"], a:1},
             {q: "اسم الفاعل من فعل 'كَتَبَ' هو:", o:["مكتوب", "كاتب", "يُكتب", "كتاب"], a:1},
             {q: "الفعل المضارع 'يذهبُ' يصبح منصوباً إذا سبقه:", o:["لَمْ", "لَنْ", "لا الناهية", "مِنْ"], a:1},
             {q: "همزة 'اسم' هي همزة:", o:["قطع", "متوسطة", "وصل", "متطرفة"], a:2}
         ]},
-        { name: "النمط 2: المواجهة الموجهة (3 أدوار لكل مجموعة)", type: "target", time: 20, questions: [
+        { name: "النمط 2: المواجهة الموجهة (3 أدوار لكل فريق)", type: "target", time: 20, questions: [
             {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
             {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1},
             {q: "الوزن الصرفي لكلمة 'انطلق' هو:", o:["انفعل", "افتعل", "تفاعل", "فعلل"], a:0},
@@ -169,33 +170,41 @@
         ]},
         { name: "النمط 3: الاختيار الحر (المخزون المحدود)", type: "free", time: 30 },
         { name: "النمط 4: جولة السرعة (4 أسئلة حاسمة)", type: "all", time: 8, questions: [
-            {q: "ما هو إعراب 'مبتسماً' في (دخل الولد مبتسماً)؟", a: "حـال منصوب"},
-            {q: "اسم المفعول من 'قَرَأَ' هو:", a: "مَقْـرُوء"},
-            {q: "علل كتابة الهمزة في 'دِفْء':", a: "على السطر لأن ما قبلها سكون حي"},
-            {q: "ما نوع الهمزة في كلمة 'إِكْرَام'؟", a: "همزة قَـطْـع"}
+            {q: "ما هو الوزن الصرفي الصحيح لكلمة 'صِـلَة'؟", a: "عِـلَة"},
+            {q: "حوّل الفعل 'رأى' إلى فعل أمر للمفرد المذكر.", a: "رَ"},
+            {q: "ما هو جمع كلمة 'دَلْو' على وزن 'أَفْعُل'؟", a: "أَدْلٍ"},
+            {q: "حوّل الجملة للمثنى المؤنث: (إنَّ التلميذةَ ذكيةٌ).", a: "إنَّ التلميذتَيْنِ ذكيتانِ"}
         ]}
     ];
 
     const rawStock = {
         "تراكيب": [
-            {q: "أعرب 'أباك' في: رأيت أباك.", a: "مفعول به منصوب بالألف"},
-            {q: "استخرج التمييز: طاب المكان هواءً.", a: "هواءً (تمييز ملحوظ)"},
-            {q: "حول لمصدر مؤول: 'أن تصوموا خير لكم'.", a: "صِيامُكُمْ خَيْرٌ لَكُمْ"},
-            {q: "أعرب 'المسافرين' في: وصلوا إلا المسافرين.", a: "مستثنى منصوب بالياء"}
+            {q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي مرفوع"},
+            {q: "حدد التمييز ونوعه في: (اشْتَرَيْتُ كِيلوغراماً لَحماً).", a: "لحماً (تمييز ملفوظ)"},
+            {q: "حوّل الجملة للمثنى: (إنَّ أَخَاكَ مُجْتَهِدٌ).", a: "إنَّ أخوَيْكَ مجتهدانِ"},
+            {q: "استخرج الحال من جملة: (عادَ الفريقُ الوطنيُّ مُنتصراً).", a: "مُنتصراً"}
         ],
         "صرف": [
-            {q: "صغ اسمي الزمان والمكان من 'سجد' و 'وعد'.", a: "مَسْجِد / مَوْعِد"},
-            {q: "ما هو وزن 'انطلق' في الميزان الصرفي؟", a: "انْفَعَلَ"},
-            {q: "صغ اسم التفضيل من 'كرم'.", a: "أَكْرَمُ"},
-            {q: "ما هو جمع التكسير لـ 'كتاب'؟", a: "كُتُبٌ"}
+            {q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"},
+            {q: "صغ اسم المفعول من فعل غير ثلاثي: (أَكْرَمَ).", a: "مُكْرَم"},
+            {q: "ما هو اسم الآلة من فعل: (حَرَثَ)؟", a: "مِحراث"},
+            {q: "صغ اسم الزمان من فعل: (اسْتَقَرَّ).", a: "مُسْتَقَرّ"}
         ],
         "إملاء": [
-            {q: "لماذا كتبت الهمزة متطرفة في 'دِفْء'؟", a: "لأن ما قبلها سكون حي"},
-            {q: "علل رسم الهمزة في كلمة 'سؤال'.", a: "مفتوحة وقبلها ضم"},
-            {q: "اكتب الألف اللينة في 'دنا' و 'سعى'.", a: "دَنَا (ممدودة) / سَعَى (مقصورة)"},
-            {q: "علل حذف ألف 'ابن' في: 'عمر بن الخطاب'.", a: "لأنها وقعت بين اسمين علمين"}
+            {q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"},
+            {q: "لماذا كتبت الألف مقصورة في كلمة: (مستشفى)؟", a: "اسم غير ثلاثي لم تسبقه ياء"},
+            {q: "متى تثبت (تُكتب) ألف 'ابن'؟ (اذكر حالة واحدة).", a: "إذا وقعت في أول السطر"},
+            {q: "اكتب الهمزة المتطرفة بشكل صحيح للفعل: (جَرُؤَ)", a: "جَرُؤَ (على الواو)"}
         ]
     };
+
+    function updateTeamInputs(count) {
+        const container = document.getElementById('team-names-container');
+        container.innerHTML = '';
+        for(let i=0; i<count; i++) {
+            container.innerHTML += `<input type="text" id="tn-${i}" value="الفريق ${i+1}" style="padding:10px; width:110px; text-align:center; border-radius:8px; border:2px solid #e2e8f0; font-family:'Cairo'; font-weight:bold;">`;
+        }
+    }
 
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -210,18 +219,12 @@
     function closeGuide() { document.getElementById('guideModal').style.display = 'none'; }
     function goBack() { if(confirm("هل تريد العودة؟")) location.reload(); }
 
-    function updateTeamInputs(count) {
-        const container = document.getElementById('team-names-container');
-        container.innerHTML = '';
-        for(let i=0; i<count; i++) container.innerHTML += `<input type="text" id="tn-${i}" value="المجموعة ${i+1}" style="padding:8px; width:80px; text-align:center; border-radius:5px; border:1px solid #ccc;">`;
-    }
-
     function setupMasterStock() {
         const count = teamNames.length;
         masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
         for(let key in rawStock) {
             let list = [...rawStock[key]];
-            while(list.length < count) list.push(list[0]);
+            while(list.length < count) list.push(list[0] || {q:"", a:""});
             masterStock[key] = shuffle(list.slice(0, count));
         }
     }
@@ -235,7 +238,7 @@
                 const opts = Array.from(document.querySelectorAll('.opt'));
                 let wrongIndices = opts.map((_, i) => i).filter(i => i !== correctIdx);
                 shuffle(wrongIndices).slice(0, 2).forEach(idx => {
-                    opts[idx].style.visibility = 'hidden';
+                    if(opts[idx]) opts[idx].style.visibility = 'hidden';
                 });
             }
         } 
@@ -394,13 +397,6 @@
         let limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
         if(currentQ >= limit) { currentQ = 0; currentPhase++; if(currentPhase < phasesData.length) prepareTurns(); }
         init();
-    }
-
-    function finishMarathon() {
-        document.getElementById('phase-label').innerText = "انتهى المعترك الأول";
-        document.getElementById('timer').innerText = "🏆";
-        document.getElementById('q-text').style.display = "none";
-        document.getElementById('finish-screen').style.display = 'block';
     }
 
     function syncAnswer(v) { document.getElementById('manual-answer-display').innerText = v || '...'; }

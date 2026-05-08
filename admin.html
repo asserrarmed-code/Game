@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم معترك الضاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #c5a059; --blue: #006847; --dark: #0f172a; }
+        body { 
+            font-family: 'Cairo', sans-serif; background: var(--dark); color: white; 
+            display: flex; flex-direction: column; align-items: center; padding: 20px;
+        }
+        .admin-card {
+            background: #1e293b; border: 3px solid var(--gold); border-radius: 20px;
+            padding: 25px; width: 100%; max-width: 800px; text-align: center;
+        }
+        textarea {
+            width: 100%; height: 300px; background: #0f172a; color: #10b981;
+            border: 2px solid var(--gold); border-radius: 10px; padding: 15px;
+            font-family: monospace; font-size: 0.9rem; direction: ltr; margin-top: 15px;
+        }
+        .btn-save {
+            background: var(--blue); color: white; border: none; padding: 15px 40px;
+            border-radius: 50px; font-weight: 900; cursor: pointer; margin-top: 20px;
+            font-size: 1.2rem; transition: 0.3s;
+        }
+        .btn-save:hover { transform: scale(1.05); background: #008f61; }
+        .instructions { text-align: right; background: rgba(197,160,89,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-card">
+        <h2 style="color: var(--gold);">⚙️ لوحة شحن الأسئلة الذكية</h2>
+        
+        <div class="instructions">
+            <p>1️⃣ انسخ الـ Prompt (الأمر) الذي سأعطيك إياه.</p>
+            <p>2️⃣ أعطه للذكاء الاصطناعي مع تحديد الدروس.</p>
+            <p>3️⃣ انسخ الكود الناتج (JSON) وضعه في الصندوق أدناه.</p>
+        </div>
+
+        <textarea id="jsonInput" placeholder="ضع كود الأسئلة هنا..."></textarea>
+        
+        <button class="btn-save" onclick="saveData()">حفظ الأسئلة وانطلاق 🚀</button>
+        <p id="msg" style="margin-top:10px; font-weight:bold;"></p>
+    </div>
+
+    <script>
+        function saveData() {
+            const input = document.getElementById('jsonInput').value;
+            const msg = document.getElementById('msg');
+            try {
+                // التأكد من أن الكود المدخل صحيح برمجياً
+                const data = JSON.parse(input);
+                localStorage.setItem('moatark_questions', JSON.stringify(data));
+                msg.style.color = "#10b981";
+                msg.innerText = "✅ تم حفظ الأسئلة بنجاح! يمكنك الآن فتح صفحة المسابقة.";
+                
+                // اختيارياً: الانتقال التلقائي للمسابقة بعد ثانية
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            } catch (e) {
+                msg.style.color = "#ef4444";
+                msg.innerText = "❌ خطأ في الكود! تأكد من نسخ الكود كاملاً كما هو.";
+            }
+        }
+    </script>
+</body>
+</html>

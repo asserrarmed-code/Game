@@ -69,11 +69,24 @@
     <div id="guideModal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal" onclick="closeGuide()">&times;</span>
-            <h2>📖 دليل معترك الضاد</h2>
-            <div class="rule-box"><strong>1. الاستجابة الجماعية:</strong> 6 أسئلة للجميع كتابياً.</div>
-            <div class="rule-box"><strong>2. المواجهة الموجهة:</strong> 3 أسئلة مخصصة لكل مجموعة (بالتناوب).</div>
-            <div class="rule-box"><strong>3. الاختيار الحر:</strong> حق اختيار المكون مرتين لكل مجموعة من المخزون.</div>
-            <div class="rule-box"><strong>4. جولة السرعة:</strong> 4 أسئلة حاسمة تعتمد على سرعة البديهة.</div>
+            <h2 style="text-align:center;">📖 ميثاق معترك الضاد</h2>
+            
+            <div class="rule-box"><strong>1. الاستجابة الجماعية:</strong> 6 أسئلة تُحل كتابياً من طرف جميع المجموعات في آن واحد (20 ثانية).</div>
+            <div class="rule-box"><strong>2. المواجهة الموجهة:</strong> لكل مجموعة 3 أسئلة خاصة تظهر عشوائياً، ولا يجوز لغيرها الإجابة (20 ثانية).</div>
+            <div class="rule-box"><strong>3. الاختيار الحر:</strong> تختار المجموعة مكونها المفضل (تراكيب، صرف، إملاء) مرتين فقط من المخزون (30 ثانية).</div>
+            <div class="rule-box"><strong>4. جولة السرعة:</strong> 4 أسئلة خاطفة للجميع، يختفي السؤال بعد 8 ثوانٍ ويُكشف الجواب يدوياً.</div>
+            
+            <div class="rule-box" style="border-color: var(--success);">
+                <strong>🛠️ الوسائل المساعدة (تُستخدم مرة واحدة):</strong><br>
+                💡 حذف اختيارين | 🚀 مضاعفة النقطة | ⏱️ إيقاف الزمن.
+            </div>
+
+            <div class="rule-box" style="border-color: var(--danger); background: rgba(239, 68, 68, 0.05);">
+                <strong>⚖️ قانون الفصل:</strong><br>
+                في حالة تعادل فريقين أو أكثر في النقاط النهائية، يطرح الأستاذ **سؤالاً حاسماً** لتحديد بطل الملحمة.
+            </div>
+            
+            <button class="btn-admin" style="width:100%; margin-top:10px; background:var(--moroccan-blue); color:white;" onclick="closeGuide()">فهمت القواعد 🛡️</button>
         </div>
     </div>
 

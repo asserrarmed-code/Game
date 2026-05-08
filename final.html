@@ -17,61 +17,69 @@
             display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* تنسيق الهيدر المخصص للبانر فقط */
+        /* --- تعديل الهيدر ليكون ثابتاً في الأعلى بشكل طبيعي --- */
         .main-header {
             width: 100%;
             background: #020617;
-            border-bottom: 3px solid var(--final-gold);
-            padding: 20px 10px;
+            border-bottom: 4px solid var(--final-gold);
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 30000;
+            flex-shrink: 0; /* يمنع الهيدر من الانضغاط */
         }
 
         .center-banner { 
             width: 100%; 
-            max-width: 700px; 
+            max-width: 650px; 
             height: auto; 
-            border-radius: 15px; 
-            border: 2px solid var(--final-gold);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: block;
         }
 
+        /* حاوية الأيقونات تحت البانر مباشرة */
         .top-nav {
             width: 100%;
             display: flex;
             justify-content: center;
             gap: 20px;
             padding: 15px 0;
-            z-index: 30000;
         }
+        
         .icon-btn { 
             background: var(--card-dark); border: 2px solid var(--final-gold); color: var(--final-gold); 
             width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; 
             display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
 
+        /* --- شاشة الإعداد تظهر الآن تحت البانر مباشرة وبشكل مرتب --- */
         #setup-screen {
-            position: fixed; inset: 0; background: var(--final-black); z-index: 25000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
-            top: 140px; /* لترك مساحة للبانر */
+            flex: 1; /* تأخذ المساحة المتبقية تحت البانر */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* الترتيب يبدأ من الأعلى للأسفل */
+            padding: 20px;
+            padding-top: 10px;
         }
-        
-        /* تعديل خاص لإخفاء الهيدر تماماً في شاشة الأسئلة */
-        .hide-header .main-header { display: none; }
 
         .setup-card {
             background: var(--card-dark); padding: 30px; border-radius: 20px; border: 3px solid var(--final-gold);
-            text-align: center; width: 95%; max-width: 450px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            text-align: center; width: 95%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+
         .setup-card input {
             width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 2px solid var(--final-gold);
             font-family: 'Cairo'; font-weight: bold; text-align: center; font-size: 1rem;
+            background: rgba(255,255,255,0.05); color: white;
         }
 
-        .container { width: 95%; max-width: 850px; margin: 20px auto; flex: 1; display: none; flex-direction: column; padding-bottom: 180px; }
-        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        /* إخفاء الهيدر في شاشة المسابقة */
+        .hide-header .main-header { display: none; }
+
+        .container { width: 95%; max-width: 850px; margin: 10px auto; flex: 1; display: none; flex-direction: column; padding-bottom: 180px; }
+        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .team-box { background: #0f172a; padding: 15px; border-radius: 15px; border: 3px solid #334155; text-align: center; color: var(--text-gold); }
         .active-team { border-color: var(--final-gold); box-shadow: 0 0 20px var(--final-gold); }
         .card { background: var(--card-dark); padding: 25px; border-radius: 20px; border-top: 6px solid var(--final-gold); text-align: center; min-height: 250px; display: flex; flex-direction: column; justify-content: center; }
@@ -92,15 +100,15 @@
 <body id="main-body">
 
     <header class="main-header" id="top-banner">
-        <img src="banner-final.png" class="center-banner" alt="بانر النهائي الكبير">
+        <img src="banner-final.png" class="center-banner" alt="بانر النهائي">
     </header>
 
-    <div class="top-nav">
-        <button id="home-icon" class="icon-btn" onclick="window.location.href='index.html'">🏠</button>
-        <button class="icon-btn" onclick="toggleModal(true)">💡</button>
-    </div>
-
     <div id="setup-screen">
+        <div class="top-nav">
+            <button id="home-icon" class="icon-btn" onclick="window.location.href='index.html'">🏠</button>
+            <button class="icon-btn" onclick="toggleModal(true)">💡</button>
+        </div>
+
         <div class="setup-card">
             <h2 style="color:var(--final-gold); margin-bottom: 20px;">⚔️ معترك الضاد: النهائي ⚔️</h2>
             <input type="text" id="name1" placeholder="اسم المجموعة الأولى">
@@ -108,21 +116,6 @@
             <button class="btn-admin" style="background:var(--final-gold); color:black; width:100%; margin-top:15px; font-size:1.2rem;" onclick="startFinal()">بدء المعترك 🚀</button>
         </div>
     </div>
-
-    <div id="guideModal" class="modal">
-        <div class="modal-content">
-            <h3 style="color:var(--final-gold); border-bottom: 1px solid var(--final-gold); padding-bottom: 10px;">📖 دليل المسابقة</h3>
-            <ul style="list-style: none; padding: 0; line-height: 2;">
-                <li>🔸 <b>النمط الفردي:</b> إجابة فردية ممنوع المساعدة.</li>
-                <li>🔸 <b>المواجهة الموجهة:</b> دور محدد لكل فريق.</li>
-                <li>🔸 <b>الاختيار الحر:</b> اختيار المكون من المخزون.</li>
-                <li>🔸 <b>جولة الحسم:</b> السرعة هي الفيصل (8 ثوانٍ).</li>
-            </ul>
-            <button class="btn-admin" style="background:var(--danger); color:white; margin-top:10px;" onclick="toggleModal(false)">إغلاق</button>
-        </div>
-    </div>
-
-    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مديرية مراكش-</div>
 
     <div id="quiz-screen" class="container">
         <div id="dynamic-scoreboard" class="scoreboard"></div>
@@ -153,72 +146,42 @@
         </div>
     </div>
 
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:var(--final-gold); border-bottom: 1px solid var(--final-gold); padding-bottom: 10px;">📖 دليل المسابقة</h3>
+            <ul style="list-style: none; padding: 0; line-height: 2;">
+                <li>🔸 <b>النمط الفردي:</b> إجابة فردية ممنوع المساعدة.</li>
+                <li>🔸 <b>المواجهة الموجهة:</b> دور محدد لكل فريق.</li>
+                <li>🔸 <b>الاختيار الحر:</b> اختيار المكون من المخزون.</li>
+                <li>🔸 <b>جولة الحسم:</b> السرعة هي الفيصل (8 ثوانٍ).</li>
+            </ul>
+            <button class="btn-admin" style="background:var(--danger); color:white; margin-top:10px;" onclick="toggleModal(false)">إغلاق</button>
+        </div>
+    </div>
+
+    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مديرية مراكش-</div>
+
 <script>
-    /* تم تعديل دالة البدء لإخفاء البانر تلقائياً */
     function startFinal() {
         teamNames = [document.getElementById('name1').value || "المجموعة 1", document.getElementById('name2').value || "المجموعة 2"];
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'flex';
-        document.getElementById('home-icon').style.display = 'none';
-        
-        // إخفاء البانر عند الانتقال لصفحة الأسئلة
         document.getElementById('main-body').classList.add('hide-header');
-        
         renderScoreboard();
         init();
     }
 
-    // بقية المنطق البرمجي (دون تغيير)
+    /* نفس منطق الـ JavaScript الخاص بك دون تعديل */
     let currentPhase = 0, currentQ = 0, timer, scores = [0,0], teamNames = [];
     let votedOnThisQuestion = [false, false];
     let selectionCount = [0, 0];
     let activeTeam = Math.floor(Math.random() * 2);
 
     const finalPhases = [
-        { 
-            name: "1. نمط التحدي الفردي (الافتتاحية)", type: "individual", time: 20, 
-            questions: [
-                {q: "أعرب نورٌ إعراباً تاماً: (العلمُ نورٌ يُستضاءُ بهِ).", a: "نورٌ: خبر المبتدأ مرفوع بالضمة الظاهرة على آخره"},
-                {q: "حول الجملة التالية للمثنى المؤنث: (هو يَسعى لِـنيلِ الجائزةِ).", a: "هما تسعيانِ لنيلِ الجائزةِ"},
-                {q: "علل رسم الهمزة في كلمة **'لُؤلُؤ'** (الأولى والمتطرفة).", a: "الأولى: ساكنة بعد ضم / المتطرفة: متطرفة مسبوقة بضم"}
-            ]
-        },
-        { 
-            name: "2. نمط المواجهة الموجهة", type: "target", time: 20, 
-            questions: [
-                {q: "ما إعراب كلمة **'أبَويك'** في: (أطعْ أبَويك نيلًا لرضا الله)؟", a: "مفعول به منصوب بالياء لأنه مثنى"},
-                {q: "اجعل كلمة **(اجتهاد)** مفعولاً مطلقاً **لبيان النوع** في جملة مفيدة.", a: "مثال: اجتهد التلميذ اجتهاد المتفوق "},
-                {q: "صغ اسم التفضيل من فعل **'آمنَ'** في جملة مفيدة.", a: "أكثرُ إيماناً (لأن الفعل غير ثلاثي)"},
-                {q: "صغ اسم الآلة من الأفعال **'سار'** و **'ذاع'** وحدد الوزن الصرفي.", a: "سيّارة (فعّالة) / مِذياع (مفعال)"}
-            ]
-        },
-        { 
-            name: "3. نمط الاختيار الحر (مخزون النوابغ)", type: "choice", time: 25, 
-            categories: {
-                "تراكيب": [
-                    {q: "أعرب كلمة **'كلتا'** في جملة: (كلتا الشجرتينِ مثمرتانِ).", a: "مبتدأ مرفوع بالضمة المقدرة على الألف"},
-                    {q: "استخرج المفعول المطلق وبين نوعه: (**ورتلِ القرآنَ ترتيلاً**).", a: "ترتيلاً: نوعه لتوكيد الفعل"}
-                ],
-                "صرف": [
-                    {q: "صغ المصدر من الأفعال التالية: (**زكّى - تزلزل - استقام**).", a: "تزكية - تزلزل - استقامة"},
-                    {q: "صغ اسم الآلة من الأفعال **(قرض)** و **(برد)** على أوزان مختلفة.", a: "مِقراض (مفعال) - مِبرد (مِفعل)"}
-                ],
-                "إملاء": [
-                    {q: "ما الفرق في الكتابة (الألف اللينة) بين: (**يحيى**) و (**يحيا**)؟", a: "يحيى: اسم علم (مقصورة) / يحيا: فعل مضارع (ممدودة)"},
-                    {q: "لماذا كتبت التاء مربوطة في كلمة **'رعاة'**؟", a: "تكتب مربوطة لأنها جمع مذكر وقبلها مد ألف"}
-                ]
-            }
-        },
-        { 
-            name: "4. جولة الحسم (السرعة القاتلة)", type: "speed", time: 8, 
-            questions: [
-                {q: "صرّف فعل **(وقى)** في الأمر مع ضمير المخاطبة **(أنتِ)**.", a: "قِـي"},
-                {q: "أعرب شبه الجملة (الظرف) في: (رأيتُ القائدَ فوقَ المنصةِ).", a: "شبه جملة في محل نصب حال"},
-                {q: "أدخل **(كان)** على الجملة وغير ما يلزم: (أبوك ذو علمٍ).", a: "كان أبوك ذا علمٍ"},
-                {q: "أدخل أداة شرط جازمة على: (تدرسون بجدٍّ تنجحون).", a: "إن تدرسوا بجدٍّ تنجحوا (حذف النون)"},
-                {q: "علل: لماذا نكتب **'ملاءمة'** على السطر وليس على الألف (**ملاأمة**)؟", a: " لأن الهمزة مفتوحة مسبوقة بألف ساكنة ولا يمكن التقاء ألفان متتابعان"}
-            ]
-        }
+        { name: "1. نمط التحدي الفردي (الافتتاحية)", type: "individual", time: 20, questions: [{q: "أعرب نورٌ إعراباً تاماً: (العلمُ نورٌ يُستضاءُ بهِ).", a: "نورٌ: خبر المبتدأ مرفوع بالضمة الظاهرة على آخره"}, {q: "حول الجملة التالية للمثنى المؤنث: (هو يَسعى لِـنيلِ الجائزةِ).", a: "هما تسعيانِ لنيلِ الجائزةِ"}, {q: "علل رسم الهمزة في كلمة **'لُؤلُؤ'** (الأولى والمتطرفة).", a: "الأولى: ساكنة بعد ضم / المتطرفة: متطرفة مسبوقة بضم"}]},
+        { name: "2. نمط المواجهة الموجهة", type: "target", time: 20, questions: [{q: "ما إعراب كلمة **'أبَويك'** في: (أطعْ أبَويك نيلًا لرضا الله)؟", a: "مفعول به منصوب بالياء لأنه مثنى"}, {q: "اجعل كلمة **(اجتهاد)** مفعولاً مطلقاً **لبيان النوع** في جملة مفيدة.", a: "مثال: اجتهد التلميذ اجتهاد المتفوق "}, {q: "صغ اسم التفضيل من فعل **'آمنَ'** في جملة مفيدة.", a: "أكثرُ إيماناً (لأن الفعل غير ثلاثي)"}, {q: "صغ اسم الآلة من الأفعال **'سار'** و **'ذاع'** وحدد الوزن الصرفي.", a: "سيّارة (فعّالة) / مِذياع (مفعال)"}]},
+        { name: "3. نمط الاختيار الحر (مخزون النوابغ)", type: "choice", time: 25, categories: {"تراكيب": [{q: "أعرب كلمة **'كلتا'** في جملة: (كلتا الشجرتينِ مثمرتانِ).", a: "مبتدأ مرفوع بالضمة المقدرة على الألف"}, {q: "استخرج المفعول المطلق وبين نوعه: (**ورتلِ القرآنَ ترتيلاً**).", a: "ترتيلاً: نوعه لتوكيد الفعل"}], "صرف": [{q: "صغ المصدر من الأفعال التالية: (**زكّى - تزلزل - استقام**).", a: "تزكية - تزلزل - استقامة"}, {q: "صغ اسم الآلة من الأفعال **(قرض)** و **(برد)** على أوزان مختلفة.", a: "مِقراض (مفعال) - مِبرد (مِفعل)"}], "إملاء": [{q: "ما الفرق في الكتابة (الألف اللينة) بين: (**يحيى**) و (**يحيا**)؟", a: "يحيى: اسم علم (مقصورة) / يحيا: فعل مضارع (ممدودة)"}, {q: "لماذا كتبت التاء مربوطة في كلمة **'رعاة'**؟", a: "تكتب مربوطة لأنها جمع مذكر وقبلها مد ألف"}]}},
+        { name: "4. جولة الحسم (السرعة القاتلة)", type: "speed", time: 8, questions: [{q: "صرّف فعل **(وقى)** في الأمر مع ضمير المخاطبة **(أنتِ)**.", a: "قِـي"}, {q: "أعرب شبه الجملة (الظرف) في: (رأيتُ القائدَ فوقَ المنصةِ).", a: "شبه جملة في محل نصب حال"}, {q: "أدخل **(كان)** على الجملة وغير ما يلزم: (أبوك ذو علمٍ).", a: "كان أبوك ذا علمٍ"}, {q: "أدخل أداة شرط جازمة على: (تدرسون بجدٍّ تنجحون).", a: "إن تدرسوا بجدٍّ تنجحوا (حذف النون)"}, {q: "علل: لماذا نكتب **'ملاءمة'** على السطر وليس على الألف (**ملاأمة**)؟", a: " لأن الهمزة مفتوحة مسبوقة بألف ساكنة ولا يمكن التقاء ألفان متتابعان"}]}
     ];
 
     function renderScoreboard() {
@@ -227,13 +190,7 @@
         sb.innerHTML = ''; ctrl.innerHTML = '';
         teamNames.forEach((n, i) => {
             sb.innerHTML += `<div class="team-box" id="t-card-${i}"><span id="s-${i}" style="font-size:2rem; font-weight:900;">${scores[i]}</span><br><div style="font-size:0.9rem; font-weight:bold;">${n}</div></div>`;
-            ctrl.innerHTML += `<div style="text-align:center; background:#1e293b; padding:8px; border-radius:10px; border:1px solid var(--final-gold);">
-                <div style="font-size:0.7rem; color:var(--final-gold);">${n}</div>
-                <div style="display:flex; gap:4px;">
-                    <button class="btn-admin" style="background:var(--success); color:white; padding:4px 8px;" onclick="modifyScore(${i}, 10)">+10</button>
-                    <button class="btn-admin" style="background:var(--danger); color:white; padding:4px 8px;" onclick="modifyScore(${i}, -5)">-5</button>
-                </div>
-            </div>`;
+            ctrl.innerHTML += `<div style="text-align:center; background:#1e293b; padding:8px; border-radius:10px; border:1px solid var(--final-gold);"><div style="font-size:0.7rem; color:var(--final-gold);">${n}</div><div style="display:flex; gap:4px;"><button class="btn-admin" style="background:var(--success); color:white; padding:4px 8px;" onclick="modifyScore(${i}, 10)">+10</button><button class="btn-admin" style="background:var(--danger); color:white; padding:4px 8px;" onclick="modifyScore(${i}, -5)">-5</button></div></div>`;
         });
     }
 
@@ -247,14 +204,10 @@
 
     function init() {
         votedOnThisQuestion = [false, false];
-        document.querySelectorAll('.team-box').forEach(b => {
-            b.style.opacity = "1"; b.classList.remove('active-team');
-        });
-
+        document.querySelectorAll('.team-box').forEach(b => { b.style.opacity = "1"; b.classList.remove('active-team'); });
         const p = finalPhases[currentPhase];
         const alertBox = document.getElementById('challenge-alert');
         const qText = document.getElementById('q-text');
-        
         qText.style.display = 'block'; 
         document.getElementById('phase-label').innerText = p.name;
         document.getElementById('manual-zone').style.display = "none";
@@ -263,20 +216,17 @@
         document.getElementById('timer').innerText = "--";
 
         if (p.type === 'choice') {
-            alertBox.style.display = "block";
-            alertBox.innerText = `🎲 الدور لـ: ${teamNames[activeTeam]}`;
+            alertBox.style.display = "block"; alertBox.innerText = `🎲 الدور لـ: ${teamNames[activeTeam]}`;
             document.getElementById(`t-card-${activeTeam}`).classList.add('active-team');
             qText.innerText = "اختر المكون المناسب من المخزون:";
             renderCategories();
             document.getElementById('choice-container').style.display = "grid";
         } else {
-            const q = p.questions[currentQ];
-            qText.innerText = q.q;
+            const q = p.questions[currentQ]; qText.innerText = q.q;
             alertBox.style.display = "block";
             if (p.type === 'individual') alertBox.innerText = "⚔️ تحدي الفرسان ⚔️";
             else if (p.type === 'target') {
-                const tid = currentQ % 2;
-                alertBox.innerText = `🎯 الدور لـ: ${teamNames[tid]}`;
+                const tid = currentQ % 2; alertBox.innerText = `🎯 الدور لـ: ${teamNames[tid]}`;
                 document.getElementById(`t-card-${tid}`).classList.add('active-team');
             } else alertBox.style.display = "none";
             startTimer(p.time, p.type === 'speed');
@@ -296,8 +246,7 @@
                     document.getElementById('choice-container').style.display = "none";
                     document.getElementById('q-text').innerText = `[${cat}] ${qObj.q}`;
                     finalPhases[2].currentA = qObj.a;
-                    selectionCount[activeTeam]++;
-                    activeTeam = 1 - activeTeam;
+                    selectionCount[activeTeam]++; activeTeam = 1 - activeTeam;
                     startTimer(25, false);
                 };
                 container.appendChild(btn);
@@ -324,9 +273,7 @@
     function next() {
         const p = finalPhases[currentPhase];
         if (p.type === 'choice') {
-            if (selectionCount[0] >= 3 && selectionCount[1] >= 3) {
-                currentPhase++; currentQ = 0; init();
-            } else { init(); }
+            if (selectionCount[0] >= 3 && selectionCount[1] >= 3) { currentPhase++; currentQ = 0; init(); } else { init(); }
         } else {
             currentQ++;
             if(currentQ >= p.questions.length) { currentQ = 0; currentPhase++; }

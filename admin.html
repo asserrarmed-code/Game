@@ -3,74 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة معترك الضاد - تخصيص الأسئلة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
+    <title>لوحة التحكم | معترك الضاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #006847; --gold: #c5a059; --bg: #f4f1ea; --dark: #1e293b;
+            --primary: #006847;
+            --gold: #c5a059;
+            --bg: #f8fafc;
+            --dark: #1e293b;
+            --ai-purple: #7c3aed;
         }
+
         body {
-            font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--dark);
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg);
+            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
         }
-        .admin-container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary); }
-        h1 { color: var(--primary); text-align: center; margin-bottom: 30px; }
-        
-        /* قسم دليل الاستخدام */
-        .guide-section { background: #eef2ff; border-right: 5px solid #4f46e5; padding: 15px; border-radius: 10px; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.7; }
-        .guide-section h3 { margin-top: 0; color: #4f46e5; }
-        
-        .editor-area { width: 100%; height: 400px; font-family: monospace; padding: 15px; border: 2px solid #ddd; border-radius: 10px; direction: ltr; text-align: left; background: #fafafa; font-size: 14px; margin-bottom: 20px; }
-        .controls { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
-        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; font-size: 1rem; text-decoration: none; display: inline-block; }
+
+        .admin-header {
+            background: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .header-logo {
+            width: clamp(60px, 10vw, 85px);
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-title { text-align: center; }
+        .header-title h1 { margin: 0; font-size: 1.8rem; color: var(--primary); font-weight: 900; }
+        .header-title p { margin: 5px 0 0 0; font-size: 0.9rem; color: #64748b; }
+
+        .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+
+        .admin-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .ai-section {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 2px dashed var(--ai-purple);
+        }
+
+        .ai-section h3 { color: var(--ai-purple); margin-top: 0; display: flex; align-items: center; gap: 10px; }
+
+        .json-editor {
+            width: 100%;
+            height: 350px;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            direction: ltr;
+            text-align: left;
+            background: #0f172a;
+            color: #10b981;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: bold;
+            font-size: 1rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-copy { background: var(--ai-purple); color: white; }
         .btn-save { background: var(--primary); color: white; }
         .btn-reset { background: #ef4444; color: white; }
         .btn-home { background: var(--dark); color: white; }
-        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
-        .status-msg { text-align: center; margin-top: 15px; font-weight: bold; }
+
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        .device-notice {
+            text-align: center;
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+
+        .footer-credit {
+            text-align: center;
+            padding: 30px 10px;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .status-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            border-radius: 50px;
+            color: white;
+            display: none;
+            z-index: 10000;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
 
-<div class="admin-container">
-    <h1>⚙️ لوحة تحكم الأسئلة</h1>
+    <header class="admin-header">
+        <img src="logo.png" class="header-logo" alt="Logo">
+        <div class="header-title">
+            <h1>إدارة مَلحمة الضاد</h1>
+            <p>لوحة التحكم في الأسئلة والظواهر اللغوية</p>
+        </div>
+        <img src="logo-cup.png" class="header-logo" alt="Cup Logo">
+    </header>
 
-    <div class="guide-section">
-        <h3>📖 دليل الأستاذ لتعديل الأسئلة:</h3>
-        <ul>
-            <li><strong>كيفية التعديل:</strong> ستجد بالأسفل "كود" يحتوي على الأسئلة. قم بتغيير النص الموجود بين علامات التنصيص فقط.</li>
-            <li><strong>المربعات:</strong> تأكد من عدم مسح الأقواس <code>[ ]</code> أو الفواصل <code>,</code> لكي لا يتوقف البرنامج.</li>
-            <li><strong>الحفظ:</strong> بعد التعديل، اضغط على <b>"حفظ التغييرات"</b>. سيظهر لك تنبيه للتأكيد.</li>
-            <li><strong>العودة للأصل:</strong> إذا حدث خطأ، اضغط على <b>"إعادة الأسئلة الافتراضية"</b> لاسترجاع أسئلة النظام.</li>
-        </ul>
-    </div>
+    <main class="main-container">
+        
+        <div class="admin-card ai-section">
+            <h3>✨ توليد الأسئلة الذكي</h3>
+            <p style="font-size: 0.9rem; line-height: 1.6;">
+                انسخ الأمر (Prompt) بالضغط على الزر، ثم ألصقه في <b>ChatGPT</b>. سيقوم الذكاء الاصطناعي بتجهيز الأسئلة لك. انسخ النتيجة وألصقها في المربع الأسود أدناه.
+            </p>
+            <button class="btn btn-copy" onclick="copyPrompt()">
+                <span>📋</span> نسخ الأمر (Prompt) للذكاء الاصطناعي
+            </button>
+        </div>
 
-    <textarea id="json-editor" class="editor-area"></textarea>
+        <div class="admin-card">
+            <label style="display:block; margin-bottom:10px; font-weight:bold; color:var(--primary);">📦 محرر الأسئلة (JSON):</label>
+            <textarea id="json-editor" class="json-editor" spellcheck="false"></textarea>
+            
+            <div class="btn-group">
+                <button class="btn btn-save" onclick="saveData()">💾 حفظ التغييرات</button>
+                <button class="btn btn-reset" onclick="resetData()">🔄 استعادة الأصلي</button>
+                <a href="index.html" class="btn btn-home">🎮 دخول المسابقة</a>
+            </div>
 
-    <div class="controls">
-        <button class="btn btn-save" onclick="saveData()">💾 حفظ التغييرات</button>
-        <button class="btn btn-reset" onclick="resetData()">🔄 إعادة الأسئلة الافتراضية</button>
-        <a href="index.html" class="btn btn-home">🎮 الذهاب للمسابقة</a>
-    </div>
+            <div class="device-notice">
+                📢 <b>ملاحظة:</b> التعديلات تحفظ في هذا المتصفح فقط. يرجى التعديل من نفس الجهاز الذي ستعرض منه المسابقة.
+            </div>
+        </div>
 
-    <div id="status" class="status-msg"></div>
-</div>
+        <footer class="footer-credit">
+            من إعداد وتصميم الأستاذ محمد أسرار -مدرسة ميمونة أم المؤمنين-مديرية مراكش-
+        </footer>
+    </main>
+
+    <div id="toast" class="status-toast"></div>
 
 <script>
-    // الأسئلة الافتراضية للنظام
     const defaultData = {
-        phase1: [
-            {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2},
-            {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء", "واو", "ألف", "نون"], a:1},
-            {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["فعل وفاعل", "اسمين علمين", "بداية السطر", "حرفي جر"], a:1}
-        ],
-        phase2: [
-            {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
-            {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1}
-        ],
-        phase4: [
-            {q: "ما هو الوزن الصرفي الصحيح لكلمة 'صِـلَة'؟", a: "عِـلَة"},
-            {q: "حوّل الفعل 'رأى' إلى فعل أمر للمفرد المذكر.", a: "رَ"}
-        ],
+        phase1: [{q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2}],
+        phase2: [{q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1}],
+        phase4: [{q: "ما هو الوزن الصرفي الصحيح لكلمة 'صِـلَة'؟", a: "عِـلَة"}],
         stock: {
             "تراكيب": [{q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي مرفوع"}],
             "صرف": [{q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"}],
@@ -79,48 +193,53 @@
     };
 
     const editor = document.getElementById('json-editor');
-    const status = document.getElementById('status');
 
-    // تحميل البيانات عند فتح الصفحة
-    function loadCurrentData() {
+    function loadData() {
         const saved = localStorage.getItem('moatark_questions');
-        const dataToDisplay = saved ? JSON.parse(saved) : defaultData;
-        editor.value = JSON.stringify(dataToDisplay, null, 4);
+        editor.value = JSON.stringify(saved ? JSON.parse(saved) : defaultData, null, 4);
     }
 
-    // [Prompt] وظيفة حفظ البيانات مع تنبيه تأكيدي
     function saveData() {
-        // رسالة تأكيد (Prompt)
-        const confirmation = confirm("هل أنت متأكد من حفظ الأسئلة الجديدة؟ سيتم تطبيقها فوراً في المسابقة.");
-        
-        if (confirmation) {
-            try {
-                const newData = JSON.parse(editor.value);
-                localStorage.setItem('moatark_questions', JSON.stringify(newData));
-                status.innerText = "✅ تم حفظ البيانات بنجاح!";
-                status.style.color = "green";
-                
-                // إخفاء الرسالة بعد 3 ثواني
-                setTimeout(() => { status.innerText = ""; }, 3000);
-            } catch (e) {
-                alert("خطأ في تنسيق الكود! يرجى التأكد من عدم حذف الفواصل أو الأقواس.");
-                status.innerText = "❌ فشل الحفظ: خطأ في التنسيق";
-                status.style.color = "red";
-            }
+        if(!confirm("هل تريد اعتماد هذه الأسئلة؟")) return;
+        try {
+            const data = JSON.parse(editor.value);
+            localStorage.setItem('moatark_questions', JSON.stringify(data));
+            showToast("✅ تم حفظ الأسئلة بنجاح!", "#006847");
+        } catch(e) {
+            alert("❌ خطأ في التنسيق! تأكد من الكود.");
         }
     }
 
     function resetData() {
-        if(confirm("هل تريد حقاً مسح كل تعديلاتك والعودة لأسئلة النظام الأصلية؟")) {
+        if(confirm("العودة للأسئلة الأصلية؟")) {
             localStorage.removeItem('moatark_questions');
-            editor.value = JSON.stringify(defaultData, null, 4);
-            status.innerText = "🔄 تمت إعادة الأسئلة الأصلية.";
-            status.style.color = "blue";
+            loadData();
+            showToast("🔄 استعادة الأصلي", "#ef4444");
         }
     }
 
-    loadCurrentData();
-</script>
+    function copyPrompt() {
+        const promptText = `أريدك أن تعمل كمؤلف أسئلة تربوي لمستوى السادس ابتدائي بالمغرب. قم بتوليد أسئلة لدرس (اكتب اسم درسك هنا) بصيغة JSON تماماً كما في المثال التالي:\n{\n    "phase1": [{"q": "السؤال", "o": ["خيارات", "صحيحة"], "a": 0}],\n    "phase2": [{"q": "السؤال", "o": ["خيارات"], "a": 1}],\n    "phase4": [{"q": "سؤال سريع", "a": "جواب"}],\n    "stock": {\n        "تراكيب": [{"q": "سؤال", "a": "جواب"}],\n        "صرف": [{"q": "سؤال", "a": "جواب"}],\n        "إملاء": [{"q": "سؤال", "a": "جواب"}]\n    }\n}\nالتزم بالتنسيق فقط.`;
+        
+        const el = document.createElement('textarea');
+        el.value = promptText;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        
+        showToast("📋 تم نسخ الأمر للذاكرة!", "#7c3aed");
+    }
 
+    function showToast(msg, color) {
+        const toast = document.getElementById('toast');
+        toast.innerText = msg;
+        toast.style.backgroundColor = color;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    loadData();
+</script>
 </body>
 </html>

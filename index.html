@@ -18,18 +18,6 @@
             color: var(--text); font-family: 'Cairo', sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; transition: background 0.3s; overflow: hidden;
             position: relative;
         }
-
-        /* [حقن] أيقونة الإدارة */
-        .admin-shortcut {
-            position: fixed; top: 10px; left: 10px; z-index: 30000;
-            background: var(--moroccan-gold); border: 2px solid white;
-            width: 38px; height: 38px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            text-decoration: none; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: 0.4s;
-        }
-        .admin-shortcut:hover { transform: rotate(90deg) scale(1.1); }
-
         .header-top { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-shrink: 0; width: 100%; max-width: 1000px; margin: 0 auto; }
         .logo-box { width: clamp(40px, 7vh, 65px); height: clamp(40px, 7vh, 65px); background: white; border-radius: 50%; border: 2px solid var(--moroccan-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .logo-box img { width: 100%; height: 100%; object-fit: cover; }
@@ -66,8 +54,6 @@
 </head>
 <body>
 
-    <a href="admin.html" class="admin-shortcut" title="الإدارة">⚙️</a>
-
     <div class="header-top">
         <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
         <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
@@ -77,6 +63,7 @@
     <div class="top-controls">
         <button class="icon-btn" onclick="toggleTheme()">🌙</button>
         <button class="icon-btn" onclick="openGuide()" title="الدليل الشامل">📖</button>
+        <button class="icon-btn" id="admin-icon" onclick="location.href='admin.html'" title="لوحة التحكم">⚙️</button>
         <button class="icon-btn" id="back-to-setup" onclick="goBack()" style="display:none; background:var(--deep-red); color:white;">🏠</button>
     </div>
 
@@ -153,7 +140,7 @@
     </div>
 
 <script>
-    // [حقن] نظام استقبال الأسئلة الذكي
+    // [حقن مجهري] استرداد البيانات المخصصة
     const savedData = localStorage.getItem('moatark_questions');
     const customData = savedData ? JSON.parse(savedData) : null;
 
@@ -163,13 +150,13 @@
     let lifelinesState = []; 
     let rocketActive = -1;
 
+    // [حقن مجهري] اختيار مصدر الأسئلة (المخصص أو الأصلي)
     const phasesData = customData ? [
         { name: "النمط 1: الاستجابة الجماعية", type: "all", time: 20, questions: customData.phase1 },
         { name: "النمط 2: المواجهة الموجهة", type: "target", time: 20, questions: customData.phase2 },
         { name: "النمط 3: الاختيار الحر", type: "free", time: 30 },
         { name: "النمط 4: جولة السرعة", type: "all", time: 8, questions: customData.phase4 }
     ] : [
-        // الأسئلة الافتراضية الخاصة بك
         { name: "النمط 1: الاستجابة الجماعية (6 أسئلة)", type: "all", time: 20, questions: [
             {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2},
             {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء", "واو", "ألف", "نون"], a:1},
@@ -201,7 +188,7 @@
         ]}
     ];
 
-    const currentStockSource = (customData && customData.stock) ? customData.stock : {
+    const currentStock = (customData && customData.stock) ? customData.stock : {
         "تراكيب": [
             {q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي مرفوع"},
             {q: "حدد التمييز ونوعه في: (اشْتَرَيْتُ كِيلوغراماً لَحماً).", a: "لحماً (تمييز ملفوظ)"},
@@ -246,8 +233,8 @@
     function setupMasterStock() {
         const count = teamNames.length;
         masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
-        for(let key in currentStockSource) {
-            let list = [...currentStockSource[key]];
+        for(let key in currentStock) {
+            let list = [...currentStock[key]];
             while(list.length < count) list.push(list[0] || {q:"", a:""});
             masterStock[key] = shuffle(list.slice(0, count));
         }
@@ -285,6 +272,8 @@
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'flex';
         document.getElementById('back-to-setup').style.display = 'flex';
+        // [حقن مجهري] إخفاء أيقونة الإدارة بمجرد البدء
+        document.getElementById('admin-icon').style.display = 'none';
         renderInterface();
         prepareTurns();
         init();

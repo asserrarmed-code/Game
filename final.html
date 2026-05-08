@@ -6,7 +6,7 @@
     <title>النهائي الكبير: مُعترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+        *, *::before, *::after { box-sizing: border-box; }
         :root { 
             --final-gold: #c5a059; --final-black: #0f172a; --card-dark: #1e293b; 
             --text-gold: #f3e5ab; --success: #10b981; --danger: #ef4444;
@@ -16,40 +16,62 @@
             color: white; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; min-height: 100vh; 
             display: flex; flex-direction: column; overflow-x: hidden;
         }
-        .container { 
-            width: 95%; max-width: 850px; margin: 0 auto; flex: 1; 
-            display: none; flex-direction: column; justify-content: center;
-            padding: 20px 0 180px 0;
+
+        /* تنسيق الهيدر العلوي المتجاوب */
+        .main-header {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 3px solid var(--final-gold);
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: relative;
+            z-index: 30000;
         }
+        .side-logo { width: 18%; max-width: 100px; height: auto; object-fit: contain; }
+        .center-banner { width: 55%; max-width: 400px; height: auto; object-fit: contain; }
+
+        /* منطقة الأيقونات */
+        .top-nav {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px 0;
+            z-index: 30000;
+        }
+        .icon-btn { 
+            background: var(--card-dark); border: 2px solid var(--final-gold); color: var(--final-gold); 
+            width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; 
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .icon-btn:hover { background: var(--final-gold); color: black; transform: scale(1.1); }
+
         #setup-screen {
-            position: fixed; inset: 0; background: var(--final-black); z-index: 20000;
+            position: fixed; inset: 0; background: var(--final-black); z-index: 25000;
             display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
         }
         .setup-card {
             background: var(--card-dark); padding: 30px; border-radius: 20px; border: 3px solid var(--final-gold);
-            text-align: center; width: 100%; max-width: 500px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            text-align: center; width: 95%; max-width: 450px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
         .setup-card input {
             width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 2px solid var(--final-gold);
-            font-family: 'Cairo'; font-weight: bold; font-size: 1.1rem; text-align: center; background: white; color: black;
+            font-family: 'Cairo'; font-weight: bold; text-align: center; font-size: 1rem;
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; width: 100%; max-width: 1000px; margin: 0 auto; }
-        .logo-box { width: clamp(40px, 8vh, 65px); height: clamp(40px, 8vh, 65px); background: white; border-radius: 50%; border: 2px solid var(--final-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
-        .title-area h1 { font-family: 'Amiri', serif; font-size: clamp(1rem, 4vh, 1.8rem); margin: 0; color: var(--final-gold); text-align: center; }
-        .card { 
-            background: var(--card-dark); padding: clamp(15px, 3vh, 25px); border-radius: 20px; 
-            border-top: 6px solid var(--final-gold); box-shadow: 0 0 30px rgba(0,0,0,0.4); 
-            text-align: center; position: relative; width: 100%; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .team-box { 
-            background: #0f172a; padding: clamp(8px, 2vh, 15px); border-radius: 15px; 
-            border: 3px solid #334155; color: var(--text-gold); text-align: center; transition: 0.3s; 
-        }
+
+        .modal { display: none; position: fixed; z-index: 40000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 3px solid var(--final-gold); width: 100%; max-width: 500px; position: relative; text-align: right; }
+        .close-modal { position: absolute; top: 10px; left: 15px; color: var(--danger); cursor: pointer; font-size: 2rem; }
+
+        .container { width: 95%; max-width: 850px; margin: 0 auto; flex: 1; display: none; flex-direction: column; padding-bottom: 180px; }
+        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .team-box { background: #0f172a; padding: 15px; border-radius: 15px; border: 3px solid #334155; text-align: center; color: var(--text-gold); transition: 0.3s; }
         .active-team { border-color: var(--final-gold); box-shadow: 0 0 20px var(--final-gold); transform: scale(1.02); }
-        #challenge-alert { font-size: clamp(0.9rem, 2vh, 1.2rem); color: var(--final-gold); font-weight: 900; animation: pulse 1.5s infinite; display: none; margin-bottom: 15px; border: 2px dashed var(--final-gold); padding: 8px; border-radius: 15px; width: 100%; }
-        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
+        .card { background: var(--card-dark); padding: 25px; border-radius: 20px; border-top: 6px solid var(--final-gold); text-align: center; min-height: 250px; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* لوحة التحكم السفلية الأصلية */
         .admin-panel { 
             position: fixed; bottom: 0; left: 0; right: 0; background: #020617; 
             padding: 10px; border-top: 5px solid var(--final-gold); 
@@ -57,33 +79,43 @@
             gap: 15px; z-index: 10000; min-height: 140px; 
         }
         .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 0.85rem; }
-        .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; width: 100%; }
-        .btn-cat { background: var(--final-gold); color: black; padding: clamp(10px, 2vh, 15px); border-radius: 10px; font-weight: 900; cursor: pointer; border: none; font-size: clamp(0.7rem, 2vw, 1rem); }
-        .btn-cat:disabled { background: #334155; color: #64748b; opacity: 0.5; }
-        #timer { font-size: clamp(2rem, 7vh, 3.5rem); color: var(--danger); font-weight: 900; line-height: 1; margin: 5px 0; }
-        #q-text { font-size: clamp(1rem, 3.5vh, 1.6rem); font-family: 'Amiri'; color: white; font-weight: bold; line-height: 1.4; padding: 0 10px; }
+        
         .footer-credit { position: fixed; bottom: 145px; left: 0; right: 0; font-size: 0.7rem; color: rgba(197,160,89,0.4); font-weight: bold; text-align: center; pointer-events: none; }
-        .answer-box { margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(197,160,89,0.1); border: 1px solid var(--final-gold); display: none; width: 100%; }
-        .finish-msg { color: var(--final-gold); font-size: 2.2rem; font-weight: 900; animation: royalPulse 2s infinite; text-align: center; }
-        @keyframes royalPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
+    <div class="main-header">
+        <img src="logo-cup.png" class="side-logo" alt="logo-cup">
+        <img src="banner-final.png" class="center-banner" alt="banner-final">
+        <img src="logo.png" class="side-logo" alt="logo">
+    </div>
+
+    <div class="top-nav">
+        <button id="home-icon" class="icon-btn" onclick="window.location.href='index.html'" title="الرئيسية">🏠</button>
+        <button class="icon-btn" onclick="toggleModal(true)" title="التعليمات">💡</button>
+    </div>
+
     <div id="setup-screen">
         <div class="setup-card">
-            <h2 style="color:var(--final-gold)">⚔️ معترك الضاد: النهائي ⚔️</h2>
-            <p>أدخل أسماء المجموعتين المتنافستين:</p>
+            <h2 style="color:var(--final-gold); margin-bottom: 20px;">⚔️ معترك الضاد: النهائي ⚔️</h2>
             <input type="text" id="name1" placeholder="اسم المجموعة الأولى">
             <input type="text" id="name2" placeholder="اسم المجموعة الثانية">
             <button class="btn-admin" style="background:var(--final-gold); color:black; width:100%; margin-top:15px; font-size:1.2rem;" onclick="startFinal()">بدء المعترك 🚀</button>
         </div>
     </div>
 
-    <div class="header-top">
-        <div class="logo-box"><img src="logo-cup.png" alt="Cup"></div>
-        <div class="title-area"><h1>🏆 النهائي الكبير 🏆</h1></div>
-        <div class="logo-box"><img src="logo.png" alt="School"></div>
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleModal(false)">&times;</span>
+            <h3 style="color:var(--final-gold); border-bottom: 1px solid var(--final-gold); padding-bottom: 10px;">📖 دليل المسابقة</h3>
+            <ul style="list-style: none; padding: 0; line-height: 2;">
+                <li>🔸 <b>النمط الفردي:</b> إجابة فردية ممنوع المساعدة.</li>
+                <li>🔸 <b>المواجهة الموجهة:</b> دور محدد لكل فريق.</li>
+                <li>🔸 <b>الاختيار الحر:</b> اختيار المكون من المخزون.</li>
+                <li>🔸 <b>جولة الحسم:</b> السرعة هي الفيصل (8 ثوانٍ).</li>
+            </ul>
+        </div>
     </div>
 
     <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مدرسة ميمونة أم المؤمنين-مديرية مراكش-</div>
@@ -91,20 +123,20 @@
     <div id="quiz-screen" class="container">
         <div id="dynamic-scoreboard" class="scoreboard"></div>
         <div class="card" id="main-card">
-            <div id="challenge-alert"></div>
+            <div id="challenge-alert" style="color: var(--final-gold); font-weight: 900; animation: pulse 1.5s infinite; display: none; margin-bottom: 15px; border: 2px dashed var(--final-gold); padding: 8px; border-radius: 15px; width: 100%; text-align: center;"></div>
             <div id="phase-label" style="background:var(--final-gold); color:black; padding:3px 15px; border-radius:50px; font-size:0.8rem; display:inline-block; margin-bottom:8px; font-weight:900;"></div>
-            <div id="timer">--</div>
-            <div id="q-text">يتم التحضير...</div>
-            <div id="choice-container" class="category-grid" style="display:none;"></div>
-            <div class="answer-box" id="manual-zone">
-                <div id="manual-answer-display" style="color: var(--final-gold); font-size: 1.4rem; font-weight: 900;">...</div>
+            <div id="timer" style="font-size: 3rem; color: var(--danger); font-weight: 900;">--</div>
+            <div id="q-text" style="font-size: 1.5rem; font-family: 'Amiri'; font-weight: bold;">يتم التحضير...</div>
+            <div id="choice-container" style="display:none; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;"></div>
+            <div class="answer-box" id="manual-zone" style="display:none; margin-top:15px; padding:12px; border-radius:12px; background:rgba(197,160,89,0.1); border:1px solid var(--final-gold);">
+                <div id="manual-answer-display" style="color: var(--final-gold); font-size: 1.4rem; font-weight: 900; text-align: center;">...</div>
             </div>
         </div>
         
         <div class="admin-panel" id="admin-p">
             <div style="display: flex; flex-direction: column; gap: 5px; border-left: 2px solid #334155; padding-left: 10px;">
-                <button class="btn-admin" style="background:var(--danger); color:white; font-size:0.7rem;" onclick="goToIndex()">🏠 مسابقة جديدة</button>
-                <button class="btn-admin" style="background:#475569; color:white; font-size:0.7rem;" onclick="resetFinalOnly()">↩️ إعادة النهائي</button>
+                <button class="btn-admin" style="background:var(--danger); color:white; font-size:0.7rem;" onclick="location.href='index.html'">🏠 مسابقة جديدة</button>
+                <button class="btn-admin" style="background:#475569; color:white; font-size:0.7rem;" onclick="location.reload()">↩️ إعادة النهائي</button>
             </div>
             <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
                 <input type="text" id="answer-input" style="padding:8px; width:130px; border-radius:8px; text-align:center; font-weight:bold;" placeholder="الجواب...">
@@ -154,7 +186,7 @@
                 ],
                 "إملاء": [
                     {q: "ما الفرق في الكتابة (الألف اللينة) بين: (**يحيى**) و (**يحيا**)؟", a: "يحيى: اسم علم (مقصورة) / يحيا: فعل مضارع (ممدودة)"},
-                    {q: "لماذا كتبت التاء مربوطة في كلمة **'رعاة'**؟", a: "   تكتب مربوطة لأنها جمع مذكر وقبلها مد ألف"}
+                    {q: "لماذا كتبت التاء مربوطة في كلمة **'رعاة'**؟", a: "تكتب مربوطة لأنها جمع مذكر وقبلها مد ألف"}
                 ]
             }
         },
@@ -174,6 +206,7 @@
         teamNames = [document.getElementById('name1').value || "المجموعة 1", document.getElementById('name2').value || "المجموعة 2"];
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'flex';
+        document.getElementById('home-icon').style.display = 'none';
         renderScoreboard();
         init();
     }
@@ -242,72 +275,58 @@
 
     function renderCategories() {
         const container = document.getElementById('choice-container');
-        const p = finalPhases[currentPhase];
         container.innerHTML = '';
-        Object.keys(p.categories).forEach(cat => {
+        Object.keys(finalPhases[2].categories).forEach(cat => {
             const btn = document.createElement('button');
-            btn.className = 'btn-cat'; btn.innerText = `${cat} (${p.categories[cat].length})`;
-            btn.disabled = p.categories[cat].length === 0;
+            btn.className = 'btn-admin'; btn.style.background = 'var(--final-gold)';
+            btn.innerText = cat;
             btn.onclick = () => {
-                const qObj = p.categories[cat].shift();
+                const qObj = finalPhases[2].categories[cat].shift();
                 document.getElementById('choice-container').style.display = "none";
                 document.getElementById('q-text').innerText = `[${cat}] ${qObj.q}`;
-                p.currentChoiceAnswer = qObj.a;
+                finalPhases[2].currentA = qObj.a;
                 selectionCount[activeTeam]++;
                 activeTeam = 1 - activeTeam;
-                startTimer(p.time, false);
+                startTimer(25, false);
             };
             container.appendChild(btn);
         });
     }
 
     function startTimer(s, shouldHide) {
-        clearInterval(timer);
         let tl = s; document.getElementById('timer').innerText = tl;
         timer = setInterval(() => { 
-            tl--; 
-            document.getElementById('timer').innerText = tl; 
-            if(tl <= 0) {
-                clearInterval(timer);
-                if(shouldHide) { 
-                    document.getElementById('q-text').style.display = 'none'; 
-                }
-            }
+            tl--; document.getElementById('timer').innerText = tl;
+            if(tl <= 0) { clearInterval(timer); if(shouldHide) document.getElementById('q-text').style.display = 'none'; }
         }, 1000);
     }
 
     function reveal() {
         clearInterval(timer);
         const p = finalPhases[currentPhase];
-        document.getElementById('q-text').style.display = 'block'; 
-        document.getElementById('manual-answer-display').innerText = (p.type === 'choice') ? p.currentChoiceAnswer : p.questions[currentQ].a;
+        document.getElementById('manual-answer-display').innerText = (p.type === 'choice') ? p.currentA : p.questions[currentQ].a;
         document.getElementById('manual-zone').style.display = "block";
+        document.getElementById('q-text').style.display = "block";
     }
 
     function next() {
         const p = finalPhases[currentPhase];
         if (p.type === 'choice') {
             if (selectionCount[0] >= 3 && selectionCount[1] >= 3) {
-                currentPhase++;
-                currentQ = 0;
-                init();
-            } else {
-                init(); 
-            }
+                currentPhase++; currentQ = 0; init();
+            } else { init(); }
         } else {
             currentQ++;
             if(currentQ >= p.questions.length) { currentQ = 0; currentPhase++; }
-            
             if(currentPhase >= finalPhases.length) {
-                const card = document.getElementById('main-card');
-                card.innerHTML = `<div class="finish-msg">🏆 انتهى النهائي الكبير 🏆<br><span style="font-size:1.2rem; color:white;">مبارك للأبطال هذا الإنجاز المستحق</span></div>`;
+                document.getElementById('main-card').innerHTML = `<div style="color:var(--final-gold); font-size:2rem; font-weight:900;">🏆 انتهى النهائي الكبير 🏆</div>`;
                 document.getElementById('admin-p').style.display = 'none'; 
             } else init();
         }
     }
 
-    function goToIndex() { if(confirm("العودة للرئيسية؟")) window.location.href = 'index.html'; }
-    function resetFinalOnly() { if(confirm("إعادة النهائي بالكامل؟")) window.location.reload(); }
+    function toggleModal(show) { document.getElementById('guideModal').style.display = show ? 'flex' : 'none'; }
+    window.onclick = function(e) { if(e.target == document.getElementById('guideModal')) toggleModal(false); }
 </script>
 </body>
 </html>

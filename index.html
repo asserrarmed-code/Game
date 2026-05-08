@@ -288,6 +288,7 @@
         const p = phasesData[currentPhase];
         currentModelAnswer = ""; rocketActive = -1;
         document.getElementById('q-text').innerText = '';
+        document.getElementById('q-text').style.display = 'block'; 
         document.getElementById('opt-container').innerHTML = '';
         document.getElementById('component-selection').style.display = 'none';
         document.getElementById('manual-zone').style.display = 'none';
@@ -298,14 +299,13 @@
         document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
         clearInterval(timer);
 
-        // تعديل النمط 4 ليكون مثل النمط 3 (سؤال مفتوح بجواب مخفي)
         if(p.name.includes("النمط 4")) {
             const q = p.questions[currentQ];
             document.getElementById('q-text').innerText = q.q;
             currentModelAnswer = q.a;
             document.getElementById('manual-zone').style.display = 'block';
             document.getElementById('manual-answer-display').innerText = "...";
-            startTimer(p.time);
+            startTimer(p.time, true); 
         } else if(p.type === 'target' || p.type === 'free') {
             const tid = phaseTurns[currentQ];
             document.getElementById('target-announcer').style.display = 'block';
@@ -346,13 +346,23 @@
         startTimer(30);
     }
 
-    function startTimer(s) {
+    function startTimer(s, isSpeedPhase = false) {
         let tl = s; document.getElementById('timer').innerText = tl;
-        timer = setInterval(() => { tl--; document.getElementById('timer').innerText = tl; if(tl<=0) clearInterval(timer); }, 1000);
+        timer = setInterval(() => { 
+            tl--; 
+            document.getElementById('timer').innerText = tl; 
+            if(tl <= 0) {
+                clearInterval(timer);
+                if(isSpeedPhase) {
+                    document.getElementById('q-text').style.display = 'none'; 
+                }
+            }
+        }, 1000);
     }
 
     function reveal() {
         clearInterval(timer);
+        document.getElementById('q-text').style.display = 'block'; 
         const p = phasesData[currentPhase];
         if(currentModelAnswer !== "") {
             document.getElementById('manual-answer-display').innerText = currentModelAnswer;

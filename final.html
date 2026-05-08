@@ -73,8 +73,31 @@
         
         .cat-badge { background: #020617; color: var(--final-gold); padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; margin-right: 5px; border: 1px solid var(--final-gold); }
 
-        .modal { display: none; position: fixed; z-index: 40000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
-        .modal-content { background: var(--card-dark); padding: 30px; border-radius: 20px; border: 3px solid var(--final-gold); width: 100%; max-width: 800px; text-align: right; line-height: 1.6; }
+        /* تعديل النمط لضمان ظهور الدليل من البداية عمودياً */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 40000; 
+            inset: 0; 
+            background: rgba(0,0,0,0.9); 
+            align-items: flex-start; /* التعديل هنا لتبدأ من الأعلى */
+            justify-content: center; 
+            overflow-y: auto; 
+            padding: 20px; 
+        }
+
+        .modal-content { 
+            background: var(--card-dark); 
+            padding: 30px; 
+            border-radius: 20px; 
+            border: 3px solid var(--final-gold); 
+            width: 100%; 
+            max-width: 800px; 
+            text-align: right; 
+            line-height: 1.6; 
+            margin-top: 20px; 
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body id="main-body">
@@ -219,8 +242,7 @@
             document.getElementById(`t-card-${activeTeam}`).classList.add('active-team');
             renderCategories(); 
             document.getElementById('choice-container').style.display = "grid";
-            // في النمط 3: العداد يبدأ فور ظهور اسم المجموعة
-            startTimer(25, false);
+            startTimer(25, false); // يبدأ العداد فور ظهور اسم المجموعة في النمط 3
         } else {
             const q = p.questions[currentQ]; qText.innerText = q.q;
             alertBox.style.display = "block";
@@ -239,7 +261,7 @@
             const btn = document.createElement('button'); btn.className = 'btn-admin'; 
             btn.style.background = count > 0 ? 'var(--final-gold)' : '#334155';
             btn.style.position = 'relative';
-            btn.innerHTML = `${cat} <span class="cat-badge">${count}</span>`;
+            btn.innerHTML = `${cat} <span class="cat-badge">${count}</span>`; // العداد الصغير للمخزون
             
             if (count > 0) {
                 btn.onclick = () => {
@@ -248,11 +270,9 @@
                     document.getElementById('q-text').innerText = `[${cat}] ${qObj.q}`;
                     finalPhases[2].currentA = qObj.a;
                     selectionCount[activeTeam]++; activeTeam = 1 - activeTeam;
-                    // تم حذف إعادة تشغيل العداد هنا لأن العداد بدأ بالفعل عند ظهور المجموعة
                 };
             } else {
-                btn.disabled = true;
-                btn.style.opacity = "0.5";
+                btn.disabled = true; btn.style.opacity = "0.5";
             }
             container.appendChild(btn);
         });
@@ -284,7 +304,7 @@
             currentQ++; if(currentQ >= (p.questions ? p.questions.length : 0)) { currentQ = 0; currentPhase++; }
             if(currentPhase >= finalPhases.length) { 
                 document.getElementById('main-card').innerHTML = `<div style="color:var(--final-gold); font-size:1.5rem;">🏆 تم الانتهاء 🏆</div>`; 
-                document.getElementById('phase-label').innerText = "انتهى المعترك مبروك للأبطال الفائزين🎆🎇🎁🎉🎊";
+                document.getElementById('phase-label').innerText = "انتهى المعترك";
             } else init();
         }
     }

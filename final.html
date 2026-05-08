@@ -17,20 +17,59 @@
             display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* تنسيق الهيدر العلوي المتجاوب */
+        /* --- التعديل الجوهري للهيدر لضمان عدم التشوه --- */
         .main-header {
             width: 100%;
-            background: rgba(15, 23, 42, 0.95);
+            background: #020617; /* لون داكن يتناغم مع خلفية البانر */
             border-bottom: 3px solid var(--final-gold);
-            padding: 10px;
+            padding: 15px 10px;
             display: flex;
-            justify-content: space-around;
+            flex-direction: column; /* ترتيب رأسي في الهواتف لمنع التزاحم */
             align-items: center;
+            gap: 15px;
             position: relative;
             z-index: 30000;
         }
-        .side-logo { width: 18%; max-width: 100px; height: auto; object-fit: contain; }
-        .center-banner { width: 55%; max-width: 400px; height: auto; object-fit: contain; }
+
+        /* حاوية اللوغوهات الجانبية في وضع الهاتف */
+        .logos-row {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+        }
+
+        .side-logo { 
+            width: 65px; 
+            height: auto; 
+            object-fit: contain; 
+            filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.5));
+        }
+
+        /* تنسيق البانر بوضعية "البطل" */
+        .center-banner { 
+            width: 100%; 
+            max-width: 650px; 
+            height: auto; 
+            border-radius: 15px; 
+            border: 2px solid var(--final-gold);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+            transition: transform 0.3s ease;
+        }
+
+        /* تحسين الترتيب في الشاشات الواسعة (الحواسيب) */
+        @media (min-width: 768px) {
+            .main-header {
+                flex-direction: row; /* العودة للترتيب الأفقي */
+                justify-content: space-around;
+                padding: 10px 20px;
+            }
+            .logos-row { width: auto; display: contents; } /* إلغاء الحاوية الإضافية في الشاشات الكبيرة */
+            .center-banner { width: 55%; }
+            .side-logo { width: 85px; }
+        }
+        /* ------------------------------------------- */
 
         /* منطقة الأيقونات */
         .top-nav {
@@ -71,7 +110,6 @@
         .active-team { border-color: var(--final-gold); box-shadow: 0 0 20px var(--final-gold); transform: scale(1.02); }
         .card { background: var(--card-dark); padding: 25px; border-radius: 20px; border-top: 6px solid var(--final-gold); text-align: center; min-height: 250px; display: flex; flex-direction: column; justify-content: center; }
         
-        /* لوحة التحكم السفلية الأصلية */
         .admin-panel { 
             position: fixed; bottom: 0; left: 0; right: 0; background: #020617; 
             padding: 10px; border-top: 5px solid var(--final-gold); 
@@ -86,9 +124,12 @@
 <body>
 
     <div class="main-header">
-        <img src="logo-cup.png" class="side-logo" alt="logo-cup">
+        <div class="logos-row">
+            <img src="logo.png" class="side-logo" alt="logo-right">
+            <img src="logo-cup.png" class="side-logo" alt="logo-left">
+        </div>
+        
         <img src="banner-final.png" class="center-banner" alt="banner-final">
-        <img src="logo.png" class="side-logo" alt="logo">
     </div>
 
     <div class="top-nav">
@@ -150,6 +191,7 @@
     </div>
 
 <script>
+    /* كود JavaScript السابق يبقى كما هو دون تغيير */
     let currentPhase = 0, currentQ = 0, timer, scores = [0,0], teamNames = [];
     let votedOnThisQuestion = [false, false];
     let selectionCount = [0, 0];

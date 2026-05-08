@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>معترك الضاد - النسخة الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        :root { 
+            --gold: #c5a059; --dark-blue: #0f172a; --card-bg: #1e293b; 
+            --text-gold: #f3e5ab; --success: #10b981; --danger: #ef4444;
+        }
+        body { 
+            background-color: var(--dark-blue); background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            color: white; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; min-height: 100vh; 
+            display: flex; flex-direction: column; overflow-x: hidden;
+        }
+        .main-header {
+            width: 100%; background: #020617; border-bottom: 4px solid var(--gold);
+            padding: 15px; display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+        }
+        .center-banner { width: 100%; max-width: 650px; height: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .setup-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .setup-card {
+            background: var(--card-bg); padding: 30px; border-radius: 20px; border: 3px solid var(--gold);
+            text-align: center; width: 95%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .setup-card input {
+            width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 2px solid var(--gold);
+            font-family: 'Cairo'; font-weight: bold; text-align: center; background: rgba(255,255,255,0.05); color: white;
+        }
+        .container { width: 95%; max-width: 850px; margin: auto; flex: 1; display: none; flex-direction: column; justify-content: center; padding-bottom: 160px; }
+        .scoreboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
+        .team-box { background: #0f172a; padding: 12px; border-radius: 15px; border: 3px solid #334155; text-align: center; position: relative; transition: 0.3s; }
+        .active-team { border-color: var(--gold); box-shadow: 0 0 20px var(--gold); transform: scale(1.02); }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 20px; border-top: 6px solid var(--gold); text-align: center; min-height: 320px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .option-btn { background: #0f172a; border: 2px solid #334155; color: white; padding: 15px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; font-size: 1rem; }
+        .option-btn:hover { border-color: var(--gold); background: #1e293b; }
+        .admin-panel { position: fixed; bottom: 0; left: 0; right: 0; background: #020617; padding: 10px; border-top: 5px solid var(--gold); display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; z-index: 1000; }
+        .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; }
+        .footer-signature { width: 100%; text-align: center; padding: 10px; font-size: 0.7rem; color: rgba(197,160,89,0.5); font-weight: bold; }
+    </style>
+</head>
+<body id="main-body">
+
+    <header class="main-header" id="top-banner">
+        <img src="banner.png" class="center-banner" alt="شعار المعترك">
+    </header>
+
+    <div id="setup-screen" class="setup-screen">
+        <div class="setup-card">
+            <h2 style="color:var(--gold); margin-bottom:20px;">⚔️ لوحة تسجيل الفرسان ⚔️</h2>
+            <div id="team-inputs" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input type="text" id="name0" placeholder="المجموعة 1">
+                <input type="text" id="name1" placeholder="المجموعة 2">
+                <input type="text" id="name2" placeholder="المجموعة 3">
+                <input type="text" id="name3" placeholder="المجموعة 4">
+            </div>
+            <button class="btn-admin" style="background:var(--gold); color:black; width:100%; margin-top:20px; font-size:1.2rem;" onclick="startCompetition()">انطلاق المعترك 🚀</button>
+        </div>
+        <div class="footer-signature">من إعداد وتصميم الأستاذ محمد أسرار -مديرية مراكش-</div>
+    </div>
+
+    <div id="quiz-screen" class="container">
+        <div id="dynamic-scoreboard" class="scoreboard"></div>
+        <div class="card" id="main-card">
+            <div id="phase-label" style="background:var(--gold); color:black; padding:4px 15px; border-radius:50px; font-size:0.8rem; display:inline-block; margin: 0 auto 10px auto; font-weight:900;"></div>
+            <div id="timer" style="font-size: 3rem; color: var(--danger); font-weight: 900; margin-bottom: 10px;">--</div>
+            <div id="q-text" style="font-size: 1.5rem; font-family: 'Amiri'; font-weight: bold; line-height: 1.4;">يتم التحميل...</div>
+            <div id="options-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;"></div>
+            <div id="manual-answer" style="display:none; margin-top:20px; font-size:1.4rem; color:var(--gold); font-weight:900; border:2px dashed var(--gold); padding:10px; border-radius:10px;"></div>
+        </div>
+        <div class="footer-signature">من إعداد وتصميم الأستاذ محمد أسرار -مديرية مراكش-</div>
+
+        <div class="admin-panel">
+            <button class="btn-admin" style="background:var(--danger); color:white" onclick="location.reload()">🔄 إعادة</button>
+            <button class="btn-admin" style="background:var(--success); color:white" onclick="revealAnswer()">✅ كشف</button>
+            <button class="btn-admin" style="background:var(--gold); color:black" onclick="nextQuestion()">التالي ➡️</button>
+            <div id="score-controls" style="display:flex; gap:5px;"></div>
+            <button class="btn-admin" style="background:#475569; color:white" onclick="location.href='admin.html'">⚙️ الإدارة</button>
+        </div>
+    </div>
+
+<script>
+    // --- الجزء المحقون: جلب الأسئلة من صفحة الإدارة ---
+    const savedData = localStorage.getItem('moatark_questions');
+    const customData = savedData ? JSON.parse(savedData) : null;
+
+    const phasesData = customData ? [
+        { name: "1. الاستجابة الجماعية", type: "all", time: 20, questions: customData.phase1 },
+        { name: "2. المواجهة الموجهة", type: "target", time: 20, questions: customData.phase2 },
+        { name: "3. الاختيار الحر", type: "free", time: 30 },
+        { name: "4. جولة السرعة", type: "all", time: 8, questions: customData.phase4 }
+    ] : [
+        // أسئلة افتراضية في حال عدم وجود بيانات مخصصة
+        { name: "1. الاستجابة الجماعية", type: "all", time: 20, questions: [{q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2}, {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء", "واو", "ألف", "نون"], a:1}] },
+        { name: "2. المواجهة الموجهة", type: "target", time: 20, questions: [{q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1}] },
+        { name: "3. الاختيار الحر", type: "free", time: 30 },
+        { name: "4. جولة السرعة", type: "all", time: 8, questions: [{q: "ما هو الوزن الصرفي لـ 'صِلة'؟", a: "عِلة"}] }
+    ];
+
+    const rawStock = (customData && customData.stock) ? customData.stock : {
+        "تراكيب": [{q: "أعرب 'عينه' في: حضر الأستاذ عينه", a: "توكيد معنوي"}],
+        "صرف": [{q: "صغ اسم الفاعل من 'استخرج'", a: "مستخرج"}],
+        "إملاء": [{q: "علل رسم الهمزة في 'ذئب'", a: "ساكنة بعد كسر"}]
+    };
+
+    let teamNames = [], scores = [0,0,0,0], currentPhase = 0, currentQ = 0, timer;
+    let activeTeamIndex = 0;
+
+    function startCompetition() {
+        for(let i=0; i<4; i++) teamNames.push(document.getElementById(`name${i}`).value || `المجموعة ${i+1}`);
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'flex';
+        document.getElementById('top-banner').style.display = 'none';
+        renderScoreboard();
+        loadQuestion();
+    }
+
+    function renderScoreboard() {
+        const sb = document.getElementById('dynamic-scoreboard');
+        const sc = document.getElementById('score-controls');
+        sb.innerHTML = ''; sc.innerHTML = '';
+        teamNames.forEach((name, i) => {
+            sb.innerHTML += `<div class="team-box" id="t-box-${i}">
+                <div style="font-size:1.5rem; font-weight:900;" id="score-${i}">${scores[i]}</div>
+                <div style="font-size:0.7rem;">${name}</div>
+            </div>`;
+            sc.innerHTML += `<button class="btn-admin" style="background:#1e293b; color:var(--gold); border:1px solid var(--gold); padding:5px;" onclick="addScore(${i}, 10)">+ ${i+1}</button>`;
+        });
+    }
+
+    function loadQuestion() {
+        clearInterval(timer);
+        const p = phasesData[currentPhase];
+        document.getElementById('phase-label').innerText = p.name;
+        document.getElementById('manual-answer').style.display = 'none';
+        document.getElementById('options-grid').style.display = 'none';
+        
+        if (p.type === 'free') {
+            document.getElementById('q-text').innerText = "اختر مجالاً من المخزون الصرفي أو التركيبي...";
+            renderStock();
+        } else {
+            const q = p.questions[currentQ];
+            document.getElementById('q-text').innerText = q.q;
+            if (q.o) {
+                renderOptions(q.o);
+                document.getElementById('options-grid').style.display = 'grid';
+            }
+            startTimer(p.time);
+        }
+        updateActiveTeam(p.type);
+    }
+
+    function renderOptions(opts) {
+        const grid = document.getElementById('options-grid');
+        grid.innerHTML = '';
+        opts.forEach(opt => {
+            grid.innerHTML += `<button class="option-btn">${opt}</button>`;
+        });
+    }
+
+    function renderStock() {
+        const grid = document.getElementById('options-grid');
+        grid.style.display = 'grid'; grid.innerHTML = '';
+        Object.keys(rawStock).forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${cat} (${rawStock[cat].length})`;
+            btn.onclick = () => {
+                const q = rawStock[cat].shift();
+                document.getElementById('q-text').innerText = q.q;
+                document.getElementById('manual-answer').innerText = q.a;
+                grid.style.display = 'none';
+                startTimer(30);
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    function startTimer(s) {
+        let timeLeft = s;
+        document.getElementById('timer').innerText = timeLeft;
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('timer').innerText = "⌛";
+            }
+        }, 1000);
+    }
+
+    function updateActiveTeam(type) {
+        document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-team'));
+        if (type === 'target') {
+            activeTeamIndex = currentQ % 4;
+            document.getElementById(`t-box-${activeTeamIndex}`).classList.add('active-team');
+        }
+    }
+
+    function revealAnswer() {
+        clearInterval(timer);
+        const p = phasesData[currentPhase];
+        const q = p.questions ? p.questions[currentQ] : null;
+        const display = document.getElementById('manual-answer');
+        display.style.display = 'block';
+        
+        if (q && q.o) display.innerText = `الجواب الصحيح: ${q.o[q.a]}`;
+        else if (q && q.a) display.innerText = `الجواب: ${q.a}`;
+    }
+
+    function nextQuestion() {
+        const p = phasesData[currentPhase];
+        if (p.questions && currentQ < p.questions.length - 1) {
+            currentQ++;
+        } else {
+            currentQ = 0;
+            currentPhase++;
+        }
+        
+        if (currentPhase >= phasesData.length) {
+            document.getElementById('main-card').innerHTML = "<h1>🏁 انتهى المعترك! هنيئاً للفرسان</h1>";
+        } else {
+            loadQuestion();
+        }
+    }
+
+    function addScore(i, pts) {
+        scores[i] += pts;
+        document.getElementById(`score-${i}`).innerText = scores[i];
+    }
+</script>
+</body>
+</html>

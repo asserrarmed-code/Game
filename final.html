@@ -17,61 +17,27 @@
             display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* --- التعديل الجوهري للهيدر لضمان عدم التشوه --- */
+        /* تنسيق الهيدر المخصص للبانر فقط */
         .main-header {
             width: 100%;
-            background: #020617; /* لون داكن يتناغم مع خلفية البانر */
+            background: #020617;
             border-bottom: 3px solid var(--final-gold);
-            padding: 15px 10px;
+            padding: 20px 10px;
             display: flex;
-            flex-direction: column; /* ترتيب رأسي في الهواتف لمنع التزاحم */
+            justify-content: center;
             align-items: center;
-            gap: 15px;
-            position: relative;
             z-index: 30000;
         }
 
-        /* حاوية اللوغوهات الجانبية في وضع الهاتف */
-        .logos-row {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 800px;
-        }
-
-        .side-logo { 
-            width: 65px; 
-            height: auto; 
-            object-fit: contain; 
-            filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.5));
-        }
-
-        /* تنسيق البانر بوضعية "البطل" */
         .center-banner { 
             width: 100%; 
-            max-width: 650px; 
+            max-width: 700px; 
             height: auto; 
             border-radius: 15px; 
             border: 2px solid var(--final-gold);
             box-shadow: 0 8px 25px rgba(0,0,0,0.7);
-            transition: transform 0.3s ease;
         }
 
-        /* تحسين الترتيب في الشاشات الواسعة (الحواسيب) */
-        @media (min-width: 768px) {
-            .main-header {
-                flex-direction: row; /* العودة للترتيب الأفقي */
-                justify-content: space-around;
-                padding: 10px 20px;
-            }
-            .logos-row { width: auto; display: contents; } /* إلغاء الحاوية الإضافية في الشاشات الكبيرة */
-            .center-banner { width: 55%; }
-            .side-logo { width: 85px; }
-        }
-        /* ------------------------------------------- */
-
-        /* منطقة الأيقونات */
         .top-nav {
             width: 100%;
             display: flex;
@@ -85,12 +51,16 @@
             width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; 
             display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
-        .icon-btn:hover { background: var(--final-gold); color: black; transform: scale(1.1); }
 
         #setup-screen {
             position: fixed; inset: 0; background: var(--final-black); z-index: 25000;
             display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+            top: 140px; /* لترك مساحة للبانر */
         }
+        
+        /* تعديل خاص لإخفاء الهيدر تماماً في شاشة الأسئلة */
+        .hide-header .main-header { display: none; }
+
         .setup-card {
             background: var(--card-dark); padding: 30px; border-radius: 20px; border: 3px solid var(--final-gold);
             text-align: center; width: 95%; max-width: 450px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
@@ -100,14 +70,10 @@
             font-family: 'Cairo'; font-weight: bold; text-align: center; font-size: 1rem;
         }
 
-        .modal { display: none; position: fixed; z-index: 40000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 3px solid var(--final-gold); width: 100%; max-width: 500px; position: relative; text-align: right; }
-        .close-modal { position: absolute; top: 10px; left: 15px; color: var(--danger); cursor: pointer; font-size: 2rem; }
-
-        .container { width: 95%; max-width: 850px; margin: 0 auto; flex: 1; display: none; flex-direction: column; padding-bottom: 180px; }
-        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .team-box { background: #0f172a; padding: 15px; border-radius: 15px; border: 3px solid #334155; text-align: center; color: var(--text-gold); transition: 0.3s; }
-        .active-team { border-color: var(--final-gold); box-shadow: 0 0 20px var(--final-gold); transform: scale(1.02); }
+        .container { width: 95%; max-width: 850px; margin: 20px auto; flex: 1; display: none; flex-direction: column; padding-bottom: 180px; }
+        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .team-box { background: #0f172a; padding: 15px; border-radius: 15px; border: 3px solid #334155; text-align: center; color: var(--text-gold); }
+        .active-team { border-color: var(--final-gold); box-shadow: 0 0 20px var(--final-gold); }
         .card { background: var(--card-dark); padding: 25px; border-radius: 20px; border-top: 6px solid var(--final-gold); text-align: center; min-height: 250px; display: flex; flex-direction: column; justify-content: center; }
         
         .admin-panel { 
@@ -116,25 +82,22 @@
             display: flex; flex-wrap: wrap; justify-content: center; align-items: center; 
             gap: 15px; z-index: 10000; min-height: 140px; 
         }
-        .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 0.85rem; }
-        
+        .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; }
         .footer-credit { position: fixed; bottom: 145px; left: 0; right: 0; font-size: 0.7rem; color: rgba(197,160,89,0.4); font-weight: bold; text-align: center; pointer-events: none; }
+        
+        .modal { display: none; position: fixed; z-index: 40000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 3px solid var(--final-gold); width: 90%; max-width: 500px; text-align: right; }
     </style>
 </head>
-<body>
+<body id="main-body">
 
-    <div class="main-header">
-        <div class="logos-row">
-            <img src="logo.png" class="side-logo" alt="logo-right">
-            <img src="logo-cup.png" class="side-logo" alt="logo-left">
-        </div>
-        
-        <img src="banner-final.png" class="center-banner" alt="banner-final">
-    </div>
+    <header class="main-header" id="top-banner">
+        <img src="banner-final.png" class="center-banner" alt="بانر النهائي الكبير">
+    </header>
 
     <div class="top-nav">
-        <button id="home-icon" class="icon-btn" onclick="window.location.href='index.html'" title="الرئيسية">🏠</button>
-        <button class="icon-btn" onclick="toggleModal(true)" title="التعليمات">💡</button>
+        <button id="home-icon" class="icon-btn" onclick="window.location.href='index.html'">🏠</button>
+        <button class="icon-btn" onclick="toggleModal(true)">💡</button>
     </div>
 
     <div id="setup-screen">
@@ -148,7 +111,6 @@
 
     <div id="guideModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="toggleModal(false)">&times;</span>
             <h3 style="color:var(--final-gold); border-bottom: 1px solid var(--final-gold); padding-bottom: 10px;">📖 دليل المسابقة</h3>
             <ul style="list-style: none; padding: 0; line-height: 2;">
                 <li>🔸 <b>النمط الفردي:</b> إجابة فردية ممنوع المساعدة.</li>
@@ -156,15 +118,16 @@
                 <li>🔸 <b>الاختيار الحر:</b> اختيار المكون من المخزون.</li>
                 <li>🔸 <b>جولة الحسم:</b> السرعة هي الفيصل (8 ثوانٍ).</li>
             </ul>
+            <button class="btn-admin" style="background:var(--danger); color:white; margin-top:10px;" onclick="toggleModal(false)">إغلاق</button>
         </div>
     </div>
 
-    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مدرسة ميمونة أم المؤمنين-مديرية مراكش-</div>
+    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مديرية مراكش-</div>
 
     <div id="quiz-screen" class="container">
         <div id="dynamic-scoreboard" class="scoreboard"></div>
         <div class="card" id="main-card">
-            <div id="challenge-alert" style="color: var(--final-gold); font-weight: 900; animation: pulse 1.5s infinite; display: none; margin-bottom: 15px; border: 2px dashed var(--final-gold); padding: 8px; border-radius: 15px; width: 100%; text-align: center;"></div>
+            <div id="challenge-alert" style="color: var(--final-gold); font-weight: 900; display: none; margin-bottom: 15px; text-align: center;"></div>
             <div id="phase-label" style="background:var(--final-gold); color:black; padding:3px 15px; border-radius:50px; font-size:0.8rem; display:inline-block; margin-bottom:8px; font-weight:900;"></div>
             <div id="timer" style="font-size: 3rem; color: var(--danger); font-weight: 900;">--</div>
             <div id="q-text" style="font-size: 1.5rem; font-family: 'Amiri'; font-weight: bold;">يتم التحضير...</div>
@@ -191,7 +154,21 @@
     </div>
 
 <script>
-    /* كود JavaScript السابق يبقى كما هو دون تغيير */
+    /* تم تعديل دالة البدء لإخفاء البانر تلقائياً */
+    function startFinal() {
+        teamNames = [document.getElementById('name1').value || "المجموعة 1", document.getElementById('name2').value || "المجموعة 2"];
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'flex';
+        document.getElementById('home-icon').style.display = 'none';
+        
+        // إخفاء البانر عند الانتقال لصفحة الأسئلة
+        document.getElementById('main-body').classList.add('hide-header');
+        
+        renderScoreboard();
+        init();
+    }
+
+    // بقية المنطق البرمجي (دون تغيير)
     let currentPhase = 0, currentQ = 0, timer, scores = [0,0], teamNames = [];
     let votedOnThisQuestion = [false, false];
     let selectionCount = [0, 0];
@@ -244,15 +221,6 @@
         }
     ];
 
-    function startFinal() {
-        teamNames = [document.getElementById('name1').value || "المجموعة 1", document.getElementById('name2').value || "المجموعة 2"];
-        document.getElementById('setup-screen').style.display = 'none';
-        document.getElementById('quiz-screen').style.display = 'flex';
-        document.getElementById('home-icon').style.display = 'none';
-        renderScoreboard();
-        init();
-    }
-
     function renderScoreboard() {
         const sb = document.getElementById('dynamic-scoreboard');
         const ctrl = document.getElementById('admin-score-controls');
@@ -296,7 +264,7 @@
 
         if (p.type === 'choice') {
             alertBox.style.display = "block";
-            alertBox.innerText = `🎲 الدور لـ: ${teamNames[activeTeam]} (اختيار ${selectionCount[activeTeam]+1} من 3)`;
+            alertBox.innerText = `🎲 الدور لـ: ${teamNames[activeTeam]}`;
             document.getElementById(`t-card-${activeTeam}`).classList.add('active-team');
             qText.innerText = "اختر المكون المناسب من المخزون:";
             renderCategories();
@@ -305,7 +273,7 @@
             const q = p.questions[currentQ];
             qText.innerText = q.q;
             alertBox.style.display = "block";
-            if (p.type === 'individual') alertBox.innerText = "⚔️ تحدي الفرسان: ممنوع المساعدة ⚔️";
+            if (p.type === 'individual') alertBox.innerText = "⚔️ تحدي الفرسان ⚔️";
             else if (p.type === 'target') {
                 const tid = currentQ % 2;
                 alertBox.innerText = `🎯 الدور لـ: ${teamNames[tid]}`;
@@ -319,19 +287,21 @@
         const container = document.getElementById('choice-container');
         container.innerHTML = '';
         Object.keys(finalPhases[2].categories).forEach(cat => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-admin'; btn.style.background = 'var(--final-gold)';
-            btn.innerText = cat;
-            btn.onclick = () => {
-                const qObj = finalPhases[2].categories[cat].shift();
-                document.getElementById('choice-container').style.display = "none";
-                document.getElementById('q-text').innerText = `[${cat}] ${qObj.q}`;
-                finalPhases[2].currentA = qObj.a;
-                selectionCount[activeTeam]++;
-                activeTeam = 1 - activeTeam;
-                startTimer(25, false);
-            };
-            container.appendChild(btn);
+            if (finalPhases[2].categories[cat].length > 0) {
+                const btn = document.createElement('button');
+                btn.className = 'btn-admin'; btn.style.background = 'var(--final-gold)';
+                btn.innerText = cat;
+                btn.onclick = () => {
+                    const qObj = finalPhases[2].categories[cat].shift();
+                    document.getElementById('choice-container').style.display = "none";
+                    document.getElementById('q-text').innerText = `[${cat}] ${qObj.q}`;
+                    finalPhases[2].currentA = qObj.a;
+                    selectionCount[activeTeam]++;
+                    activeTeam = 1 - activeTeam;
+                    startTimer(25, false);
+                };
+                container.appendChild(btn);
+            }
         });
     }
 
@@ -368,7 +338,6 @@
     }
 
     function toggleModal(show) { document.getElementById('guideModal').style.display = show ? 'flex' : 'none'; }
-    window.onclick = function(e) { if(e.target == document.getElementById('guideModal')) toggleModal(false); }
 </script>
 </body>
 </html>

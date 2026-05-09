@@ -3,173 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | معترك الضاد</title>
+    <title>لوحة التحكم الذكية | معترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #006847;
-            --gold: #c5a059;
-            --bg: #f8fafc;
-            --dark: #1e293b;
-            --ai-purple: #7c3aed;
-        }
+        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
+        .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header-logo { width: 70px; height: auto; }
+        .main-container { max-width: 950px; margin: 25px auto; padding: 0 20px; }
+        .admin-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .ai-section { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border: 2px dashed var(--ai-purple); }
+        
+        /* تصميم خانة إدخال الدروس */
+        .lesson-input-group { margin: 15px 0; display: flex; flex-direction: column; gap: 8px; }
+        .lesson-input-group label { font-weight: bold; color: var(--ai-purple); }
+        .lesson-input-group input { padding: 12px; border: 2px solid var(--ai-purple); border-radius: 10px; font-family: 'Cairo'; font-size: 1rem; outline: none; }
 
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg);
-            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
-            margin: 0;
-            padding: 0;
-            color: var(--dark);
-        }
-
-        .admin-header {
-            background: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 4px solid var(--gold);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .header-logo {
-            width: clamp(60px, 10vw, 85px);
-            height: auto;
-            object-fit: contain;
-        }
-
-        .header-title { text-align: center; }
-        .header-title h1 { margin: 0; font-size: 1.8rem; color: var(--primary); font-weight: 900; }
-        .header-title p { margin: 5px 0 0 0; font-size: 0.9rem; color: #64748b; }
-
-        .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-
-        .admin-card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .ai-section {
-            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
-            border: 2px dashed var(--ai-purple);
-        }
-
-        .ai-section h3 { color: var(--ai-purple); margin-top: 0; display: flex; align-items: center; gap: 10px; }
-
-        .json-editor {
-            width: 100%;
-            height: 350px;
-            font-family: 'Courier New', monospace;
-            padding: 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            direction: ltr;
-            text-align: left;
-            background: #0f172a;
-            color: #10b981;
-            font-size: 14px;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-family: 'Cairo';
-            font-weight: bold;
-            font-size: 1rem;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-copy { background: var(--ai-purple); color: white; }
+        .json-editor { width: 100%; height: 300px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #0f172a; border-radius: 12px; direction: ltr; text-align: left; background: #0f172a; color: #10b981; font-size: 14px; outline: none; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.9rem; }
+        .btn-copy { background: var(--ai-purple); color: white; width: 100%; justify-content: center; font-size: 1.1rem; }
         .btn-save { background: var(--primary); color: white; }
-        .btn-reset { background: #ef4444; color: white; }
+        .btn-reset { background: #3b82f6; color: white; }
+        .btn-clear { background: #ef4444; color: white; }
         .btn-home { background: var(--dark); color: white; }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
-        .device-notice {
-            text-align: center;
-            background: #fffbeb;
-            border: 1px solid #fef3c7;
-            color: #92400e;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            margin-top: 20px;
-        }
-
-        .footer-credit {
-            text-align: center;
-            padding: 30px 10px;
-            color: #94a3b8;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        .status-toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 30px;
-            border-radius: 50px;
-            color: white;
-            display: none;
-            z-index: 10000;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
+        .footer-credit { text-align: center; padding: 20px; color: #94a3b8; font-size: 0.75rem; font-weight: bold; }
+        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
     <header class="admin-header">
         <img src="logo.png" class="header-logo" alt="Logo">
-        <div class="header-title">
-            <h1>إدارة مَلحمة الضاد</h1>
-            <p>لوحة التحكم في الأسئلة والظواهر اللغوية</p>
+        <div style="text-align:center">
+            <h2 style="margin:0; color:var(--primary)">⚙️ لوحة التخصيص الذكي</h2>
         </div>
         <img src="logo-cup.png" class="header-logo" alt="Cup Logo">
     </header>
 
     <main class="main-container">
-        
         <div class="admin-card ai-section">
-            <h3>✨ توليد الأسئلة الذكي</h3>
-            <p style="font-size: 0.9rem; line-height: 1.6;">
-                انسخ الأمر (Prompt) بالضغط على الزر، ثم ألصقه في <b>ChatGPT</b>. سيقوم الذكاء الاصطناعي بتجهيز الأسئلة لك. انسخ النتيجة وألصقها في المربع الأسود أدناه.
-            </p>
-            <button class="btn btn-copy" onclick="copyPrompt()">
-                <span>📋</span> نسخ الأمر (Prompt) للذكاء الاصطناعي
-            </button>
+            <h3 style="margin-top:0">✨ صانع الأسئلة الآلي</h3>
+            <div class="lesson-input-group">
+                <label>📚 أدخل عنوان الدرس أو الدروس المراد اختبارها:</label>
+                <input type="text" id="lesson-name" placeholder="مثلاً: المفعول به، اسم الفاعل، همزة الوصل...">
+            </div>
+            <button class="btn btn-copy" onclick="copyPrompt()">📋 نسخ الأمر للذكاء الاصطناعي</button>
+            <p style="font-size: 0.8rem; color: #6b21a8; margin-top: 10px;">* بعد النسخ، ألصقه في ChatGPT وستحصل على الكود جاهزاً تماماً للصقه بالأسفل.</p>
         </div>
 
         <div class="admin-card">
-            <label style="display:block; margin-bottom:10px; font-weight:bold; color:var(--primary);">📦 محرر الأسئلة (JSON):</label>
-            <textarea id="json-editor" class="json-editor" spellcheck="false"></textarea>
+            <label style="display:block; margin-bottom:10px; font-weight:bold;">📦 محرر المحتوى (ألصق الكود هنا):</label>
+            <textarea id="json-editor" class="json-editor" spellcheck="false" placeholder="ألصق كود JSON هنا..."></textarea>
             
             <div class="btn-group">
-                <button class="btn btn-save" onclick="saveData()">💾 حفظ التغييرات</button>
+                <button class="btn btn-save" onclick="saveData()">💾 حفظ واعتماد</button>
+                <button class="btn btn-clear" onclick="clearEditor()">🗑️ تفريغ المحرر</button>
                 <button class="btn btn-reset" onclick="resetData()">🔄 استعادة الأصلي</button>
                 <a href="index.html" class="btn btn-home">🎮 دخول المسابقة</a>
-            </div>
-
-            <div class="device-notice">
-                📢 <b>ملاحظة:</b> التعديلات تحفظ في هذا المتصفح فقط. يرجى التعديل من نفس الجهاز الذي ستعرض منه المسابقة.
             </div>
         </div>
 
@@ -182,61 +76,67 @@
 
 <script>
     const defaultData = {
-        phase1: [{q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2}],
-        phase2: [{q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1}],
-        phase4: [{q: "ما هو الوزن الصرفي الصحيح لكلمة 'صِـلَة'؟", a: "عِـلَة"}],
-        stock: {
-            "تراكيب": [{q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي مرفوع"}],
-            "صرف": [{q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"}],
-            "إملاء": [{q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"}]
-        }
+        phase1: [{q: "مثال: نوع الفعل شَدَّ؟", o:["سالم", "مهموز", "مضعف", "معتل"], a:2}],
+        phase2: [{q: "مثال: إعراب المسافرون؟", o:["مفعول", "فاعل", "مبتدأ"], a:1}],
+        phase4: [{q: "مثال: وزن صلة؟", a: "علة"}],
+        stock: { "تراكيب": [], "صرف": [], "إملاء": [] }
     };
-
-    const editor = document.getElementById('json-editor');
 
     function loadData() {
         const saved = localStorage.getItem('moatark_questions');
-        editor.value = JSON.stringify(saved ? JSON.parse(saved) : defaultData, null, 4);
+        document.getElementById('json-editor').value = JSON.stringify(saved ? JSON.parse(saved) : defaultData, null, 4);
     }
 
-    function saveData() {
-        if(!confirm("هل تريد اعتماد هذه الأسئلة؟")) return;
-        try {
-            const data = JSON.parse(editor.value);
-            localStorage.setItem('moatark_questions', JSON.stringify(data));
-            showToast("✅ تم حفظ الأسئلة بنجاح!", "#006847");
-        } catch(e) {
-            alert("❌ خطأ في التنسيق! تأكد من الكود.");
+    function clearEditor() {
+        if(confirm("هل تريد تفريغ المحرر بالكامل؟")) {
+            document.getElementById('json-editor').value = "";
+            showToast("🗑️ تم تفريغ المحرر", "#ef4444");
         }
     }
 
+    function saveData() {
+        try {
+            const data = JSON.parse(document.getElementById('json-editor').value);
+            localStorage.setItem('moatark_questions', JSON.stringify(data));
+            showToast("✅ تم الحفظ والاعتماد!", var(--primary));
+        } catch(e) { alert("❌ خطأ في تنسيق الكود! تأكد من لصق الكود كاملاً."); }
+    }
+
     function resetData() {
-        if(confirm("العودة للأسئلة الأصلية؟")) {
+        if(confirm("استعادة الأسئلة الافتراضية؟")) {
             localStorage.removeItem('moatark_questions');
             loadData();
-            showToast("🔄 استعادة الأصلي", "#ef4444");
+            showToast("🔄 استعادة الأصلي", "#3b82f6");
         }
     }
 
     function copyPrompt() {
-        const promptText = `أريدك أن تعمل كمؤلف أسئلة تربوي لمستوى السادس ابتدائي بالمغرب. قم بتوليد أسئلة لدرس (اكتب اسم درسك هنا) بصيغة JSON تماماً كما في المثال التالي:\n{\n    "phase1": [{"q": "السؤال", "o": ["خيارات", "صحيحة"], "a": 0}],\n    "phase2": [{"q": "السؤال", "o": ["خيارات"], "a": 1}],\n    "phase4": [{"q": "سؤال سريع", "a": "جواب"}],\n    "stock": {\n        "تراكيب": [{"q": "سؤال", "a": "جواب"}],\n        "صرف": [{"q": "سؤال", "a": "جواب"}],\n        "إملاء": [{"q": "سؤال", "a": "جواب"}]\n    }\n}\nالتزم بالتنسيق فقط.`;
+        const lesson = document.getElementById('lesson-name').value || "(لم يتم تحديد درس)";
+        const promptText = `أريدك أن تعمل كمؤلف أسئلة تربوي لمستوى السادس ابتدائي بالمغرب. قم بتوليد أسئلة لدرس: [${lesson}] بصيغة JSON حصراً. 
+المطلوب:
+1. "phase1": 6 أسئلة خيارات.
+2. "phase2": 12 سؤال خيارات.
+3. "phase4": 4 أسئلة سريعة (سؤال وجواب نصي).
+4. "stock": 4 أسئلة لكل مكون (تراكيب، صرف، إملاء).
+
+يجب أن يكون الرد عبارة عن كود JSON فقط ليتم لصقه مباشرة في البرنامج:
+{
+    "phase1": [{"q": "", "o": [], "a": 0}],
+    "phase2": [{"q": "", "o": [], "a": 0}],
+    "phase4": [{"q": "", "a": ""}],
+    "stock": { "تراكيب": [{"q":"", "a":""}], "صرف": [], "إملاء": [] }
+}`;
         
-        const el = document.createElement('textarea');
-        el.value = promptText;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        
-        showToast("📋 تم نسخ الأمر للذاكرة!", "#7c3aed");
+        navigator.clipboard.writeText(promptText).then(() => {
+            showToast("📋 تم نسخ الأمر لدرس: " + lesson, "#7c3aed");
+        });
     }
 
     function showToast(msg, color) {
         const toast = document.getElementById('toast');
-        toast.innerText = msg;
-        toast.style.backgroundColor = color;
+        toast.innerText = msg; toast.style.backgroundColor = color;
         toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        setTimeout(() => toast.style.display = 'none', 3000);
     }
 
     loadData();

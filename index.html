@@ -79,8 +79,8 @@
         <h2 style="text-align:center;">📖 ميثاق معترك الضاد</h2>
         <div class="rule-box"><strong>1. الاستجابة الجماعية:</strong> 6 أسئلة تُحل كتابياً من طرف جميع الفرق (20 ثانية).</div>
         <div class="rule-box"><strong>2. المواجهة الموجهة:</strong> لكل فريق 3 أسئلة خاصة تظهر عشوائياً (20 ثانية).</div>
-        <div class="rule-box"><strong>3. الصناديق العجيبة:</strong> يختار الفريق (المدرسة، المحفظة، أو الكتاب) لسحب سؤال مفاجئ (30 ثانية).</div>
-        <div class="rule-box"><strong>4. جولة السرعة:</strong> 4 أسئلة خاطفة يختفي فيها السؤال بعد 8 ثوانٍ.</div>
+        <div class="rule-box"><strong>3. الصناديق العجيبة:</strong> يختار الفريق (المدرسة، المحفظة، أو الكتاب) لسحب سؤال مفاجئ (25 ثانية).</div>
+        <div class="rule-box"><strong>4. جولة السرعة:</strong> 4 أسئلة خاطفة — يختفي السؤال بعد 8 ثوانٍ، ويظهر السؤال والجواب معاً عند الكشف.</div>
         <button class="btn-admin" style="width:100%; margin-top:10px; background:var(--moroccan-blue); color:white;" onclick="closeGuide()">فهمت القواعد 🛡️</button>
     </div>
 </div>
@@ -148,26 +148,13 @@ try {
 
 /* ===== البيانات الافتراضية ===== */
 const defaultPhases = [
-     {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2},
-            {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء", "واو", "ألف", "نون"], a:1},
-            {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["فعل وفاعل", "اسمين علمين", "بداية السطر", "حرفي جر"], a:1},
-            {q: "اسم الفاعل من فعل 'كَتَبَ' هو:", o:["مكتوب", "كاتب", "يُكتب", "كتاب"], a:1},
-            {q: "الفعل المضارع 'يذهبُ' يصبح منصوباً إذا سبقه:", o:["لَمْ", "لَنْ", "لا الناهية", "مِنْ"], a:1},
-            {q: "همزة 'اسم' هي همزة:", o:["قطع", "متوسطة", "وصل", "متطرفة"], a:2}
-        ]},
-        { name: "النمط 2: المواجهة الموجهة (3 أدوار لكل فريق)", type: "target", time: 20, questions: [
-            {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
-            {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1},
-            {q: "الوزن الصرفي لكلمة 'انطلق' هو:", o:["انفعل", "افتعل", "تفاعل", "فعلل"], a:0},
-            {q: "صغ اسم التفضيل من 'صَغُرَ':", o:["صغير", "أصغر", "صاغر", "تصغير"], a:1},
-            {q: "جمع 'نافذة' هو جمع تكسير صورته:", o:["نافذات", "أنفذة", "نوافذ", "نافذون"], a:2},
-            {q: "أعرب 'أباك' في (ساعد أباك):", o:["فاعل", "مفعول به منصوب بالألف", "اسم مجرور", "مبتدأ"], a:1},
-            {q: "ما هو اسم الآلة من 'بَرَدَ'؟", o:["بارد", "مبرد", "مبورد", "براد"], a:1},
-            {q: "إعراب 'تلميذاً' في (جاء عشرون تلميذاً):", o:["حال", "تمييز", "نعت", "مضاف إليه"], a:1},
-            {q: "الفعل المعتل 'سعى' نوعه:", o:["مثال", "أجوف", "ناقص", "لفيف مقرون"], a:2},
-            {q: "علامة جزم الأفعال الخمسة هي:", o:["السكون", "حذف النون", "ثبوت النون", "الفتحة"], a:1},
-            {q: "لماذا كتبت الهمزة على الواو في 'سُؤَال'؟", o:["مكسورة", "مفتوحة وقبلها ضم", "ساكنة", "مضمومة"], a:1},
-            {q: "الجملة المؤولة من (أن تجتهد) هي:", o:["مجتهد", "اجتهادك", "تجتهدون", "جهدك"], a:1}
+    {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم","مهموز","مضعف","معتل"], a:2},
+    {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء","واو","ألف","نون"], a:1},
+    {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["فعل وفاعل","اسمين علمين","بداية السطر","حرفي جر"], a:1},
+    {q: "اسم الفاعل من فعل 'كَتَبَ' هو:", o:["مكتوب","كاتب","يُكتب","كتاب"], a:1},
+    {q: "الفعل المضارع 'يذهبُ' يصبح منصوباً إذا سبقه:", o:["لَمْ","لَنْ","لا الناهية","مِنْ"], a:1}
+];
+
 const defaultStock = {
     "المدرسة": [
         {q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي"},
@@ -191,13 +178,12 @@ const defaultStock = {
 
 /* ===== متغيرات اللعبة ===== */
 let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
-let votedOnThisQuestion = [], currentModelAnswer = "";
+let votedOnThisQuestion = [], currentModelAnswer = "", currentQuestionText = "";
 let lifelinesState = [], rocketActive = -1;
 
-/* ===== متغيرات النمط 3 — المخزون والذاكرة ===== */
-let stockCounts = {};   // عدد الأسئلة المتبقية لكل صندوق
-let usedByBox   = {};   // الأسئلة المستخدمة لكل صندوق
-
+/* ===== متغيرات النمط 3 ===== */
+let stockCounts = {};
+let usedByBox   = {};
 const STOCK_KEYS = ["المدرسة", "المحفظة", "الكتاب"];
 
 const phasesData = [
@@ -218,7 +204,7 @@ const phasesData = [
     {
         name: "النمط 3: الصناديق العجيبة",
         type: "free",
-        time: 30
+        time: 25
     },
     {
         name: "النمط 4: جولة السرعة",
@@ -246,17 +232,13 @@ function getStockData() {
     return defaultStock;
 }
 
-/* ================================================
-   تهيئة مخزون النمط 3
-   عدد أسئلة كل صندوق = عدد الفرق
-================================================ */
 function initStockCounts() {
     const n = teamNames.length;
     stockCounts = {};
     usedByBox   = {};
     STOCK_KEYS.forEach(key => {
-        stockCounts[key] = n;          // كل صندوق يبدأ بعدد يساوي الفرق
-        usedByBox[key]   = new Set();  // لا أسئلة مستخدمة في البداية
+        stockCounts[key] = n;
+        usedByBox[key]   = new Set();
     });
 }
 
@@ -281,7 +263,7 @@ function startMarathon() {
         scores.push(0);
         lifelinesState.push({ del: false, dou: false, stp: false });
     }
-    initStockCounts(); // ← تهيئة المخزون بعد معرفة عدد الفرق
+    initStockCounts();
     document.getElementById('setup-screen').style.display = 'none';
     document.getElementById('quiz-screen').style.display  = 'flex';
     document.getElementById('back-to-setup').style.display = 'flex';
@@ -352,7 +334,6 @@ function prepareTurns() {
     if (p.type === 'target') {
         for (let i = 0; i < count; i++) for (let j = 0; j < 3; j++) phaseTurns.push(i);
     } else if (p.type === 'free') {
-        // كل فريق يحصل على دورين بالضبط
         for (let i = 0; i < count; i++) for (let j = 0; j < 2; j++) phaseTurns.push(i);
     }
     phaseTurns.sort(() => Math.random() - 0.5);
@@ -361,7 +342,10 @@ function prepareTurns() {
 function init() {
     votedOnThisQuestion = teamNames.map(() => false);
     const p = phasesData[currentPhase];
-    currentModelAnswer = ""; rocketActive = -1; clearInterval(timer);
+    currentModelAnswer  = "";
+    currentQuestionText = ""; // ← تصفير نص السؤال المحفوظ
+    rocketActive = -1;
+    clearInterval(timer);
 
     document.getElementById('q-text').innerText                = '';
     document.getElementById('opt-container').innerHTML         = '';
@@ -391,10 +375,15 @@ function init() {
         displayQuestion(p.questions[currentQ]);
 
     } else if (p.type === 'speed') {
+        /* ================================================
+           النمط 4: يعرض السؤال — يختفي بعد 8 ثوانٍ
+           الكشف يُعيد السؤال ويظهر الجواب معاً
+        ================================================ */
         const q = p.questions[currentQ];
         if (!q) return;
+        currentQuestionText = q.q;          // ← حفظ نص السؤال
+        currentModelAnswer  = q.a;
         document.getElementById('q-text').innerText = q.q;
-        currentModelAnswer = q.a;
         document.getElementById('manual-zone').style.display = 'block';
         startTimer(p.time, true);
 
@@ -414,27 +403,18 @@ function displayQuestion(q) {
     startTimer(phasesData[currentPhase].time);
 }
 
-/* ================================================
-   showFreeSelection — مع عداد حي وتعطيل الفارغ
-================================================ */
 function showFreeSelection() {
     document.getElementById('component-selection').style.display = 'flex';
-
     STOCK_KEYS.forEach(key => {
         const remaining = stockCounts[key];
         const countEl   = document.getElementById(`count-${key}`);
         const btnEl     = document.getElementById(`btn-${key}`);
-
-        // تحديث العداد
         countEl.innerText = `(${remaining})`;
-
         if (remaining <= 0) {
-            // صندوق فارغ — يُعطَّل ويخفت
             btnEl.disabled = true;
             btnEl.classList.add('depleted');
             btnEl.onclick = null;
         } else {
-            // صندوق متاح
             btnEl.disabled = false;
             btnEl.classList.remove('depleted');
             btnEl.onclick = () => selectComponent(key);
@@ -442,31 +422,19 @@ function showFreeSelection() {
     });
 }
 
-/* ================================================
-   selectComponent — مع إنقاص العداد وتعطيل الصندوق
-================================================ */
 function selectComponent(key) {
-    // حماية مزدوجة — لا نأخذ من صندوق فارغ
     if (stockCounts[key] <= 0) return;
-
     const stock     = getStockData();
     const questions = stock[key];
     if (!questions || questions.length === 0) return alert("هذا الصندوق فارغ!");
 
-    // اختيار سؤال لم يُستخدم في هذا الصندوق
     let available = questions.filter(q => !usedByBox[key].has(q.q));
-    if (available.length === 0) {
-        usedByBox[key].clear();
-        available = questions;
-    }
+    if (available.length === 0) { usedByBox[key].clear(); available = questions; }
 
     const item = available[Math.floor(Math.random() * available.length)];
     usedByBox[key].add(item.q);
-
-    // ← إنقاص مخزون هذا الصندوق
     stockCounts[key]--;
 
-    // تحديث العداد المرئي فوراً
     document.getElementById(`count-${key}`).innerText = `(${stockCounts[key]})`;
     if (stockCounts[key] <= 0) {
         const btnEl = document.getElementById(`btn-${key}`);
@@ -482,6 +450,9 @@ function selectComponent(key) {
     startTimer(30);
 }
 
+/* ================================================
+   startTimer — النمط 4: السؤال يختفي عند انتهاء الوقت
+================================================ */
 function startTimer(s, isSpeed = false) {
     let tl = s;
     document.getElementById('timer').innerText = tl;
@@ -490,18 +461,30 @@ function startTimer(s, isSpeed = false) {
         document.getElementById('timer').innerText = tl;
         if (tl <= 0) {
             clearInterval(timer);
-            if (isSpeed) document.getElementById('q-text').innerText = "⏱️ انتهى الوقت!";
+            if (isSpeed) {
+                // ← السؤال يختفي — لا يظهر إلا عند الكشف
+                document.getElementById('q-text').innerText = '';
+            }
         }
     }, 1000);
 }
 
+/* ================================================
+   reveal — النمط 4: يُعيد السؤال ويظهر الجواب معاً
+================================================ */
 function reveal() {
     clearInterval(timer);
     const p = phasesData[currentPhase];
+
     if (currentModelAnswer !== "") {
+        // إعادة نص السؤال إن كان مخفياً (النمط 4 أو الصناديق)
+        if (currentQuestionText) {
+            document.getElementById('q-text').innerText = currentQuestionText;
+        }
         document.getElementById('manual-answer-display').innerText   = currentModelAnswer;
         document.getElementById('manual-answer-display').style.color = 'var(--success)';
         document.getElementById('manual-zone').style.display = 'block';
+
     } else if (p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
         const d    = p.questions[currentQ];
         const opts = document.querySelectorAll('.opt');

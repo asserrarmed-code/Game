@@ -8,72 +8,93 @@
     <style>
         :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
-        
         .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .header-logo { width: 70px; height: auto; }
-        
-        .main-container { max-width: 950px; margin: 25px auto; padding: 0 20px; }
+        .main-container { max-width: 950px; margin: 20px auto; padding: 0 20px; }
         .admin-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        
         .ai-section { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border: 2px dashed var(--ai-purple); }
         
-        .lesson-input-group { margin: 15px 0; display: flex; flex-direction: column; gap: 8px; }
-        .lesson-input-group label { font-weight: bold; color: var(--ai-purple); }
-        .lesson-input-group input { padding: 12px; border: 2px solid var(--ai-purple); border-radius: 10px; font-family: 'Cairo'; font-size: 1rem; outline: none; }
+        /* لوحة التخصيص الجديدة */
+        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .input-box { display: flex; flex-direction: column; gap: 5px; }
+        .input-box label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; }
+        .input-box select, .input-box input { padding: 10px; border: 2px solid #ddd; border-radius: 10px; font-family: 'Cairo'; outline: none; transition: 0.3s; }
+        .input-box select:focus, .input-box input:focus { border-color: var(--ai-purple); }
 
-        .json-editor { width: 100%; height: 300px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #0f172a; border-radius: 12px; direction: ltr; text-align: left; background: #0f172a; color: #10b981; font-size: 14px; outline: none; box-sizing: border-box; }
-        
+        .json-editor { width: 100%; height: 300px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #0f172a; border-radius: 12px; direction: ltr; text-align: left; background: #0f172a; color: #10b981; font-size: 14px; box-sizing: border-box; }
         .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
-        .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.9rem; }
-        
-        .btn-copy { background: var(--ai-purple); color: white; width: 100%; justify-content: center; font-size: 1.1rem; }
+        .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
+        .btn-copy { background: var(--ai-purple); color: white; width: 100%; justify-content: center; }
         .btn-save { background: var(--primary); color: white; }
         .btn-clear { background: #ef4444; color: white; }
-        .btn-reset { background: #3b82f6; color: white; }
         .btn-home { background: var(--dark); color: white; }
         
-        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
-        /* ستايل الملاحظة الهامة */
-        .device-notice { background: #fffbeb; border: 1px solid #fcd34d; padding: 15px; border-radius: 12px; font-size: 0.9rem; margin: 20px 0; color: #92400e; text-align: center; line-height: 1.6; }
-
+        .device-notice { background: #fffbeb; border: 1px solid #fcd34d; padding: 12px; border-radius: 12px; font-size: 0.85rem; margin-bottom: 20px; color: #92400e; text-align: center; }
         .footer-credit { text-align: center; padding: 20px; color: #94a3b8; font-size: 0.75rem; font-weight: bold; }
-        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; font-weight: bold; }
+        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; }
     </style>
 </head>
 <body>
 
     <header class="admin-header">
-        <img src="logo.png" class="header-logo" alt="Logo">
-        <div style="text-align:center">
-            <h2 style="margin:0; color:var(--primary)">⚙️ لوحة التخصيص الذكي</h2>
-        </div>
-        <img src="logo-cup.png" class="header-logo" alt="Cup Logo">
+        <img src="logo.png" class="header-logo">
+        <h2 style="margin:0; color:var(--primary)">⚙️ لوحة التخصيص الذكي</h2>
+        <img src="logo-cup.png" class="header-logo">
     </header>
 
     <main class="main-container">
         
         <div class="device-notice">
-            ⚠️ <b>تنبيه هام جداً:</b> هذه الأسئلة تُحفظ فقط في ذاكرة <b>هذا المتصفح وهذا الجهاز</b>. إذا قمت بتغيير الأسئلة هنا، يجب أن تستخدم نفس هذا الحاسوب عند عرض المسابقة للتلاميذ في القسم.
+            ⚠️ <b>ملاحظة:</b> الأسئلة تحفظ في هذا المتصفح فقط. استخدم نفس الجهاز عند العرض في القسم.
         </div>
 
         <div class="admin-card ai-section">
             <h3 style="margin-top:0">✨ صانع الأسئلة الآلي</h3>
-            <div class="lesson-input-group">
-                <label>📚 أدخل عنوان الدرس أو الدروس:</label>
-                <input type="text" id="lesson-name" placeholder="مثلاً: المفعول به، اسم الفاعل...">
+            
+            <div class="config-grid">
+                <div class="input-box" style="grid-column: span 2;">
+                    <label>📚 موضوع الدرس أو الدروس:</label>
+                    <input type="text" id="lesson-name" placeholder="مثلاً: المفعول به، اسم الفاعل...">
+                </div>
+                <div class="input-box">
+                    <label>🎓 المستوى المستهدف:</label>
+                    <select id="level">
+                        <option value="الأول">الأول ابتدائي</option>
+                        <option value="الثاني">الثاني ابتدائي</option>
+                        <option value="الثالث">الثالث ابتدائي</option>
+                        <option value="الرابع">الرابع ابتدائي</option>
+                        <option value="الخامس">الخامس ابتدائي</option>
+                        <option value="السادس" selected>السادس ابتدائي</option>
+                    </select>
+                </div>
+                <div class="input-box">
+                    <label>📊 درجة الصعوبة:</label>
+                    <select id="difficulty">
+                        <option value="متدرجة (من السهل للصعب)">صعوبة متدرجة</option>
+                        <option value="متوسطة">متوسطة</option>
+                        <option value="تحدي وصعبة">صعبة</option>
+                    </select>
+                </div>
+                <div class="input-box">
+                    <label>🔢 عدد أسئلة المرحلة الثانية:</label>
+                    <input type="number" id="q-count" value="12" min="6" max="30">
+                </div>
+                <div class="input-box">
+                    <label>📦 أسئلة الصناديق (لكل صندوق):</label>
+                    <input type="number" id="stock-count" value="4" min="2" max="10">
+                </div>
             </div>
-            <button class="btn btn-copy" id="copyBtn" onclick="copyPrompt()">📋 نسخ الأمر (Prompt) للذكاء الاصطناعي</button>
+
+            <button class="btn btn-copy" onclick="copyPrompt()">📋 نسخ الأمر (Prompt) المخصص</button>
         </div>
 
         <div class="admin-card">
-            <label style="display:block; margin-bottom:10px; font-weight:bold;">📦 محرر المحتوى (ألصق الكود هنا):</label>
-            <textarea id="json-editor" class="json-editor" spellcheck="false" placeholder="ألصق كود JSON هنا..."></textarea>
+            <label style="display:block; margin-bottom:10px; font-weight:bold;">📦 محرر المحتوى (ألصق النتيجة هنا):</label>
+            <textarea id="json-editor" class="json-editor" spellcheck="false"></textarea>
             
             <div class="btn-group">
                 <button class="btn btn-save" onclick="saveData()">💾 حفظ واعتماد</button>
                 <button class="btn btn-clear" onclick="clearEditor()">🗑️ تفريغ المحرر</button>
-                <button class="btn btn-reset" onclick="resetData()">🔄 استعادة الأصلي</button>
                 <a href="index.html" class="btn btn-home">🎮 دخول المسابقة</a>
             </div>
         </div>
@@ -86,72 +107,46 @@
     <div id="toast" class="status-toast"></div>
 
 <script>
-    const defaultData = {
-        phase1: [{q: "مثال: نوع الفعل شَدَّ؟", o:["سالم", "مهموز", "مضعف", "معتل"], a:2}],
-        phase2: [{q: "مثال: إعراب المسافرون؟", o:["مفعول", "فاعل", "مبتدأ"], a:1}],
-        phase4: [{q: "مثال: وزن صلة؟", a: "علة"}],
-        stock: { "تراكيب": [], "صرف": [], "إملاء": [] }
-    };
-
-    function loadData() {
-        const saved = localStorage.getItem('moatark_questions');
-        document.getElementById('json-editor').value = JSON.stringify(saved ? JSON.parse(saved) : defaultData, null, 4);
-    }
-
-    // كود النسخ المطور والمضمون
     function copyPrompt() {
-        const lesson = document.getElementById('lesson-name').value || "(لم يتم تحديد درس)";
-        const promptText = `أريدك أن تعمل كمؤلف أسئلة تربوي لمستوى السادس ابتدائي بالمغرب. قم بتوليد أسئلة لدرس: [${lesson}] بصيغة JSON حصراً. 
-المطلوب:
-1. "phase1": 6 أسئلة خيارات.
-2. "phase2": 12 سؤال خيارات.
-3. "phase4": 4 أسئلة سريعة (سؤال وجواب نصي).
-4. "stock": 4 أسئلة لكل مكون (تراكيب، صرف، إملاء).
+        const lesson = document.getElementById('lesson-name').value || "(موضوع عام في اللغة العربية)";
+        const level = document.getElementById('level').value;
+        const diff = document.getElementById('difficulty').value;
+        const qCount = document.getElementById('q-count').value;
+        const sCount = document.getElementById('stock-count').value;
 
-يجب أن يكون الرد عبارة عن كود JSON فقط ليتم لصقه مباشرة في البرنامج:
+        const promptText = `أنت خبير تربوي مغربي. ولد أسئلة للمستوى [${level}] حول درس [${lesson}] بصعوبة [${diff}]. 
+التزم بالمنهاج الرسمي المغربي.
+المطلوب كود JSON فقط يحتوي على:
+1. "phase1": (6) أسئلة خيارات تمهيدية.
+2. "phase2": (${qCount}) سؤال خيارات للمسابقة.
+3. "phase4": (4) أسئلة حسم نهائي (سؤال وجواب نصي).
+4. "stock": قم بتوزيع (${sCount * 3}) سؤالاً على 3 مجموعات مجهولة النوع تسمر "Group_A" و "Group_B" و "Group_C" (كل مجموعة بها ${sCount} أسئلة متنوعة).
+
+يجب أن يكون الرد كود JSON فقط:
 {
-    "phase1": [{"q": "", "o": [], "a": 0}],
-    "phase2": [{"q": "", "o": [], "a": 0}],
-    "phase4": [{"q": "", "a": ""}],
-    "stock": { "تراكيب": [], "صرف": [], "إملاء": [] }
+  "phase1": [{"q":"", "o":[], "a":0}],
+  "phase2": [{"q":"", "o":[], "a":0}],
+  "phase4": [{"q":"", "a":""}],
+  "stock": { "Group_A": [], "Group_B": [], "Group_C": [] }
 }`;
 
-        const textArea = document.createElement("textarea");
-        textArea.value = promptText;
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-            document.execCommand('copy');
-            showToast("📋 تم نسخ الأمر بنجاح!", "#7c3aed");
-        } catch (err) {
-            alert("عذراً، تعذر النسخ التلقائي. يرجى نسخ النص يدوياً.");
-        }
-        document.body.removeChild(textArea);
-    }
-
-    function clearEditor() {
-        if(confirm("هل تريد تفريغ المحرر بالكامل؟")) {
-            document.getElementById('json-editor').value = "";
-            showToast("🗑️ تم تفريغ المحرر", "#ef4444");
-        }
+        const ta = document.createElement("textarea"); ta.value = promptText;
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast("📋 تم نسخ الأمر بنجاح!", "#7c3aed");
     }
 
     function saveData() {
         try {
             const data = JSON.parse(document.getElementById('json-editor').value);
             localStorage.setItem('moatark_questions', JSON.stringify(data));
-            showToast("✅ تم الحفظ والاعتماد!", "#006847");
-        } catch(e) { alert("❌ خطأ في تنسيق الكود! تأكد من لصق الكود كاملاً وبشكل صحيح."); }
+            showToast("✅ تم الحفظ بنجاح!", "#006847");
+        } catch(e) { alert("❌ خطأ: تأكد من لصق الكود كاملاً."); }
     }
 
-    function resetData() {
-        if(confirm("استعادة الأسئلة الافتراضية؟")) {
-            localStorage.removeItem('moatark_questions');
-            loadData();
-            showToast("🔄 استعادة الأصلي", "#3b82f6");
-        }
-    }
-
+    function clearEditor() { if(confirm("تفريغ؟")) { document.getElementById('json-editor').value = ""; } }
+    
     function showToast(msg, color) {
         const toast = document.getElementById('toast');
         toast.innerText = msg; toast.style.backgroundColor = color;
@@ -159,7 +154,11 @@
         setTimeout(() => toast.style.display = 'none', 3000);
     }
 
-    loadData();
+    // تحميل البيانات عند الفتح
+    window.onload = () => {
+        const saved = localStorage.getItem('moatark_questions');
+        if(saved) document.getElementById('json-editor').value = JSON.stringify(JSON.parse(saved), null, 4);
+    };
 </script>
 </body>
 </html>

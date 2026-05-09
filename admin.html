@@ -2,138 +2,110 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الاحترافية | معترك الضاد</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مُعترك الضاد: مَلحمة الظواهر اللغوية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; }
-        .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); }
-        .main-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
-
-        .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-
-        .ai-section {
-            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-            border: 2px dashed var(--ai-purple);
+        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+        :root {
+            --moroccan-blue: #006847;
+            --moroccan-gold: #c5a059;
+            --deep-red: #8b0000;
+            --bg-light: #f4f1ea;
+            --card: #ffffff;
+            --text: #333;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        body { margin:0; font-family:'Cairo'; background:var(--bg-light); color:var(--text); }
 
-        input, select, textarea {
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            font-family: 'Cairo';
-        }
-
-        .json-editor {
-            width: 100%;
-            height: 250px;
-            font-family: monospace;
+        .admin-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: #1e293b;
-            color: #10b981;
-            border-radius: 10px;
-            padding: 12px;
-            direction: ltr;
+            padding: 15px;
+            display:flex;
+            gap:10px;
+            justify-content:center;
         }
 
-        .btn { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; color: white; font-weight: bold; }
+        .btn {
+            padding: 12px 18px;
+            border-radius: 10px;
+            border:none;
+            cursor:pointer;
+            font-weight:bold;
+        }
 
-        .btn-ai1 { background: #7c3aed; width: 48%; }
-        .btn-ai2 { background: #0ea5e9; width: 48%; }
+        .ai1 { background:#7c3aed; color:white; }
+        .ai2 { background:#0ea5e9; color:white; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-
-        .status { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 10px 25px; border-radius: 50px; display: none; color: white; }
+        textarea {
+            width:100%;
+            height:200px;
+        }
     </style>
 </head>
 
 <body>
 
-<header class="admin-header">
-    <h2>معترك الضاد - لوحة التحكم</h2>
-</header>
+<div style="padding:20px;">
+    <h2>لوحة التحكم</h2>
 
-<div class="main-container">
+    <input id="lesson_title" placeholder="عنوان الدرس">
+    <br><br>
+    <select id="lesson_level">
+        <option>السادس ابتدائي</option>
+        <option>الخامس ابتدائي</option>
+    </select>
 
-    <!-- AI PROMPT SECTION -->
-    <div class="admin-card ai-section">
+    <br><br>
 
-        <h3>مولد البرومبت</h3>
-
-        <div class="input-grid">
-            <input id="lesson" placeholder="عنوان الدرس">
-            <select id="level">
-                <option>السادس ابتدائي</option>
-                <option>الخامس ابتدائي</option>
-            </select>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn btn-ai1" onclick="copyPrompt(1)">📋 البرومبت 1</button>
-            <button class="btn btn-ai2" onclick="copyPrompt(2)">⚡ البرومبت 2 (صارم)</button>
-        </div>
-
-    </div>
-
-    <!-- JSON INPUT -->
-    <div class="admin-card">
-
-        <h3>استيراد JSON</h3>
-
-        <textarea id="json"></textarea>
-
-        <div class="btn-group">
-            <button class="btn" style="background:#006847" onclick="save()">حفظ</button>
-            <button class="btn" style="background:#ef4444" onclick="clearBox()">مسح</button>
-        </div>
-
-    </div>
-
+    <textarea id="json_input"></textarea>
 </div>
 
-<div id="status" class="status"></div>
+<!-- زرارين فقط بدون تغيير تصميمك -->
+<div class="admin-panel">
+    <button class="btn ai1" onclick="generateAndCopy(1)">📋 البرومبت 1</button>
+    <button class="btn ai2" onclick="generateAndCopy(2)">⚡ البرومبت 2</button>
+</div>
 
 <script>
 
-/* =======================
-   PROMPT 1 (الأصلي)
-======================= */
-function prompt1(lvl, lesson){
-return `أنت مولد بيانات JSON فقط للعبة معترك الضاد.
+function buildPrompt(lesson, level){
+return `أنت مولد بيانات JSON للعبة معترك الضاد.
 
 الموضوع: ${lesson}
-المستوى: ${lvl}
+المستوى: ${level}
 
 {
-  "phase1": 6 أسئلة MCQ,
-  "phase2": 12 أسئلة MCQ,
-  "phase4": 4 أسئلة مفتوحة,
-  "stock": {
-    "المدرسة": 4,
-    "المحفظة": 4,
-    "الكتاب": 4
-  }
+ "phase1": 6,
+ "phase2": 12,
+ "phase4": 4,
+ "stock": {
+   "المدرسة": 4,
+   "المحفظة": 4,
+   "الكتاب": 4
+ }
 }
 
 MCQ: q + o[4] + a(0-3)
-OPEN: q + a فقط
-
-JSON فقط بدون شرح`;
+OPEN: q + a
+JSON فقط`;
 }
 
-/* =======================
-   PROMPT 2 (صارم جداً)
-======================= */
-function prompt2(lvl, lesson){
+/* ===== البرومبت الثاني ===== */
+function buildPrompt2(lesson, level){
 return `أنت مولد JSON صارم جداً.
 
 ممنوع أي نص خارج JSON.
 
 الموضوع: ${lesson}
-المستوى: ${lvl}
+المستوى: ${level}
 
 {
 "phase1":[6 MCQ],
@@ -147,52 +119,23 @@ return `أنت مولد JSON صارم جداً.
 }
 
 قواعد:
-- phase1/2 MCQ فقط q/o/a
-- phase4 + stock = q/a فقط
-- a رقم في MCQ (0-3)
-- JSON صافي بدون أي شرح`;
+- JSON فقط
+- بدون شرح
+- بدون markdown
+- كل إجابة صحيحة 100%`;
 }
 
-/* =======================
-   COPY
-======================= */
-function copyPrompt(type){
-    const lesson = document.getElementById('lesson').value;
-    const lvl = document.getElementById('level').value;
+/* ===== اختيار البرومبت ===== */
+async function generateAndCopy(type){
+    const lesson = document.getElementById('lesson_title').value;
+    const level = document.getElementById('lesson_level').value;
 
-    const text = type === 1 ? prompt1(lvl, lesson) : prompt2(lvl, lesson);
+    const prompt = type === 1
+        ? buildPrompt(lesson, level)
+        : buildPrompt2(lesson, level);
 
-    navigator.clipboard.writeText(text);
-
-    show("تم نسخ البرومبت");
-}
-
-/* =======================
-   SAVE JSON
-======================= */
-function save(){
-    try {
-        const data = JSON.parse(document.getElementById('json').value);
-        localStorage.setItem("moatark_questions", JSON.stringify(data));
-        show("تم الحفظ");
-    } catch {
-        show("JSON خطأ", true);
-    }
-}
-
-function clearBox(){
-    document.getElementById('json').value = "";
-}
-
-/* =======================
-   UI
-======================= */
-function show(msg, err=false){
-    const s = document.getElementById('status');
-    s.innerText = msg;
-    s.style.background = err ? "#ef4444" : "#10b981";
-    s.style.display = "block";
-    setTimeout(()=>s.style.display="none", 3000);
+    await navigator.clipboard.writeText(prompt);
+    alert("تم نسخ البرومبت");
 }
 
 </script>

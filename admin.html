@@ -2,108 +2,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | معترك الضاد</title>
+    <title>لوحة التخصيص الذكي | معترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #006847; --gold: #c5a059; --ai: #7c3aed; }
-        body { font-family: 'Cairo', sans-serif; background: #f8fafc; text-align: center; margin:0; }
-        .card { background: white; max-width: 800px; margin: 20px auto; padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .ai-zone { background: #f5f3ff; border: 2px dashed var(--ai); }
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: 'Cairo'; }
-        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.2s; }
-        .btn-ai { background: var(--ai); color: white; width: 100%; font-size: 1.1rem; }
+        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; --warn: #fffbeb; --warn-border: #fef3c7; --warn-text: #92400e; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
+        .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); }
+        .header-logo { width: 70px; }
+        .main-container { max-width: 950px; margin: 20px auto; padding: 0 20px; }
+        .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; text-align: center; }
+        .ai-section { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
+        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; text-align: right; }
+        .input-box { display: flex; flex-direction: column; gap: 5px; }
+        .input-box label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; }
+        .input-box input, select { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; }
+        .json-editor { width: 100%; height: 250px; font-family: monospace; padding: 15px; border-radius: 12px; background: #0f172a; color: #10b981; direction: ltr; border:none; margin-top: 10px; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 15px; }
+        .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; }
+        .btn-copy-ai { background: var(--ai-purple); color: white; width: 100%; font-size: 1.1rem; }
+        .btn-paste { background: #6366f1; color: white; }
         .btn-save { background: var(--primary); color: white; }
-        .editor { background: #1e293b; color: #10b981; font-family: monospace; height: 200px; direction: ltr; margin-top: 15px; resize: none; }
-        #status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 999; }
+        .btn-clear { background: #ef4444; color: white; }
+        .btn-reset { background: #3b82f6; color: white; }
+        .status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: black; color: white; padding: 12px 25px; border-radius: 30px; display:none; z-index: 10001; font-weight: bold; }
+        footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; border-top: 1px solid #e2e8f0; margin-top: 30px; }
     </style>
 </head>
 <body>
 
-<div class="card ai-zone">
-    <h3 style="color:var(--ai)">🤖 مولد البرومبت (بنية الاندكس الأصلية)</h3>
-    <div class="input-group">
-        <input id="lesson" placeholder="اسم الدرس...">
-        <select id="level"><option>السادس ابتدائي</option></select>
+<header class="admin-header">
+    <img src="logo.png" class="header-logo">
+    <h2>⚙️ لوحة التخصيص الذكي</h2>
+    <img src="logo-cup.png" class="header-logo">
+</header>
+
+<div class="main-container">
+    <div class="admin-card ai-section">
+        <h3 style="color:var(--ai-purple); margin:0 0 20px 0;">✨ مولّد البيانات المباشر</h3>
+        <div class="config-grid">
+            <div class="input-box">
+                <label>📚 موضوع الدرس</label>
+                <input id="lesson" placeholder="مثلاً: الحال والجملة الحالية">
+            </div>
+            <div class="input-box">
+                <label>🎓 المستوى الدراسي</label>
+                <input id="level" value="السادس ابتدائي">
+            </div>
+            <div class="input-box">
+                <label>🤖 المحرك الذكي</label>
+                <select id="ai">
+                    <option value="gemini">Google Gemini (الأفضل للملفات ⭐)</option>
+                    <option value="gpt">ChatGPT</option>
+                </select>
+                <small style="color:var(--ai-purple); font-weight:bold; font-size:0.7rem; margin-top:5px;">💡 ملاحظة: سيقوم Gemini بإنتاج كود JSON مباشر.</small>
+            </div>
+            <div class="input-box">
+                <label>📊 الصعوبة</label>
+                <select id="diff">
+                    <option value="متوسط">متوسط</option>
+                    <option value="تحدي">تحدي</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-copy-ai" onclick="generateAndCopy()">📋 توليد ونسخ أمر "الملف المباشر"</button>
     </div>
-    <button class="btn btn-ai" onclick="generatePrompt()">📋 توليد ونسخ البرومبت</button>
+
+    <div class="admin-card">
+        <h3 style="color:var(--primary); margin:0 0 10px 0;">📦 منطقة الاستيراد</h3>
+        <textarea id="json" class="json-editor" placeholder="الصق الكود هنا..."></textarea>
+        <div class="btn-group">
+            <button class="btn btn-paste" onclick="pasteFromClipboard()">📋 لصق (Paste)</button>
+            <button class="btn btn-save" onclick="save()">💾 حفظ في المسابقة</button>
+            <button class="btn btn-clear" onclick="clearBox()">🗑️ تفريغ</button>
+            <button class="btn btn-reset" onclick="reset()">🔄 الوضع الافتراضي</button>
+            <a class="btn" style="background:var(--dark); color:white; text-decoration:none;" href="index.html">🎮 خروج</a>
+        </div>
+    </div>
 </div>
 
-<div class="card">
-    <h3>📦 استيراد بيانات JSON</h3>
-    <textarea id="jsonInput" class="editor" placeholder="الصق كود JSON هنا..."></textarea>
-    <div style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
-        <button class="btn btn-save" onclick="saveToGame()">💾 حفظ في اللعبة</button>
-        <button class="btn" style="background:#64748b; color:white;" onclick="clearAll()">🗑️ مسح</button>
-        <a href="index.html" class="btn" style="background:#000; color:white; text-decoration:none;">🎮 رجوع</a>
-    </div>
-</div>
+<footer>
+    من إعداد وتصميم: الأستاذ محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش
+</footer>
 
-<div id="status"></div>
+<div class="status" id="status"></div>
 
 <script>
-// دالة إظهار الرسائل (تم إصلاحها لتعمل دائماً)
-function notify(msg, color = '#10b981') {
+const schemaKeys = ["phase1", "phase2", "phase4", "stock"];
+
+function show(msg, isError = false){
     const s = document.getElementById('status');
     s.innerText = msg;
-    s.style.background = color;
     s.style.display = 'block';
-    setTimeout(() => { s.style.display = 'none'; }, 3000);
+    s.style.background = isError ? '#ef4444' : '#10b981';
+    setTimeout(() => s.style.display = 'none', 3000);
 }
 
-// دالة التوليد والنسخ (تستخدم بنية rawStock المطابقة للاندكس)
-function generatePrompt() {
+function generateAndCopy(){
     const lesson = document.getElementById('lesson').value;
-    if(!lesson) { notify('يرجى كتابة اسم الدرس!', '#ef4444'); return; }
+    const level = document.getElementById('level').value;
+    const diff = document.getElementById('diff').value;
 
-    const promptText = `Act as a JSON Generator. Output ONLY a RAW JSON code block.
-Task: Create questions for "${lesson}" (Moroccan Level 6).
+    if(!lesson) { show('⚠️ اكتب اسم الدرس!', true); return; }
 
-The JSON must strictly follow this structure:
+    // البرومبت الآن يطلب "CODE BLOCK" أو "JSON FILE CONTENT" بشكل صريح
+    let p = `Generate a RAW JSON code block for the lesson "${lesson}" (${level}).
+STRICT RULE: NO TEXT. NO INTRO. NO EXPLANATION. 
+JUST THE CODE INSIDE A CODE BLOCK.
+
+Structure:
 {
-  "phase1Questions": [6 MCQs],
-  "phase2Questions": [12 MCQs],
-  "rawStock": [12 items as: {"q":"question", "a":"answer", "t":"تراكيب/صرف/إملاء"}],
-  "phase4Questions": [4 direct questions]
+  "phase1": [6 MCQs],
+  "phase2": [12 MCQs],
+  "phase4": [4 Direct Q/A],
+  "stock": {
+    "تراكيب": [4 Q/A],
+    "صرف": [4 Q/A],
+    "إملاء": [4 Q/A]
+  }
+}
+Everything in Arabic language. Use correct Moroccan curriculum terminology.
+Provide the output as a clean JSON code block starting with \`\`\`json.`;
+
+    navigator.clipboard.writeText(p).then(() => {
+        show('✅ تم النسخ! الصق في الذكاء الاصطناعي وسيظهر لك "كود" جاهزاً.');
+    });
 }
 
-Instructions:
-- Use Arabic only.
-- Start with \`\`\`json and end with \`\`\`.
-- No conversational filler.`;
-
-    // طريقة نسخ مضمونة للمتصفحات
-    const tempInput = document.createElement("textarea");
-    tempInput.value = promptText;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempInput);
-
-    notify('✅ تم نسخ البرومبت! الصقه في Gemini');
-}
-
-function saveToGame() {
-    let rawData = document.getElementById('jsonInput').value.trim();
-    // تنظيف الكود من علامات الجيسون الزائدة
-    rawData = rawData.replace(/```json/g, "").replace(/
-```/g, "").trim();
-    
-    if(!rawData) { notify('الصندوق فارغ!', '#ef4444'); return; }
-
+async function pasteFromClipboard() {
     try {
-        const parsed = JSON.parse(rawData);
-        // حفظ في localStorage بالاسم الذي يبحث عنه الاندكس
-        localStorage.setItem('moatark_questions', JSON.stringify(parsed));
-        notify('💾 تم حفظ الأسئلة بنجاح في ذاكرة المتصفح');
-    } catch(e) {
-        notify('❌ خطأ في صيغة JSON، تأكد من نسخ الكود كاملاً', '#ef4444');
+        let text = await navigator.clipboard.readText();
+        // تنظيف تلقائي لأي زوائد برمجية (```json)
+        text = text.replace(/
+```json/g, "").replace(/```/g, "").trim();
+        document.getElementById('json').value = text;
+        show('📋 تم اللصق والتنظيف تلقائياً');
+    } catch (err) {
+        show('❌ فشل اللصق التلقائي، استخدم Ctrl+V', true);
     }
 }
 
-function clearAll() {
-    document.getElementById('jsonInput').value = '';
-    notify('🗑️ تم إخلاء الصندوق');
+function save(){
+    let content = document.getElementById('json').value.trim();
+    content = content.replace(/```json/g, "").replace(/
+```/g, "").trim();
+    if(!content) return;
+    try {
+        const d = JSON.parse(content);
+        if(schemaKeys.every(k => Object.keys(d).includes(k))) {
+            localStorage.setItem('moatark_questions', JSON.stringify(d));
+            show('💾 تم الحفظ بنجاح! الأسئلة الآن نشطة.');
+        } else { show('⚠️ بنية الملف ناقصة!', true); }
+    } catch(e) { show('❌ خطأ في صيغة JSON!', true); }
+}
+
+function clearBox() { document.getElementById('json').value = ''; show('🗑️ تم التفريغ'); }
+function reset() {
+    if(confirm('العودة للأسئلة الأصلية؟')) {
+        localStorage.removeItem('moatark_questions');
+        show('🔄 تم استعادة الوضع الافتراضي');
+    }
 }
 </script>
 </body>

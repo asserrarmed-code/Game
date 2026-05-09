@@ -25,126 +25,168 @@
     .json-editor { width: 100%; height: 320px; font-family: monospace; padding: 15px; border-radius: 12px; background: #0f172a; color: #10b981; direction: ltr; }
 
     .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 15px; }
-    .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-copy { background: var(--ai-purple); color: white; width: 100%; }
+    .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; }
+    .btn-copy { background: var(--ai-purple); color: white; width: 100%; margin-bottom: 10px; }
     .btn-save { background: var(--primary); color: white; }
     .btn-clear { background: #ef4444; color: white; }
     .btn-reset { background: #3b82f6; color: white; }
     .btn-home { background: var(--dark); color: white; text-decoration:none; display:flex; align-items:center; justify-content:center; }
 
-    .prompt-box { width:100%; height:200px; margin-top:10px; font-family:monospace; direction:ltr; }
+    .prompt-box { width:100%; height:200px; margin-top:10px; font-family:monospace; direction:ltr; padding: 10px; border-radius: 10px; border: 1px solid #ddd; }
 
-    .status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: black; color: white; padding: 10px 20px; border-radius: 30px; display:none; }
+    .status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: black; color: white; padding: 12px 25px; border-radius: 30px; display:none; z-index: 10001; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
     @media(max-width:768px){
         .config-grid{grid-template-columns:1fr;}
-        .admin-header{flex-direction:column; gap:10px;}
+        .admin-header{flex-direction:column; gap:10px; text-align: center;}
     }
 </style>
-
 </head>
-<body><header class="admin-header">
+<body>
+
+<header class="admin-header">
     <img src="logo.png" class="header-logo">
     <h2>⚙️ لوحة التخصيص الذكي</h2>
     <img src="logo-cup.png" class="header-logo">
-</header><div class="main-container"><div class="notice-card">
-    <span>⚠️</span>
-    <p class="notice-text">التعديلات تحفظ محلياً. انسخ الـ Prompt ثم الصقه في ChatGPT أو Gemini.</p>
-</div>
+</header>
 
-<div class="admin-card ai-section">
-    <h3 style="color:var(--ai-purple)">✨ مولّد البرومبت الذكي</h3>
-
-    <div class="config-grid">
-        <div class="input-box">
-            <label>📚 الدرس</label>
-            <input id="lesson">
-        </div>
-
-        <div class="input-box">
-            <label>🎓 المستوى</label>
-            <input id="level" value="السادس ابتدائي">
-        </div>
-
-        <div class="input-box">
-            <label>📊 الصعوبة</label>
-            <select id="diff">
-                <option value="standard">متوسط</option>
-                <option value="hard">صعب</option>
-            </select>
-        </div>
-
-        <div class="input-box">
-            <label>🤖 النموذج</label>
-            <select id="ai">
-                <option value="gpt">ChatGPT</option>
-                <option value="gemini">Gemini</option>
-            </select>
-        </div>
+<div class="main-container">
+    <div class="notice-card">
+        <span>⚠️</span>
+        <p class="notice-text">التعديلات تُحفظ محلياً في المتصفح. قم بتوليد البرومبت، انسخه لـ AI، ثم الصق النتيجة في مربع JSON بالأسفل.</p>
     </div>
 
-    <button class="btn btn-copy" onclick="generatePrompt()">📋 توليد البرومبت</button>
-    <textarea id="prompt" class="prompt-box"></textarea>
-</div>
+    <div class="admin-card ai-section">
+        <h3 style="color:var(--ai-purple)">✨ مولّد البرومبت الاحترافي</h3>
 
-<div class="admin-card">
-    <label>📦 JSON الناتج</label>
-    <textarea id="json" class="json-editor"></textarea>
+        <div class="config-grid">
+            <div class="input-box">
+                <label>📚 موضوع الدرس</label>
+                <input id="lesson" placeholder="مثلاً: المفعول المطلق">
+            </div>
 
-    <div class="btn-group">
-        <button class="btn btn-save" onclick="save()">💾 حفظ</button>
-        <button class="btn btn-clear" onclick="clearBox()">🗑️ تفريغ</button>
-        <button class="btn btn-reset" onclick="reset()">🔄 افتراضي</button>
-        <a class="btn btn-home" href="index.html">🎮 المسابقة</a>
+            <div class="input-box">
+                <label>🎓 المستوى الدراسي</label>
+                <input id="level" value="السادس ابتدائي">
+            </div>
+
+            <div class="input-box">
+                <label>📊 درجة الصعوبة</label>
+                <select id="diff">
+                    <option value="standard">متوسط</option>
+                    <option value="hard">تحدي للأذكياء</option>
+                </select>
+            </div>
+
+            <div class="input-box">
+                <label>🤖 ذكاء اصطناعي</label>
+                <select id="ai">
+                    <option value="gemini">Google Gemini</option>
+                    <option value="gpt">ChatGPT</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-copy" onclick="generatePrompt()">📋 توليد ونسخ البرومبت</button>
+        <textarea id="prompt" class="prompt-box" readonly placeholder="سيظهر البرومبت هنا..."></textarea>
+    </div>
+
+    <div class="admin-card">
+        <h3 style="color:var(--primary)">📦 بنك أسئلة JSON</h3>
+        <textarea id="json" class="json-editor" placeholder="أدخل كود JSON الناتج هنا..."></textarea>
+
+        <div class="btn-group">
+            <button class="btn btn-save" onclick="save()">💾 حفظ الأسئلة</button>
+            <button class="btn btn-clear" onclick="clearBox()">🗑️ تفريغ الصندوق</button>
+            <button class="btn btn-reset" onclick="reset()">🔄 المسابقة الافتراضية</button>
+            <a class="btn btn-home" href="index.html">🎮 عودة للمسابقة</a>
+        </div>
     </div>
 </div>
 
-</div><div class="status" id="status"></div><script>
-const def = {phase1:[],phase2:[],phase4:[],stock:{"المدرسة":[],"المحفظة":[],"الكتاب":[]}};
+<div class="status" id="status"></div>
 
-function show(msg){
-    const s=document.getElementById('status');
-    s.innerText=msg;s.style.display='block';
-    setTimeout(()=>s.style.display='none',2000);
+<script>
+const schemaKeys = ["phase1", "phase2", "phase4", "stock"];
+
+function show(msg, isError = false){
+    const s = document.getElementById('status');
+    s.innerText = msg;
+    s.style.display = 'block';
+    s.style.background = isError ? '#ef4444' : '#10b981';
+    setTimeout(() => s.style.display = 'none', 3000);
 }
 
 function generatePrompt(){
-    const lesson=document.getElementById('lesson').value;
-    const level=document.getElementById('level').value;
-    const diff=document.getElementById('diff').value;
-    const ai=document.getElementById('ai').value;
+    const lesson = document.getElementById('lesson').value;
+    const level = document.getElementById('level').value;
+    const diff = document.getElementById('diff').value;
+    const ai = document.getElementById('ai').value;
 
-    let p=`أنت خبير مناهج مغربي.
-أنشئ أسئلة JSON حول: ${lesson}
-المستوى: ${level}
-الصعوبة: ${diff}
+    if(!lesson) { show('⚠️ يرجى كتابة اسم الدرس أولاً', true); return; }
 
-الهيكل إلزامي:
-{
- phase1:6,
- phase2:12,
- phase4:4,
- stock:{المدرسة,المحفظة,الكتاب}
-}
+    let p = `أنت خبير تربوي مغربي متخصص في اللغة العربية. قم بتوليد بنك أسئلة JSON لدرس "${lesson}" للمستوى "${level}" بصعوبة "${diff}".
+يجب أن يكون الناتج JSON فقط بدون أي مقدمات أو شرح.
 
-ممنوع أي نص خارج JSON`;
+الهيكل المطلوب بدقة (34 سؤالاً):
+1. "phase1": [6 أسئلة اختيار من متعدد، 4 اختيارات في مصفوفة o، والجواب a هو رقم من 0-3]
+2. "phase2": [12 سؤالاً اختيار من متعدد، بنفس تنسيق phase1]
+3. "phase4": [4 أسئلة مباشرة، q للسؤال و a للجواب النصي]
+4. "stock": {
+      "تراكيب": [4 أسئلة مباشرة q و a نصي],
+      "صرف": [4 أسئلة مباشرة q و a نصي],
+      "إملاء": [4 أسئلة مباشرة q و a نصي]
+   }
 
-    if(ai==='gemini') p="STRICT JSON ONLY\n"+p;
+شروط تقنية:
+- اللغة العربية الفصيحة.
+- الالتزام بالأعداد (6، 12، 4، 12 للمخزون).
+- الناتج يكون Valid JSON حصراً.`;
 
-    document.getElementById('prompt').value=p;
-    navigator.clipboard.writeText(p);
-    show('تم توليد البرومبت');
+    if(ai === 'gemini') p = "STRICTLY OUTPUT VALID JSON ONLY\n" + p;
+
+    document.getElementById('prompt').value = p;
+    navigator.clipboard.writeText(p).then(() => {
+        show('✅ تم توليد البرومبت ونسخه بنجاح');
+    });
 }
 
 function save(){
-    try{
-        const d=JSON.parse(document.getElementById('json').value);
-        localStorage.setItem('moatark_questions',JSON.stringify(d));
-        show('تم الحفظ');
-    }catch(e){show('JSON غير صالح');}
+    const jsonArea = document.getElementById('json');
+    const content = jsonArea.value.trim();
+    
+    if(!content) { show('❌ الصندوق فارغ! يرجى لصق الـ JSON أولاً', true); return; }
+
+    try {
+        const d = JSON.parse(content);
+        const keys = Object.keys(d);
+        const isValid = schemaKeys.every(k => keys.includes(k));
+
+        if(isValid) {
+            localStorage.setItem('moatark_questions', JSON.stringify(d));
+            show('💾 تم حفظ بنك الأسئلة بنجاح في المتصفح');
+        } else {
+            show('⚠️ تنبيه: الملف ينقصه بعض الأنماط الأساسية (Phase1, Phase2, Phase4, Stock)', true);
+        }
+    } catch(e) {
+        show('❌ خطأ: الكود الذي لصقته ليس ملف JSON صحيح', true);
+    }
 }
 
-function clearBox(){document.getElementById('json').value='';}
-function reset(){localStorage.removeItem('moatark_questions');show('تم الرجوع');}
-</script></body>
+function clearBox() {
+    if(confirm('هل تريد فعلاً مسح النص في الصندوق؟')) {
+        document.getElementById('json').value = '';
+        show('🗑️ تم تفريغ الصندوق');
+    }
+}
+
+function reset() {
+    if(confirm('هل تريد مسح الأسئلة المخصصة والعودة لأسئلة المسابقة الافتراضية؟')) {
+        localStorage.removeItem('moatark_questions');
+        show('🔄 تمت العودة للوضع الافتراضي بنجاح');
+    }
+}
+</script>
+
+</body>
 </html>

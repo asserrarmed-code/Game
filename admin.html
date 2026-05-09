@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,49 +7,61 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; padding-bottom: 40px; }
         .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .header-logo { width: 60px; height: auto; }
         .main-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
         .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; position: relative; }
         .ai-section { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .input-box { display: flex; flex-direction: column; gap: 5px; text-align: right; }
         .input-box label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; }
         input, select, textarea { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; font-size: 1rem; }
+
+        /* ===== اختيار المستويات ===== */
+        .levels-box { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .level-chip { display: flex; align-items: center; gap: 5px; }
+        .level-chip input[type="checkbox"] { display: none; }
+        .level-chip label {
+            padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;
+            border: 2px solid var(--ai-purple); color: var(--ai-purple);
+            cursor: pointer; transition: 0.2s; user-select: none; background: white;
+        }
+        .level-chip input[type="checkbox"]:checked + label {
+            background: var(--ai-purple); color: white;
+        }
+        .levels-label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; margin-bottom: 8px; display: block; }
+        .levels-actions { display: flex; gap: 8px; margin-bottom: 8px; }
+        .levels-actions button { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
+        .levels-actions button:hover { background: #f1f5f9; }
+
         .json-editor { width: 100%; height: 250px; font-family: monospace; background: #1e293b; color: #10b981; direction: ltr; border: none; resize: vertical; margin-top: 10px; border-radius: 10px; padding: 12px; }
         .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
         .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; }
-        .btn-copy-ai { background: var(--ai-purple); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 15px; }
+        .btn-copy-ai  { background: var(--ai-purple); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
+        .btn-copy-ai2 { background: #6d28d9;          width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
         .btn-paste { background: #3b82f6; }
-        .btn-save { background: var(--primary); }
+        .btn-save  { background: var(--primary); }
         .btn-clear { background: #ef4444; }
-        .btn-home { background: #64748b; text-decoration: none; }
+        .btn-reset { background: #f59e0b; color: #1e293b; }
+        .btn-home  { background: #64748b; text-decoration: none; }
         .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-width: 90%; text-align: center; }
-
-        .schema-hint {
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 15px 18px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            direction: ltr;
-            line-height: 1.8;
-            margin-top: 12px;
-            border: 1px solid #334155;
-        }
-        .sh-key { color: #f59e0b; }
-        .sh-str { color: #10b981; }
-        .sh-num { color: #60a5fa; }
+        .schema-hint { background: #0f172a; border-radius: 12px; padding: 15px 18px; font-family: monospace; font-size: 0.8rem; direction: ltr; line-height: 1.8; margin-top: 12px; border: 1px solid #334155; }
+        .sh-key     { color: #f59e0b; }
+        .sh-str     { color: #10b981; }
+        .sh-num     { color: #60a5fa; }
         .sh-comment { color: #64748b; }
-        .sh-label {
-            display: inline-block;
-            background: #1e293b;
-            color: #94a3b8;
-            border-radius: 6px;
-            padding: 1px 8px;
+        .sh-label   { display: inline-block; background: #1e293b; color: #94a3b8; border-radius: 6px; padding: 1px 8px; font-size: 0.72rem; margin-right: 8px; }
+
+        /* ===== الكريدت ===== */
+        .footer-credit {
+            text-align: center;
             font-size: 0.72rem;
-            margin-right: 8px;
+            color: #94a3b8;
+            font-weight: 400;
+            margin-top: 10px;
+            padding-bottom: 20px;
+            letter-spacing: 0.3px;
         }
     </style>
 </head>
@@ -69,64 +80,85 @@
 
 <div class="main-container">
 
-<div class="admin-card ai-section">
-    <h3 style="margin-top: 0; color: var(--ai-purple);">✨ مولد البرومبت الذكي</h3>
+    <div class="admin-card ai-section">
+        <h3 style="margin-top: 0; color: var(--ai-purple);">✨ مولد البرومبت الذكي</h3>
 
-    <div class="input-grid">
-        <div class="input-box">
-            <label>📚 عنوان الدرس</label>
-            <input type="text" id="lesson_title" placeholder="مثلاً: المفعول به">
+        <!-- الدرس + الصعوبة -->
+        <div class="input-grid-2">
+            <div class="input-box">
+                <label>📚 عنوان الدرس</label>
+                <input type="text" id="lesson_title" placeholder="مثلاً: المفعول به">
+            </div>
+            <div class="input-box">
+                <label>🎯 الصعوبة</label>
+                <select id="lesson_difficulty">
+                    <option value="standard">عادي</option>
+                    <option value="easy">سهل</option>
+                    <option value="hard">صعب</option>
+                </select>
+            </div>
         </div>
-        <div class="input-box">
-            <label>📊 المستوى</label>
-            <select id="lesson_level">
-                <option>السادس ابتدائي</option>
-                <option>الخامس ابتدائي</option>
-            </select>
+
+        <!-- اختيار المستويات -->
+        <span class="levels-label">📊 المستوى (يمكن اختيار أكثر من مستوى)</span>
+        <div class="levels-actions">
+            <button onclick="selectAllLevels()">تحديد الكل</button>
+            <button onclick="clearAllLevels()">إلغاء الكل</button>
+        </div>
+        <div class="levels-box">
+            <div class="level-chip"><input type="checkbox" id="lvl1" value="المستوى الأول"><label for="lvl1">الأول</label></div>
+            <div class="level-chip"><input type="checkbox" id="lvl2" value="المستوى الثاني"><label for="lvl2">الثاني</label></div>
+            <div class="level-chip"><input type="checkbox" id="lvl3" value="المستوى الثالث"><label for="lvl3">الثالث</label></div>
+            <div class="level-chip"><input type="checkbox" id="lvl4" value="المستوى الرابع"><label for="lvl4">الرابع</label></div>
+            <div class="level-chip"><input type="checkbox" id="lvl5" value="المستوى الخامس" checked><label for="lvl5">الخامس</label></div>
+            <div class="level-chip"><input type="checkbox" id="lvl6" value="المستوى السادس" checked><label for="lvl6">السادس</label></div>
+        </div>
+
+        <div class="schema-hint">
+            <span class="sh-label">phase1</span>
+            <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
+            <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>],
+            <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span>
+            <span class="sh-comment"> ← 6 أسئلة اختيار من متعدد</span><br>
+
+            <span class="sh-label">phase2</span>
+            <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
+            <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>],
+            <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span>
+            <span class="sh-comment"> ← 12 أسئلة اختيار من متعدد</span><br>
+
+            <span class="sh-label">phase4</span>
+            <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
+            <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span>
+            <span class="sh-comment"> ← 4 أسئلة مفتوحة</span><br>
+
+            <span class="sh-label">stock</span>
+            <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
+            <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span>
+            <span class="sh-comment"> ← 4 أسئلة لكل صندوق</span>
+        </div>
+
+        <button class="btn btn-copy-ai"  onclick="generateAndCopy()">📋 نسخ البرومبت الأول لـ AI</button>
+        <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت الثاني لـ AI</button>
+    </div>
+
+    <div class="admin-card">
+        <h3 style="margin-top: 0; color: var(--primary);">📥 استيراد بيانات الدرس (JSON)</h3>
+        <textarea id="json_input" class="json-editor" placeholder="الصق JSON هنا..."></textarea>
+
+        <div class="btn-group">
+            <button class="btn btn-paste" onclick="pasteData()">📋 لصق</button>
+            <button class="btn btn-save"  onclick="saveToGame()">💾 حفظ</button>
+            <button class="btn btn-clear" onclick="clearField()">🗑️ مسح</button>
+            <button class="btn btn-reset" onclick="resetToDefaults()">↩️ افتراضي</button>
+            <a href="index.html" class="btn btn-home">🏠 خروج</a>
         </div>
     </div>
 
-    <div class="schema-hint">
-        <span class="sh-label">phase1</span>
-        <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
-        <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>],
-        <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span>
-        <span class="sh-comment"> ← 6 أسئلة اختيار من متعدد</span><br>
-
-        <span class="sh-label">phase2</span>
-        <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
-        <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>],
-        <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span>
-        <span class="sh-comment"> ← 9 أسئلة اختيار من متعدد</span><br>
-
-        <span class="sh-label">phase4</span>
-        <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
-        <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span>
-        <span class="sh-comment"> ← 4 أسئلة مفتوحة</span><br>
-
-        <span class="sh-label">stock</span>
-        <span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>,
-        <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span>
+    <!-- الكريدت -->
+    <div class="footer-credit">
+        من إعداد وتصميم الأستاذ محمد أسرار &mdash; مدرسة ميمونة أم المؤمنين &mdash; مديرية مراكش
     </div>
-
-    <button class="btn btn-copy-ai" onclick="generateAndCopy()">📋 نسخ برومبت الأسئلة لـ AI</button>
-
-    <!-- زر البرومبت الثاني (مضاف بدون حذف أي شيء) -->
-    <button class="btn btn-copy-ai" onclick="generateAndCopy2()">📋 نسخ البرومبت الثاني لـ AI</button>
-
-</div>
-
-<div class="admin-card">
-    <h3 style="margin-top: 0; color: var(--primary);">📥 استيراد بيانات الدرس (JSON)</h3>
-    <textarea id="json_input" class="json-editor" placeholder="الصق JSON هنا..."></textarea>
-
-    <div class="btn-group">
-        <button class="btn btn-paste" onclick="pasteData()">📋 لصق</button>
-        <button class="btn btn-save" onclick="saveToGame()">💾 حفظ</button>
-        <button class="btn btn-clear" onclick="clearField()">🗑️ مسح</button>
-        <a href="index.html" class="btn btn-home">🏠 خروج</a>
-    </div>
-</div>
 
 </div>
 
@@ -140,58 +172,109 @@ function notify(msg, type = 'success') {
     setTimeout(() => s.style.display = 'none', 4000);
 }
 
-/* =========================
-PROMPT 1 (الأصلي)
-========================= */
-function buildPrompt(lesson, level) {    
-    return `أنت مولد أسئلة لغة عربية محترف.    
-أعد JSON فقط. بدون أي نص إضافي. بدون markdown. بدون شرح.    
-    
-الموضوع: ${lesson}    
-المستوى: ${level}    
-    
-════ البنية المطلوبة بالضبط ════    
-    
-{    
-  "phase1": [...],    
-  "phase2": [...],    
-  "phase4": [...],    
-  "stock": {    
-    "المدرسة": [...],    
-    "المحفظة": [...],    
-    "الكتاب": [...]    
-  }    
-}    
-    
-════ النوع الأول: أسئلة اختيار من متعدد ════    
-يُستخدم في: phase1 و phase2 فقط    
-البنية: {"q": "نص السؤال", "o": ["خيار1", "خيار2", "خيار3", "خيار4"], "a": 2}    
-قاعدة "a": رقم صحيح من 0 إلى 3 يشير إلى موضع الإجابة الصحيحة داخل "o"    
-مثال: إذا كانت الإجابة في الخيار الثالث → "a": 2    
-    
-════ النوع الثاني: أسئلة مفتوحة ════    
-يُستخدم في: phase4 وجميع صناديق stock فقط    
-البنية: {"q": "نص السؤال", "a": "نص الإجابة النموذجية"}    
-قاعدة "a": نص عربي دائماً — لا يوجد مفتاح "o" في هذا النوع أبداً    
-    
-════ عدد الأسئلة المطلوب ════    
-- phase1  → 6 أسئلة — النوع الأول (اختيار من متعدد)    
-- phase2  → 12 أسئلة — النوع الأول (اختيار من متعدد)    
-- phase4  → 4 أسئلة — النوع الثاني (مفتوحة)    
-- stock.المدرسة → 4 أسئلة — النوع الثاني (مفتوحة)    
-- stock.المحفظة → 4 أسئلة — النوع الثاني (مفتوحة)    
-- stock.الكتاب  → 4 أسئلة — النوع الثاني (مفتوحة)    
-    
-قواعد عامة:    
-- العربية فقط في جميع النصوص    
-- اسئلة يفضل ان تكون تطبيقية اكثر من نظرية 
-- لا مفاتيح إضافية خارج البنية أعلاه    
-- الأسئلة تتعلق بالموضوع والمستوى المذكورين    
-`;    
+/* ===== دوال المستويات ===== */
+function getSelectedLevels() {
+    const checked = [...document.querySelectorAll('.level-chip input[type="checkbox"]:checked')];
+    return checked.map(cb => cb.value).join(' + ') || 'غير محدد';
+}
+
+function selectAllLevels() {
+    document.querySelectorAll('.level-chip input[type="checkbox"]').forEach(cb => cb.checked = true);
+}
+
+function clearAllLevels() {
+    document.querySelectorAll('.level-chip input[type="checkbox"]').forEach(cb => cb.checked = false);
+}
+
+/* ================================================
+   VALIDATOR
+================================================ */
+function isValidStructure(data) {
+    try {
+        const isMCQ = (q) =>
+            q &&
+            typeof q.q === 'string' && q.q.trim().length > 0 &&
+            Array.isArray(q.o) && q.o.length === 4 &&
+            typeof q.a === 'number' && Number.isInteger(q.a) && q.a >= 0 && q.a <= 3;
+
+        const isOpen = (q) =>
+            q &&
+            typeof q.q === 'string' && q.q.trim().length > 0 &&
+            typeof q.a === 'string' && q.a.trim().length > 0;
+
+        if (!Array.isArray(data.phase1) || data.phase1.length === 0) return 'phase1 مفقودة أو فارغة';
+        if (!Array.isArray(data.phase2) || data.phase2.length === 0) return 'phase2 مفقودة أو فارغة';
+        if (!Array.isArray(data.phase4) || data.phase4.length === 0) return 'phase4 مفقودة أو فارغة';
+        if (!data.stock)                                              return 'stock مفقود';
+        if (!Array.isArray(data.stock['المدرسة']) || data.stock['المدرسة'].length === 0) return 'stock → المدرسة مفقود أو فارغ';
+        if (!Array.isArray(data.stock['المحفظة']) || data.stock['المحفظة'].length === 0) return 'stock → المحفظة مفقود أو فارغ';
+        if (!Array.isArray(data.stock['الكتاب'])  || data.stock['الكتاب'].length  === 0) return 'stock → الكتاب مفقود أو فارغ';
+
+        if (!data.phase1.every(isMCQ))             return 'phase1: كل سؤال يحتاج (q, o بأربعة خيارات, a رقم 0-3)';
+        if (!data.phase2.every(isMCQ))             return 'phase2: كل سؤال يحتاج (q, o بأربعة خيارات, a رقم 0-3)';
+        if (!data.phase4.every(isOpen))            return 'phase4: "a" يجب أن يكون نصاً وليس رقماً';
+        if (!data.stock['المدرسة'].every(isOpen)) return 'stock.المدرسة: كل سؤال يحتاج (q, a نص)';
+        if (!data.stock['المحفظة'].every(isOpen)) return 'stock.المحفظة: كل سؤال يحتاج (q, a نص)';
+        if (!data.stock['الكتاب'].every(isOpen))  return 'stock.الكتاب: كل سؤال يحتاج (q, a نص)';
+
+        return true;
+    } catch {
+        return 'خطأ في تحليل البنية';
+    }
 }
 
 /* =========================
-PROMPT 2 (المضاف الجديد)
+   PROMPT 1
+========================= */
+function buildPrompt(lesson, level) {
+    return `أنت مولد أسئلة لغة عربية محترف.
+أعد JSON فقط. بدون أي نص إضافي. بدون markdown. بدون شرح.
+
+الموضوع: ${lesson}
+المستوى: ${level}
+
+════ البنية المطلوبة بالضبط ════
+
+{
+  "phase1": [...],
+  "phase2": [...],
+  "phase4": [...],
+  "stock": {
+    "المدرسة": [...],
+    "المحفظة": [...],
+    "الكتاب": [...]
+  }
+}
+
+════ النوع الأول: أسئلة اختيار من متعدد ════
+يُستخدم في: phase1 و phase2 فقط
+البنية: {"q": "نص السؤال", "o": ["خيار1", "خيار2", "خيار3", "خيار4"], "a": 2}
+قاعدة "a": رقم صحيح من 0 إلى 3 يشير إلى موضع الإجابة الصحيحة داخل "o"
+مثال: إذا كانت الإجابة في الخيار الثالث → "a": 2
+
+════ النوع الثاني: أسئلة مفتوحة ════
+يُستخدم في: phase4 وجميع صناديق stock فقط
+البنية: {"q": "نص السؤال", "a": "نص الإجابة النموذجية"}
+قاعدة "a": نص عربي دائماً — لا يوجد مفتاح "o" في هذا النوع أبداً
+
+════ عدد الأسئلة المطلوب ════
+- phase1  → 6 أسئلة — النوع الأول (اختيار من متعدد)
+- phase2  → 12 أسئلة — النوع الأول (اختيار من متعدد)
+- phase4  → 4 أسئلة — النوع الثاني (مفتوحة)
+- stock.المدرسة → 4 أسئلة — النوع الثاني (مفتوحة)
+- stock.المحفظة → 4 أسئلة — النوع الثاني (مفتوحة)
+- stock.الكتاب  → 4 أسئلة — النوع الثاني (مفتوحة)
+
+قواعد عامة:
+- العربية فقط في جميع النصوص
+- أسئلة تطبيقية أكثر من نظرية
+- لا مفاتيح إضافية خارج البنية أعلاه
+- الأسئلة تتعلق بالموضوع والمستوى المذكورين
+`;
+}
+
+/* =========================
+   PROMPT 2
 ========================= */
 function buildStrictPrompt2(lesson, level, difficulty) {
     return `أنت مولد بيانات JSON فقط للعبة تعليمية اسمها "معترك الضاد".
@@ -216,145 +299,129 @@ function buildStrictPrompt2(lesson, level, difficulty) {
 
 القواعد الصارمة:
 
-1. phase1:
-بالضبط 6 أسئلة اختيار من متعدد.
+1. phase1: بالضبط 6 أسئلة اختيار من متعدد.
+كل سؤال: {"q": "نص السؤال", "o": ["خيار1", "خيار2", "خيار3", "خيار4"], "a": 0}
+- "o" فيها 4 اختيارات فقط. "a" رقم صحيح من 0 إلى 3.
 
-كل سؤال:
-{
-  "q": "نص السؤال",
-  "o": ["خيار1", "خيار2", "خيار3", "خيار4"],
-  "a": 0
-}
+2. phase2: بالضبط 12 سؤال اختيار من متعدد. نفس البنية تماماً.
 
-- "o" فيها 4 اختيارات فقط.
-- "a" رقم صحيح من 0 إلى 3.
-- إجابة صحيحة واحدة فقط.
+3. phase4: بالضبط 4 أسئلة مفتوحة.
+كل سؤال: {"q": "نص السؤال", "a": "نص الإجابة النموذجية"}
+بدون "o" — "a" نص عربي فقط.
 
----
-
-2. phase2:
-بالضبط 12 سؤال اختيار من متعدد.
-
-نفس البنية تماماً:
-{
-  "q": "نص السؤال",
-  "o": ["خيار1", "خيار2", "خيار3", "خيار4"],
-  "a": 0
-}
-
----
-
-3. phase4:
-بالضبط 4 أسئلة مفتوحة.
-
-كل سؤال:
-{
-  "q": "نص السؤال",
-  "a": "نص الإجابة النموذجية"
-}
-
-- بدون "o"
-- "a" نص عربي فقط
-
----
-
-4. stock:
-المدرسة: 4 أسئلة
-المحفظة: 4 أسئلة
-الكتاب: 4 أسئلة
-
-كل عنصر:
-{
-  "q": "نص السؤال",
-  "a": "نص الإجابة"
-}
-
----
+4. stock: المدرسة 4 أسئلة — المحفظة 4 أسئلة — الكتاب 4 أسئلة.
+كل عنصر: {"q": "نص السؤال", "a": "نص الإجابة"}
 
 5. قواعد عامة:
 - العربية الفصحى فقط
-- بدون تكرار
-- بدون غموض
-- بدون أخطاء لغوية أو علمية
-- بدون رموز أو شروحات
-
----
+- بدون تكرار — بدون غموض — بدون أخطاء
+- أسئلة تطبيقية أكثر من نظرية
 
 6. تحقق قبل الإخراج:
-- phase1 = 6
-- phase2 = 12
-- phase4 = 4
-- المدرسة = 4
-- المحفظة = 4
-- الكتاب = 4
+phase1=6 | phase2=12 | phase4=4 | المدرسة=4 | المحفظة=4 | الكتاب=4
 
 الموضوع: ${lesson}
 المستوى: ${level}
-الصعوبة: ${difficulty || "standard"}
+الصعوبة: ${difficulty}
 
 أخرج JSON فقط.`;
 }
 
 /* =========================
-COPY PROMPTS
+   COPY PROMPT 1
 ========================= */
 async function generateAndCopy() {
     const lesson = document.getElementById('lesson_title').value;
-    const level = document.getElementById('lesson_level').value;
-
-    const promptText = buildPrompt(lesson, level);
-
+    const level  = getSelectedLevels();
+    if (!lesson.trim()) return notify('أدخل عنوان الدرس أولاً', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
     try {
-        await navigator.clipboard.writeText(promptText);
-        notify('تم نسخ البرومبت الأول');
-    } catch {}
+        await navigator.clipboard.writeText(buildPrompt(lesson, level));
+        notify('✅ تم نسخ البرومبت الأول');
+    } catch {
+        notify('❌ فشل النسخ — حاول مرة أخرى', 'error');
+    }
 }
 
+/* =========================
+   COPY PROMPT 2
+========================= */
 async function generateAndCopy2() {
-    const lesson = document.getElementById('lesson_title').value;
-    const level = document.getElementById('lesson_level').value;
-
-    const promptText = buildStrictPrompt2(lesson, level);
+    const lesson     = document.getElementById('lesson_title').value;
+    const level      = getSelectedLevels();
+    const difficulty = document.getElementById('lesson_difficulty').value;
+    if (!lesson.trim()) return notify('أدخل عنوان الدرس أولاً', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
     try {
-        await navigator.clipboard.writeText(promptText);
-        notify('تم نسخ البرومبت الثاني');
-    } catch {}
+        await navigator.clipboard.writeText(buildStrictPrompt2(lesson, level, difficulty));
+        notify('✅ تم نسخ البرومبت الثاني');
+    } catch {
+        notify('❌ فشل النسخ — حاول مرة أخرى', 'error');
+    }
 }
-// =========================
-// إصلاح الأزرار فقط (بدون تغيير الكود الأصلي)
-// =========================
 
+/* =========================
+   PASTE
+========================= */
 async function pasteData() {
     try {
         const text = await navigator.clipboard.readText();
         document.getElementById('json_input').value = text;
         notify('تم اللصق');
-    } catch (e) {
-        notify('فشل اللصق - استخدم Ctrl+V', 'error');
+    } catch {
+        notify('❌ فشل اللصق — استخدم Ctrl+V', 'error');
     }
 }
 
+/* =========================
+   SAVE WITH VALIDATOR
+========================= */
+function saveToGame() {
+    let raw = document.getElementById('json_input').value.trim();
+    if (!raw) return notify('الحقل فارغ', 'error');
+    try {
+        const clean  = raw.replace(/```json/g, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(clean);
+
+        const validResult = isValidStructure(parsed);
+        if (validResult !== true) return notify('❌ ' + validResult, 'error');
+
+        const finalData = {
+            phase1: parsed.phase1,
+            phase2: parsed.phase2,
+            phase4: parsed.phase4,
+            stock: {
+                'المدرسة': parsed.stock['المدرسة'],
+                'المحفظة': parsed.stock['المحفظة'],
+                'الكتاب':  parsed.stock['الكتاب']
+            }
+        };
+
+        localStorage.setItem('moatark_questions', JSON.stringify(finalData));
+        notify('✅ تم الحفظ بنجاح — يمكنك العودة للعبة');
+    } catch {
+        notify('❌ JSON غير صالح — تأكد من صحة التنسيق', 'error');
+    }
+}
+
+/* =========================
+   CLEAR
+========================= */
 function clearField() {
     document.getElementById('json_input').value = '';
     notify('تم المسح');
 }
 
-function saveToGame() {
-    let raw = document.getElementById('json_input').value.trim();
-    if (!raw) return notify('الحقل فارغ', 'error');
-
-    try {
-        const clean = raw.replace(/```json/g, "").replace(/```/g, "").trim();
-        const parsed = JSON.parse(clean);
-
-        localStorage.setItem('moatark_questions', JSON.stringify(parsed));
-        notify('تم الحفظ بنجاح');
-    } catch (e) {
-        notify('JSON غير صالح', 'error');
-    }
+/* =========================
+   RESET TO DEFAULTS
+========================= */
+function resetToDefaults() {
+    if (!confirm('سيتم حذف الأسئلة المحفوظة والعودة للأسئلة الافتراضية. متأكد؟')) return;
+    localStorage.removeItem('moatark_questions');
+    document.getElementById('json_input').value = '';
+    notify('✅ تمت إعادة الضبط — اللعبة ستستخدم الأسئلة الافتراضية');
 }
-/* باقي الكود بدون تغيير */
-</script>
 
+</script>
 </body>
 </html>

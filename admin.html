@@ -221,6 +221,39 @@ async function generateAndCopy2() {
 
 /* باقي الكود بدون تغيير */
 </script>
+/* =========================
+   وظائف الأزرار المفقودة (إصلاح)
+========================= */
 
+async function pasteData() {
+    try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('json_input').value = text;
+        notify('تم اللصق');
+    } catch (e) {
+        notify('فشل اللصق - استخدم Ctrl+V', 'error');
+    }
+}
+
+function clearField() {
+    document.getElementById('json_input').value = '';
+    notify('تم المسح');
+}
+
+function saveToGame() {
+    let raw = document.getElementById('json_input').value.trim();
+    if (!raw) return notify('الحقل فارغ', 'error');
+
+    try {
+        const clean = raw.replace(/```json/g, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(clean);
+
+        localStorage.setItem('moatark_questions', JSON.stringify(parsed));
+        notify('تم الحفظ بنجاح');
+
+    } catch (e) {
+        notify('JSON غير صالح', 'error');
+    }
+}
 </body>
 </html>

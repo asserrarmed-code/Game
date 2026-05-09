@@ -218,12 +218,9 @@ async function generateAndCopy2() {
         notify('تم نسخ البرومبت الثاني');
     } catch {}
 }
-
-/* باقي الكود بدون تغيير */
-</script>
-/* =========================
-   وظائف الأزرار المفقودة (إصلاح)
-========================= */
+// =========================
+// إصلاح الأزرار فقط (بدون تغيير الكود الأصلي)
+// =========================
 
 async function pasteData() {
     try {
@@ -250,10 +247,12 @@ function saveToGame() {
 
         localStorage.setItem('moatark_questions', JSON.stringify(parsed));
         notify('تم الحفظ بنجاح');
-
     } catch (e) {
         notify('JSON غير صالح', 'error');
     }
 }
+/* باقي الكود بدون تغيير */
+</script>
+
 </body>
 </html>

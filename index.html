@@ -43,6 +43,7 @@
         .lifeline-icons span { background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.3s; cursor: pointer; }
         .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0; }
         .opt, .component-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 10px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: clamp(0.8rem, 2vh, 1rem); }
+        .component-btn.depleted { opacity: 0.3; cursor: not-allowed; background: #e2e8f0; border-color: #cbd5e1; }
         .admin-panel { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: white; padding: 15px 10px; border-top: 5px solid var(--moroccan-gold); display: flex; flex-wrap: nowrap; overflow-x: auto; justify-content: center; align-items: center; gap: 15px; z-index: 10000; min-height: 140px; padding-bottom: env(safe-area-inset-bottom, 15px); }
         .admin-group { border: 2px solid #475569; padding: 10px 8px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 125px; background: rgba(255,255,255,0.08); }
         .btn-admin { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 0.95rem; }
@@ -135,7 +136,6 @@ function refreshPage(btn) { btn.classList.add('refresh-active'); setTimeout(() =
 
 /* ================================================
    تحميل البيانات — محمي بـ try/catch
-   (إصلاح: JSON.parse بدون حماية)
 ================================================ */
 let customData = null;
 try {
@@ -156,21 +156,37 @@ const defaultPhases = [
 ];
 
 const defaultStock = {
-    "المدرسة": [{q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي"}],
-    "المحفظة": [{q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"}],
-    "الكتاب":  [{q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"}]
+    "المدرسة": [
+        {q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي"},
+        {q: "ما نوع المفعول به في: (أكلتُ أكلاً)؟", a: "مفعول مطلق"},
+        {q: "أعرب 'كُلَّ' في: (جاء كُلُّ الطلابِ).", a: "فاعل مرفوع"},
+        {q: "ما إعراب 'خيراً' في: (اصنع خيراً تجد خيراً)؟", a: "مفعول به منصوب"}
+    ],
+    "المحفظة": [
+        {q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"},
+        {q: "حوّل الفعل 'أكرم' إلى اسم مفعول.", a: "مُكْرَم"},
+        {q: "ما وزن كلمة 'مِفْتَاح'؟", a: "مِفْعَال"},
+        {q: "اجمع جمع تكسير: (كِتَاب).", a: "كُتُب"}
+    ],
+    "الكتاب": [
+        {q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"},
+        {q: "لماذا كُتبت الألف في 'عصا' قصيرة؟", a: "لأن أصلها واو"},
+        {q: "متى تُحذف همزة الوصل في الكتابة؟", a: "عند وصلها بما قبلها"},
+        {q: "علل كتابة التاء مربوطة في كلمة 'مدرسة'.", a: "لأنها اسم مؤنث"}
+    ]
 };
 
 /* ===== متغيرات اللعبة ===== */
 let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
 let votedOnThisQuestion = [], currentModelAnswer = "";
 let lifelinesState = [], rocketActive = -1;
-let usedInThisRound = new Set();
 
-/* ================================================
-   phasesData — النمط 4 الآن type: "speed"
-   (إصلاح: الاعتماد على اسم النمط بدل نوعه)
-================================================ */
+/* ===== متغيرات النمط 3 — المخزون والذاكرة ===== */
+let stockCounts = {};   // عدد الأسئلة المتبقية لكل صندوق
+let usedByBox   = {};   // الأسئلة المستخدمة لكل صندوق
+
+const STOCK_KEYS = ["المدرسة", "المحفظة", "الكتاب"];
+
 const phasesData = [
     {
         name: "النمط 1: الاستجابة الجماعية",
@@ -193,7 +209,7 @@ const phasesData = [
     },
     {
         name: "النمط 4: جولة السرعة",
-        type: "speed",   // ← كان "all"، الآن نوع مستقل
+        type: "speed",
         time: 8,
         questions: (customData && Array.isArray(customData.phase4) && customData.phase4.length > 0)
             ? customData.phase4
@@ -217,6 +233,20 @@ function getStockData() {
     return defaultStock;
 }
 
+/* ================================================
+   تهيئة مخزون النمط 3
+   عدد أسئلة كل صندوق = عدد الفرق
+================================================ */
+function initStockCounts() {
+    const n = teamNames.length;
+    stockCounts = {};
+    usedByBox   = {};
+    STOCK_KEYS.forEach(key => {
+        stockCounts[key] = n;          // كل صندوق يبدأ بعدد يساوي الفرق
+        usedByBox[key]   = new Set();  // لا أسئلة مستخدمة في البداية
+    });
+}
+
 function updateTeamInputs(count) {
     const container = document.getElementById('team-names-container');
     container.innerHTML = '';
@@ -238,6 +268,7 @@ function startMarathon() {
         scores.push(0);
         lifelinesState.push({ del: false, dou: false, stp: false });
     }
+    initStockCounts(); // ← تهيئة المخزون بعد معرفة عدد الفرق
     document.getElementById('setup-screen').style.display = 'none';
     document.getElementById('quiz-screen').style.display  = 'flex';
     document.getElementById('back-to-setup').style.display = 'flex';
@@ -279,16 +310,12 @@ function modifyScore(i, v) {
     rocketActive = -1;
 }
 
-/* ================================================
-   useLifeline — parseInt لضمان المقارنة الصحيحة
-   (إصلاح: قيمة "a" قد تأتي كنص من الـ AI)
-================================================ */
 function useLifeline(teamIdx, type, element) {
     if (lifelinesState[teamIdx][type]) return;
     if (type === 'del') {
         const p = phasesData[currentPhase];
         if (p && p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
-            const correct = parseInt(p.questions[currentQ].a); // ← parseInt للأمان
+            const correct = parseInt(p.questions[currentQ].a);
             const opts    = Array.from(document.querySelectorAll('.opt'));
             let wrong = opts.map((_, i) => i).filter(i => i !== correct);
             wrong.sort(() => Math.random() - 0.5).slice(0, 2).forEach(idx => {
@@ -312,6 +339,7 @@ function prepareTurns() {
     if (p.type === 'target') {
         for (let i = 0; i < count; i++) for (let j = 0; j < 3; j++) phaseTurns.push(i);
     } else if (p.type === 'free') {
+        // كل فريق يحصل على دورين بالضبط
         for (let i = 0; i < count; i++) for (let j = 0; j < 2; j++) phaseTurns.push(i);
     }
     phaseTurns.sort(() => Math.random() - 0.5);
@@ -322,12 +350,12 @@ function init() {
     const p = phasesData[currentPhase];
     currentModelAnswer = ""; rocketActive = -1; clearInterval(timer);
 
-    document.getElementById('q-text').innerText               = '';
-    document.getElementById('opt-container').innerHTML        = '';
+    document.getElementById('q-text').innerText                = '';
+    document.getElementById('opt-container').innerHTML         = '';
     document.getElementById('component-selection').style.display = 'none';
-    document.getElementById('manual-zone').style.display      = 'none';
-    document.getElementById('target-announcer').style.display = 'none';
-    document.getElementById('answer-input').value             = '';
+    document.getElementById('manual-zone').style.display       = 'none';
+    document.getElementById('target-announcer').style.display  = 'none';
+    document.getElementById('answer-input').value              = '';
     document.getElementById('manual-answer-display').innerText = '...';
     document.getElementById('manual-answer-display').style.color = 'var(--moroccan-blue)';
     document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
@@ -350,7 +378,6 @@ function init() {
         displayQuestion(p.questions[currentQ]);
 
     } else if (p.type === 'speed') {
-        // ← الآن بنوع "speed" بدل فحص اسم النمط
         const q = p.questions[currentQ];
         if (!q) return;
         document.getElementById('q-text').innerText = q.q;
@@ -359,7 +386,6 @@ function init() {
         startTimer(p.time, true);
 
     } else {
-        // type === 'all'
         displayQuestion(p.questions[currentQ]);
     }
 }
@@ -375,24 +401,66 @@ function displayQuestion(q) {
     startTimer(phasesData[currentPhase].time);
 }
 
+/* ================================================
+   showFreeSelection — مع عداد حي وتعطيل الفارغ
+================================================ */
 function showFreeSelection() {
     document.getElementById('component-selection').style.display = 'flex';
-    const stock = getStockData();
-    for (let key in stock) {
-        document.getElementById(`count-${key}`).innerText = `(${stock[key].length})`;
-    }
+
+    STOCK_KEYS.forEach(key => {
+        const remaining = stockCounts[key];
+        const countEl   = document.getElementById(`count-${key}`);
+        const btnEl     = document.getElementById(`btn-${key}`);
+
+        // تحديث العداد
+        countEl.innerText = `(${remaining})`;
+
+        if (remaining <= 0) {
+            // صندوق فارغ — يُعطَّل ويخفت
+            btnEl.disabled = true;
+            btnEl.classList.add('depleted');
+            btnEl.onclick = null;
+        } else {
+            // صندوق متاح
+            btnEl.disabled = false;
+            btnEl.classList.remove('depleted');
+            btnEl.onclick = () => selectComponent(key);
+        }
+    });
 }
 
+/* ================================================
+   selectComponent — مع إنقاص العداد وتعطيل الصندوق
+================================================ */
 function selectComponent(key) {
+    // حماية مزدوجة — لا نأخذ من صندوق فارغ
+    if (stockCounts[key] <= 0) return;
+
     const stock     = getStockData();
     const questions = stock[key];
     if (!questions || questions.length === 0) return alert("هذا الصندوق فارغ!");
 
-    let available = questions.filter(q => !usedInThisRound.has(q.q));
-    if (available.length === 0) { usedInThisRound.clear(); available = questions; }
+    // اختيار سؤال لم يُستخدم في هذا الصندوق
+    let available = questions.filter(q => !usedByBox[key].has(q.q));
+    if (available.length === 0) {
+        usedByBox[key].clear();
+        available = questions;
+    }
 
     const item = available[Math.floor(Math.random() * available.length)];
-    usedInThisRound.add(item.q);
+    usedByBox[key].add(item.q);
+
+    // ← إنقاص مخزون هذا الصندوق
+    stockCounts[key]--;
+
+    // تحديث العداد المرئي فوراً
+    document.getElementById(`count-${key}`).innerText = `(${stockCounts[key]})`;
+    if (stockCounts[key] <= 0) {
+        const btnEl = document.getElementById(`btn-${key}`);
+        btnEl.disabled = true;
+        btnEl.classList.add('depleted');
+        btnEl.onclick = null;
+    }
 
     document.getElementById('component-selection').style.display = 'none';
     document.getElementById('manual-zone').style.display = 'block';
@@ -418,21 +486,17 @@ function reveal() {
     clearInterval(timer);
     const p = phasesData[currentPhase];
     if (currentModelAnswer !== "") {
-        document.getElementById('manual-answer-display').innerText    = currentModelAnswer;
-        document.getElementById('manual-answer-display').style.color  = 'var(--success)';
+        document.getElementById('manual-answer-display').innerText   = currentModelAnswer;
+        document.getElementById('manual-answer-display').style.color = 'var(--success)';
         document.getElementById('manual-zone').style.display = 'block';
     } else if (p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
         const d    = p.questions[currentQ];
         const opts = document.querySelectorAll('.opt');
-        const idx  = parseInt(d.a); // ← parseInt للأمان
+        const idx  = parseInt(d.a);
         if (opts[idx]) { opts[idx].style.background = 'var(--success)'; opts[idx].style.color = 'white'; }
     }
 }
 
-/* ================================================
-   next() — إعادة تعيين usedInThisRound عند تغيير النمط
-   (إصلاح: الذاكرة لا تُصفَّر بين الأنماط)
-================================================ */
 function next() {
     const p = phasesData[currentPhase];
     if (!p) return;
@@ -445,7 +509,6 @@ function next() {
     if (currentQ >= limit) {
         currentQ = 0;
         currentPhase++;
-        usedInThisRound.clear(); // ← إعادة تعيين الذاكرة عند كل نمط جديد
         if (currentPhase < phasesData.length) prepareTurns();
     }
 

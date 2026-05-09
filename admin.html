@@ -1,200 +1,193 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة التخصيص الذكي | معترك الضاد</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-
-<style>
+<title>لوحة الأدمين - معترك الضاد</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"><style>
 :root{
---primary:#006847;
---gold:#c5a059;
---bg:#f8fafc;
---dark:#1e293b;
---ai-purple:#7c3aed;
+  --primary:#006847;
+  --gold:#c5a059;
+  --bg:#f4f1ea;
+  --card:#fff;
+  --text:#1e293b;
+  --ai:#7c3aed;
+  --danger:#ef4444;
 }
 
 body{
-font-family:'Cairo';
-background:var(--bg);
-margin:0;
+  margin:0;
+  font-family:'Cairo';
+  background:var(--bg);
+  color:var(--text);
 }
 
-.admin-header{
-background:#fff;
-padding:15px;
-display:flex;
-justify-content:space-between;
-border-bottom:4px solid var(--gold);
+header{
+  background:#fff;
+  padding:15px;
+  text-align:center;
+  border-bottom:4px solid var(--gold);
+  font-weight:900;
 }
 
-.main-container{
-max-width:950px;
-margin:auto;
-padding:20px;
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
 }
 
-.admin-card{
-background:#fff;
-padding:20px;
-border-radius:15px;
-margin-bottom:20px;
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+  margin-bottom:20px;
 }
 
-.btn{
-padding:12px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
 }
 
-.btn-copy-ai{background:var(--ai-purple);color:#fff;}
-.btn-paste{background:#6366f1;color:#fff;}
-.btn-save{background:var(--primary);color:#fff;}
-
-.json-editor{
-width:100%;
-height:250px;
-font-family:monospace;
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr;}
 }
+
+label{
+  font-weight:700;
+  color:var(--ai);
+  font-size:0.9rem;
+}
+
+input,select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:2px solid #e2e8f0;
+  font-family:'Cairo';
+  margin-top:5px;
+}
+
+textarea{
+  width:100%;
+  height:280px;
+  margin-top:10px;
+  border-radius:15px;
+  padding:15px;
+  font-family:monospace;
+  border:2px solid #e2e8f0;
+  resize:vertical;
+}
+
+.btns{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:900;
+  font-family:'Cairo';
+  transition:0.2s;
+}
+
+button:active{transform:scale(0.95);}
+
+.ai-btn{background:var(--ai);color:#fff;}
+.paste{background:#6366f1;color:#fff;}
+.save{background:var(--primary);color:#fff;}
+.clear{background:var(--danger);color:#fff;}
+
 .status{
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:#000;
-color:#fff;
-padding:10px 20px;
-border-radius:20px;
-display:none;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  color:#fff;
+  padding:10px 20px;
+  border-radius:20px;
+  display:none;
 }
-</style>
-</head>
-
-<body>
-
-<header class="admin-header">
-<h2>لوحة التخصيص</h2>
-</header>
-
-<div class="main-container">
-
-<div class="admin-card">
-<h3>مولد البرومبت</h3>
-
-<input id="lesson" placeholder="الدرس">
+</style></head><body><header>⚙️ لوحة الأدمين الذكية - معترك الضاد</header><div class="container"><div class="card">
+<h3>✨ مولد البرومبت</h3><div class="grid">
+<div>
+<label>📚 الدرس</label>
+<input id="lesson" placeholder="مثال: التوكيد">
+</div><div>
+<label>🎓 المستوى</label>
 <input id="level" value="السادس ابتدائي">
-
+</div><div>
+<label>📊 الصعوبة</label>
 <select id="diff">
 <option value="standard">متوسط</option>
 <option value="hard">صعب</option>
 </select>
-
-<button id="genBtn" class="btn btn-copy-ai" onclick="generate()">توليد ونسخ</button>
+</div><div>
+<label>🤖 الذكاء الاصطناعي</label>
+<select id="ai">
+<option value="gemini">Gemini</option>
+<option value="gpt">ChatGPT</option>
+</select>
 </div>
+</div><button class="ai-btn" onclick="generate()">📋 توليد ونسخ البرومبت</button>
 
-<div class="admin-card">
-<textarea id="json" class="json-editor"></textarea>
-
-<div>
-<button class="btn btn-paste" onclick="paste()">لصق</button>
-<button class="btn btn-save" onclick="save()">حفظ</button>
+</div><div class="card">
+<h3>📦 بنك الأسئلة</h3>
+<textarea id="json" placeholder="الصق JSON هنا..."></textarea><div class="btns">
+<button class="paste" onclick="paste()">لصق</button>
+<button class="save" onclick="save()">حفظ</button>
+<button class="clear" onclick="clearBox()">تفريغ</button>
 </div>
-</div>
-
-</div>
-
-<div class="status" id="status"></div>
-
-<script>
-
-const btn = document.getElementById("genBtn");
+</div></div><div class="status" id="status"></div><script>
 
 function show(msg){
-const s=document.getElementById("status");
-s.innerText=msg;
-s.style.display="block";
-setTimeout(()=>s.style.display="none",2500);
+ const s=document.getElementById('status');
+ s.innerText=msg;
+ s.style.display='block';
+ setTimeout(()=>s.style.display='none',2000);
 }
 
-// تحسين البرومبت
 function generate(){
+ const lesson=document.getElementById('lesson').value||"غير محدد";
+ const level=document.getElementById('level').value;
+ const diff=document.getElementById('diff').value;
+ const ai=document.getElementById('ai').value;
 
-if(btn.disabled) return;
-btn.disabled=true;
+ const prompt=`الدرس: ${lesson}\nالمستوى: ${level}\nالصعوبة: ${diff}\n\nأعد JSON فقط بدون شرح.`;
 
-const lesson = document.getElementById("lesson").value || "غير محدد";
-const level = document.getElementById("level").value;
-const diff = document.getElementById("diff").value;
+ navigator.clipboard.writeText(prompt)
+ .then(()=>show('تم النسخ'))
+ .catch(()=>show('فشل النسخ'));
+}
 
-let prompt = `
-أنشئ JSON فقط بدون أي شرح.
+async function paste(){
+ try{
+ const t=await navigator.clipboard.readText();
+ document.getElementById('json').value=t;
+ show('تم اللصق');
+ }catch(e){show('فشل اللصق');}
+}
 
-الدرس: ${lesson}
-المستوى: ${level}
-الصعوبة: ${diff}
-
-القالب:
-{
- "phase1": [],
- "phase2": [],
- "phase4": [],
- "stock": {
-   "syntax": [],
-   "morphology": [],
-   "dictation": []
+function save(){
+ try{
+ const d=JSON.parse(document.getElementById('json').value);
+ localStorage.setItem('moatark_questions',JSON.stringify(d));
+ show('تم الحفظ');
+ }catch(e){
+ show('JSON غير صالح');
  }
 }
-`;
 
-navigator.clipboard.writeText(prompt)
-.then(()=>{
-show("تم النسخ");
-})
-.catch(()=>{
-show("فشل النسخ");
-})
-.finally(()=>{
-btn.disabled=false;
-});
-
+function clearBox(){
+ document.getElementById('json').value='';
+ show('تم التفريغ');
 }
 
-// لصق آمن
-async function paste(){
-try{
-const t = await navigator.clipboard.readText();
-document.getElementById("json").value = t;
-show("تم اللصق");
-}catch(e){
-show("فشل اللصق");
-}
-}
-
-// حفظ مع تحقق أقوى
-function save(){
-try{
-const data = JSON.parse(document.getElementById("json").value);
-
-if(
-!data.phase1 || !data.phase2 || !data.phase4 || !data.stock
-){
-show("JSON غير مكتمل");
-return;
-}
-
-localStorage.setItem("data",JSON.stringify(data));
-show("تم الحفظ");
-
-}catch(e){
-show("JSON غير صالح");
-}
-}
-
-</script>
-
-</body>
+</script></body>
 </html>

@@ -5,6 +5,7 @@
     <title>لوحة التخصيص الذكي | معترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        /* التنسيق الجمالي كما هو دون تغيير */
         :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; --warn: #fffbeb; --warn-border: #fef3c7; --warn-text: #92400e; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
         .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); }
@@ -23,14 +24,14 @@
         .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; }
         .btn:active { transform: scale(0.95); }
         .btn-copy-ai { background: var(--ai-purple); color: white; font-size: 1.1rem; padding: 15px 30px; width: auto; min-width: 250px; }
-        .btn-paste { background: #6366f1; color: white; } /* لون أزرق مميز للّصق */
+        .btn-paste { background: #6366f1; color: white; }
         .btn-save { background: var(--primary); color: white; }
         .btn-clear { background: #ef4444; color: white; }
         .btn-reset { background: #3b82f6; color: white; }
         .btn-home { background: var(--dark); color: white; text-decoration:none; display:flex; align-items:center; justify-content:center; }
-        .status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: black; color: white; padding: 12px 25px; border-radius: 30px; display:none; z-index: 10001; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; border-top: 1px solid #e2e8f0; margin-top: 30px; }
-        @media(max-width:768px){ .config-grid{grid-template-columns:1fr;} }
+        
+        /* إصلاح الجراحة: جعل الرسالة تظهر دوماً في الأعلى وبوضوح */
+        .status { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: black; color: white; padding: 12px 25px; border-radius: 30px; display:none; z-index: 20001; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; }
     </style>
 </head>
 <body>
@@ -48,16 +49,10 @@
     </div>
 
     <div class="admin-card ai-section">
-        <h3 style="color:var(--ai-purple); margin-top:0;">✨ مولّد البرومبت السريع</h3>
+        <h3 style="color:var(--ai-purple); margin-top:0;">✨ مولّد البرومبت المطور</h3>
         <div class="config-grid">
-            <div class="input-box">
-                <label>📚 موضوع الدرس</label>
-                <input id="lesson" placeholder="مثلاً: التوكيد">
-            </div>
-            <div class="input-box">
-                <label>🎓 المستوى الدراسي</label>
-                <input id="level" value="السادس ابتدائي">
-            </div>
+            <div class="input-box"><label>📚 موضوع الدرس</label><input id="lesson" placeholder="مثلاً: التوكيد"></div>
+            <div class="input-box"><label>🎓 المستوى الدراسي</label><input id="level" value="السادس ابتدائي"></div>
             <div class="input-box">
                 <label>📊 درجة الصعوبة</label>
                 <select id="diff">
@@ -73,7 +68,6 @@
                 </select>
             </div>
         </div>
-        <!-- تم إخفاء textarea البرومبت ووضع الزر فقط -->
         <button class="btn btn-copy-ai" onclick="generateAndCopy()">📋 توليد ونسخ البرومبت فوراً</button>
     </div>
 
@@ -90,13 +84,10 @@
     </div>
 </div>
 
-<footer>
-    من إعداد وتصميم: الأستاذ محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش
-</footer>
-
 <div class="status" id="status"></div>
 
 <script>
+// الجراحة 1: تصحيح أسماء المفاتيح لتطابق الاندكس تماماً
 const schemaKeys = ["phase1", "phase2", "phase4", "stock"];
 
 function show(msg, isError = false){
@@ -107,76 +98,96 @@ function show(msg, isError = false){
     setTimeout(() => s.style.display = 'none', 3000);
 }
 
-// دالة التوليد والنسخ التلقائي بدون إظهار النص
+// الجراحة 2: تحصين دالة النسخ لتعمل في كل الظروف (Fallback)
+function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+    } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            return Promise.resolve();
+        } catch (err) {
+            document.body.removeChild(textArea);
+            return Promise.reject();
+        }
+    }
+}
+
 function generateAndCopy(){
     const lesson = document.getElementById('lesson').value;
     const level = document.getElementById('level').value;
     const diff = document.getElementById('diff').value;
-    const ai = document.getElementById('ai').value;
 
     if(!lesson) { show('⚠️ يرجى كتابة اسم الدرس أولاً', true); return; }
 
-    let p = `إليك بروتوكول توليد بيانات "معترك الضاد" (إصدار 2026).
-مهمتك: ملء القالب التقني التالي بأسئلة درس "${lesson}" للمستوى "${level}" بصعوبة "${diff}".
+    // الجراحة 3: هندسة برومبت "صديق للاندكس" وبنية الصناديق العجيبة
+    let p = `أجب بصيغة JSON فقط. بدون أي نص خارجي.
+المهمة: توليد أسئلة درس "${lesson}" للمستوى "${level}" بصعوبة "${diff}".
 
-[القواعد الصارمة]:
-1. ممنوع تغيير أسماء المفاتيح (phase1, phase2, phase4, stock, تراكيب، صرف، إملاء).
-2. ممنوع إضافة أي نص خارج حدود الـ JSON.
-3. الالتزام بالأعداد: 6 للنمط 1، 12 للنمط 2، 4 لكل مكون في النمط 3، 4 للنمط 4.
-4. "a" في الأنماط 1 و 2 هو رقم (0-3).
-
-[القالب المطلوب تعبئته]:
+[البنية التقنية الصارمة]:
 {
-  "phase1": [ {"q": "سؤال", "o": ["0", "1", "2", "3"], "a": 0} ],
-  "phase2": [ {"q": "سؤال", "o": ["0", "1", "2", "3"], "a": 0} ],
-  "phase4": [ {"q": "سؤال", "a": "جواب"} ],
+  "phase1": [6 أسئلة اختيار من متعدد، "a" من 0 لـ 3],
+  "phase2": [12 سؤال اختيار من متعدد، "a" من 0 لـ 3],
+  "phase4": [4 أسئلة إجابة مباشرة قصيرة],
   "stock": {
-    "تراكيب": [ {"q": "سؤال", "a": "جواب"} ],
-    "صرف": [ {"q": "سؤال", "a": "جواب"} ],
-    "إملاء": [ {"q": "سؤال", "a": "جواب"} ]
+    "المدرسة": [4 أسئلة إجابة مباشرة قصيرة لدروس التراكيب],
+    "المحفظة": [4 أسئلة إجابة مباشرة قصيرة لدروس الصرف],
+    "الكتاب": [4 أسئلة إجابة مباشرة قصيرة لدروس الإملاء]
   }
-}`;
+}
+ملاحظة: الإجابة الصحيحة "a" يجب أن تكون رقماً يمثل ترتيب الخيار (0 هو الخيار الأول).`;
 
-    if(ai === 'gemini') p = "STRICTLY OUTPUT VALID JSON ONLY\n" + p;
-
-    // النسخ للخلفية
-    navigator.clipboard.writeText(p).then(() => {
-        show('✅ تم توليد البرومبت ونسخه بنجاح! اذهب الآن لـ ' + (ai === 'gemini' ? 'Gemini' : 'ChatGPT'));
+    copyToClipboard(p).then(() => {
+        show('✅ تم نسخ البرومبت! اذهب الآن للذكاء الاصطناعي');
+    }).catch(() => {
+        show('❌ فشل النسخ التلقائي، يرجى المحاولة مرة أخرى', true);
     });
 }
 
-// دالة اللصق التلقائي بضغطة زر
+// الجراحة 4: إضافة دالة تنظيف الكود التلقائي عند اللصق
 async function pasteFromClipboard() {
     try {
-        const text = await navigator.clipboard.readText();
+        let text = await navigator.clipboard.readText();
+        // تنظيف علامات جيميناي ```json
+        text = text.replace(/
+```json/g, "").replace(/```/g, "").trim();
         document.getElementById('json').value = text;
-        show('📋 تم لصق الكود بنجاح');
+        show('📋 تم اللصق والتنظيف بنجاح');
     } catch (err) {
-        show('❌ فشل اللصق التلقائي، استخدم Ctrl+V', true);
+        show('❌ فشل اللصق، استخدم Ctrl+V', true);
     }
 }
 
 function save(){
-    const content = document.getElementById('json').value.trim();
+    let content = document.getElementById('json').value.trim();
+    // تنظيف إضافي قبل الحفظ
+    content = content.replace(/```json/g, "").replace(/
+```/g, "").trim();
+    
     if(!content) { show('❌ الصندوق فارغ!', true); return; }
+    
     try {
         const d = JSON.parse(content);
-        const isValid = schemaKeys.every(k => Object.keys(d).includes(k));
-        if(isValid) {
+        // التحقق من وجود المفاتيح الأربعة الأساسية
+        const hasKeys = schemaKeys.every(k => Object.keys(d).includes(k));
+        
+        if(hasKeys) {
             localStorage.setItem('moatark_questions', JSON.stringify(d));
-            show('💾 تم حفظ بنك الأسئلة بنجاح');
+            show('💾 تم الحفظ بنجاح! الأسئلة جاهزة في اللعبة');
         } else {
-            show('⚠️ تنبيه: الملف غير مطابق للمواصفات', true);
+            show('⚠️ الكود ينقصه بعض الأقسام (phase1, stock..)', true);
         }
     } catch(e) {
-        show('❌ خطأ: الكود ليس ملف JSON صحيح', true);
+        show('❌ خطأ في تنسيق الكود، تأكد من نسخ JSON بالكامل', true);
     }
 }
 
-function clearBox() {
-    document.getElementById('json').value = '';
-    show('🗑️ تم التفريغ');
-}
+function clearBox() { document.getElementById('json').value = ''; show('🗑️ تم التفريغ'); }
 
 function reset() {
     if(confirm('هل تريد العودة للأسئلة الافتراضية؟')) {

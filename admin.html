@@ -140,8 +140,7 @@
 
         try {
             // تنظيف الكود من زوائد Markdown
-            const clean = raw.replace(/```json/g, "").replace(/
-```/g, "").trim();
+            const clean = raw.replace(/```json/g, "").replace(/```/g, "").trim();
             const parsed = JSON.parse(clean);
             
             // توحيد الأسماء لضمان قراءة صفحة الاندكس لها

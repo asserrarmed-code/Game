@@ -128,7 +128,6 @@
 <script>
     function refreshPage(btn) { btn.classList.add('refresh-active'); setTimeout(() => { location.reload(); }, 500); }
 
-    // [حقن مجهري] استرداد البيانات بنظام الأولوية للأستاذ
     const savedDataRaw = localStorage.getItem('moatark_questions');
     const customData = savedDataRaw ? JSON.parse(savedDataRaw) : null;
 
@@ -149,20 +148,32 @@
     let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
     let votedOnThisQuestion = [], currentModelAnswer = "";
     let lifelinesState = [], rocketActive = -1;
+    let usedInThisRound = new Set(); // ذاكرة منع التكرار للصناديق العجيبة
 
     const phasesData = [
         { name: "النمط 1: الاستجابة الجماعية", type: "all", time: 20, questions: (customData && customData.phase1 && customData.phase1.length > 0) ? customData.phase1 : defaultPhases },
         { name: "النمط 2: المواجهة الموجهة", type: "target", time: 20, questions: (customData && customData.phase2 && customData.phase2.length > 0) ? customData.phase2 : defaultPhases.concat(defaultPhases) },
         { name: "النمط 3: الصناديق العجيبة", type: "free", time: 30 },
-        { name: "النمط 4: جولة السرعة", type: "all", time: 8, questions: (customData && customData.phase4 && customData.phase4.length > 0) ? customData.phase4 : [{q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"}] }
+        { 
+            name: "النمط 4: جولة السرعة", 
+            type: "all", 
+            time: 8, 
+            questions: (customData && customData.phase4 && customData.phase4.length > 0) ? customData.phase4 : [
+                {q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"},
+                {q: "حدد نوع الجمع في كلمة 'قُضاة'.", a: "جمع تكسير"},
+                {q: "ما أصل الألف في فعل 'سعى'؟", a: "ياء (سعى يسعى)"},
+                {q: "أعرب كلمة 'مُسْرِعاً' في: 'جاءَ الولدُ مُسْرِعاً'.", a: "حال منصوب"}
+            ] 
+        }
     ];
 
     function getStockData() {
         if (customData && customData.stock) {
+            // نظام ربط مرن لضمان قراءة البيانات مهما كان المسمى المرفوع
             return {
-                "المدرسة": customData.stock["المدرسة"] || customData.stock["Group_A"] || defaultStock["المدرسة"],
-                "المحفظة": customData.stock["المحفظة"] || customData.stock["Group_B"] || defaultStock["المحفظة"],
-                "الكتاب": customData.stock["الكتاب"] || customData.stock["Group_C"] || defaultStock["الكتاب"]
+                "المدرسة": customData.stock["المدرسة"] || customData.stock["Group_A"] || customData.stock["تراكيب"] || defaultStock["المدرسة"],
+                "المحفظة": customData.stock["المحفظة"] || customData.stock["Group_B"] || customData.stock["صرف وتحويل"] || defaultStock["المحفظة"],
+                "الكتاب": customData.stock["الكتاب"] || customData.stock["Group_C"] || customData.stock["إملاء"] || defaultStock["الكتاب"]
             };
         }
         return defaultStock;
@@ -249,8 +260,12 @@
             document.getElementById('target-announcer').innerHTML = `🎯 الدور: ${teamNames[tid]}`;
             document.getElementById(`t-card-${tid}`).classList.add('active-turn'); displayQuestion(p.questions[currentQ]);
         } else if(p.name.includes("النمط 4")) {
-            const q = p.questions[currentQ]; document.getElementById('q-text').innerText = q.q; currentModelAnswer = q.a;
-            document.getElementById('manual-zone').style.display = 'block'; startTimer(p.time, true);
+            const q = p.questions[currentQ]; 
+            document.getElementById('q-text').innerText = q.q; 
+            currentModelAnswer = q.a;
+            document.getElementById('manual-answer-display').innerText = "...";
+            document.getElementById('manual-zone').style.display = 'block'; 
+            startTimer(p.time, true);
         } else displayQuestion(p.questions[currentQ]);
     }
 
@@ -260,22 +275,34 @@
         startTimer(phasesData[currentPhase].time);
     }
 
-    // [إصلاح دقيق] نظام الصناديق العجيبة العشوائي لمنع ظهور النقط
     function showFreeSelection() {
         document.getElementById('component-selection').style.display = 'flex';
         const stock = getStockData();
-        for(let key in stock) document.getElementById(`count-${key}`).innerText = `(مُتاح)`;
+        for(let key in stock) {
+            const count = stock[key].length;
+            document.getElementById(`count-${key}`).innerText = `(${count})`;
+        }
     }
 
     function selectComponent(key) {
-        const stock = getStockData(); const questions = stock[key];
+        const stock = getStockData(); 
+        const questions = stock[key];
+        
         if(!questions || questions.length === 0) return alert("هذا الصندوق فارغ!");
-        const item = questions[Math.floor(Math.random() * questions.length)];
+        
+        // نظام منع التكرار العشوائي
+        let available = questions.filter(q => !usedInThisRound.has(q.q));
+        if(available.length === 0) { usedInThisRound.clear(); available = questions; }
+        
+        const item = available[Math.floor(Math.random() * available.length)];
+        usedInThisRound.add(item.q);
+
         document.getElementById('component-selection').style.display = 'none';
         document.getElementById('manual-zone').style.display = 'block';
         document.getElementById('manual-answer-display').innerText = "...";
         document.getElementById('q-text').innerText = `📦 ${key}: ${item.q}`;
-        currentModelAnswer = item.a; startTimer(30);
+        currentModelAnswer = item.a; 
+        startTimer(30);
     }
 
     function startTimer(s, isSpeed = false) {
@@ -285,7 +312,10 @@
 
     function reveal() {
         clearInterval(timer); const p = phasesData[currentPhase];
-        if(currentModelAnswer !== "") { document.getElementById('manual-answer-display').innerText = currentModelAnswer; document.getElementById('manual-answer-display').style.color = 'var(--success)'; }
+        if(currentModelAnswer !== "") { 
+            document.getElementById('manual-answer-display').innerText = currentModelAnswer; 
+            document.getElementById('manual-answer-display').style.color = 'var(--success)'; 
+        }
         else if(p.questions && p.questions[currentQ]?.o) {
             const d = p.questions[currentQ]; const opts = document.querySelectorAll('.opt');
             if(opts[d.a]) { opts[d.a].style.background = 'var(--success)'; opts[d.a].style.color = 'white'; }
@@ -293,10 +323,23 @@
     }
 
     function next() {
-        const p = phasesData[currentPhase]; if(!p) return;
-        currentQ++; let limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
-        if(currentQ >= limit) { currentQ = 0; currentPhase++; if(currentPhase < phasesData.length) prepareTurns(); }
-        if(currentPhase >= phasesData.length) { document.getElementById('timer').innerText = "🏁"; document.getElementById('finish-screen').style.display = 'block'; }
+        const p = phasesData[currentPhase]; 
+        if(!p) return;
+        
+        currentQ++; 
+        // إصلاح منطق الانتقال لضمان قراءة كامل مصفوفة النمط 4
+        let limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
+        
+        if(currentQ >= limit) { 
+            currentQ = 0; 
+            currentPhase++; 
+            if(currentPhase < phasesData.length) prepareTurns(); 
+        }
+        
+        if(currentPhase >= phasesData.length) { 
+            document.getElementById('timer').innerText = "🏁"; 
+            document.getElementById('finish-screen').style.display = 'block'; 
+        }
         else init();
     }
 

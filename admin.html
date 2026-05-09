@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم الاحترافية | معترك الضاد</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="[https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap](https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap)" rel="stylesheet">
     <style>
         :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; --warn: #fffbeb; --warn-border: #fef3c7; --warn-text: #92400e; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
@@ -27,13 +27,13 @@
         
         .json-editor { width: 100%; height: 350px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #0f172a; border-radius: 12px; direction: ltr; text-align: left; background: #0f172a; color: #10b981; font-size: 14px; box-sizing: border-box; resize: vertical; }
         .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
-        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
+        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .btn-copy { background: var(--ai-purple); color: white; width: 100%; justify-content: center; font-size: 1.1rem; }
         .btn-save { background: var(--primary); color: white; }
         .btn-clear { background: #ef4444; color: white; }
         .btn-reset { background: #3b82f6; color: white; }
-        .btn-home { background: var(--dark); color: white; }
-        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn-home { background: var(--dark); color: white; text-decoration: none; }
+        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -47,23 +47,21 @@
     <main class="main-container">
         <div class="notice-card">
             <span>⚠️</span>
-            <p class="notice-text">
-                تنبيه: التعديلات تُحفظ محلياً على هذا الجهاز فقط. إذا غيرت المتصفح أو الجهاز، ستحتاج لاستعادة البيانات أو إعادة لصقها.
-            </p>
+            <p class="notice-text">تنبيه: التعديلات تُحفظ محلياً على هذا الجهاز. تأكد من لصق كود JSON صحيح لضمان عمل مجموعات الصناديق.</p>
         </div>
 
         <div class="admin-card ai-section">
-            <h3 style="margin-top:0; color:var(--ai-purple)">✨ صانع الأسئلة (البرومبت المطور)</h3>
+            <h3 style="margin-top:0; color:var(--ai-purple)">✨ صانع الأسئلة الذكي</h3>
             <div class="config-grid">
                 <div class="input-box" style="grid-column: span 2;">
-                    <label>📚 موضوع الدرس أو الدروس:</label>
-                    <input type="text" id="lesson-name" placeholder="مثلاً: المفعول المطلق، كان وأخواتها...">
+                    <label>📚 موضوع الدرس:</label>
+                    <input type="text" id="lesson-name" placeholder="مثلاً: المفعول المطلق...">
                 </div>
                 <div class="input-box" style="grid-column: span 2;">
-                    <label>🤖 تخصيص البرومبت حسب الذكاء الاصطناعي المستهدف:</label>
+                    <label>🤖 نوع الذكاء الاصطناعي:</label>
                     <div class="ai-selector">
-                        <label class="ai-option"><input type="radio" name="ai-target" value="gpt" checked> ChatGPT (JSON قياسي)</label>
-                        <label class="ai-option"><input type="radio" name="ai-target" value="gemini"> Gemini (JSON خام مباشر)</label>
+                        <label class="ai-option"><input type="radio" name="ai-target" value="gpt" checked> ChatGPT</label>
+                        <label class="ai-option"><input type="radio" name="ai-target" value="gemini"> Gemini (خام)</label>
                     </div>
                 </div>
                 <div class="input-box">
@@ -71,11 +69,10 @@
                     <input type="text" id="level" value="السادس ابتدائي">
                 </div>
                 <div class="input-box">
-                    <label>📊 درجة الصعوبة:</label>
+                    <label>📊 الصعوبة:</label>
                     <select id="difficulty">
-                        <option value="easy and basic">سهل</option>
-                        <option value="medium and standard" selected>متوسط</option>
-                        <option value="challenging for elite students">صعب</option>
+                        <option value="standard">متوسط</option>
+                        <option value="challenging">صعب</option>
                     </select>
                 </div>
             </div>
@@ -83,128 +80,87 @@
         </div>
 
         <div class="admin-card">
-            <label style="display:block; margin-bottom:10px; font-weight:bold;">📦 محرر المحتوى (ألصق كود JSON هنا):</label>
-            <textarea id="json-editor" class="json-editor" spellcheck="false"></textarea>
+            <label style="display:block; margin-bottom:10px; font-weight:bold;">📦 محرر JSON (الصق النتيجة هنا):</label>
+            <textarea id="json-editor" class="json-editor" spellcheck="false" placeholder="ألصق الكود هنا..."></textarea>
             <div class="btn-group">
-                <button class="btn btn-save" onclick="saveData()">💾 حفظ واعتماد الأسئلة</button>
-                <button class="btn btn-clear" onclick="clearEditor()">🗑️ تفريغ المحرر</button>
-                <button class="btn btn-reset" onclick="resetData()">🔄 استعادة الافتراضي</button>
-                <a href="index.html" class="btn btn-home">🎮 دخول المسابقة</a>
+                <button class="btn btn-save" onclick="saveData()">💾 حفظ الأسئلة</button>
+                <button class="btn btn-clear" onclick="clearEditor()">🗑️ مسح</button>
+                <button class="btn btn-reset" onclick="resetData()">🔄 الافتراضي</button>
+                <a href="index.html" class="btn btn-home">🎮 رجوع للمسابقة</a>
             </div>
         </div>
-        <footer style="text-align: center; font-size: 0.8rem; color: #94a3b8; margin-top: 20px;">
-            من إعداد وتصميم الأستاذ محمد أسرار - مدرسة ميمونة أم المؤمنين
-        </footer>
     </main>
 
     <div id="toast" class="status-toast"></div>
 
 <script>
-    // الأسئلة الافتراضية محتفظ بها كما هي
-    const defaultData = { 
-        phase1: [
-            {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2},
-            {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء", "واو", "ألف", "نون"], a:1},
-            {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["اسمين علمين", "فعل وفاعل", "بداية السطر", "حرفي جر"], a:0},
-            {q: "اسم الفاعل من فعل 'كَتَبَ' هو:", o:["مكتوب", "كاتب", "يُكتب", "كتاب"], a:1},
-            {q: "الفعل المضارع 'يذهبُ' يصبح منصوباً إذا سبقه:", o:["لَمْ", "لَنْ", "لا الناهية", "مِنْ"], a:1},
-            {q: "همزة 'اسم' هي همزة:", o:["قطع", "متوسطة", "وصل", "متطرفة"], a:2}
-        ], 
-        phase2: [
-            {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
-            {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1},
-            {q: "الوزن الصرفي لكلمة 'انطلق' هو:", o:["انفعل", "افتعل", "تفاعل", "فعلل"], a:0},
-            {q: "صغ اسم التفضيل من 'صَغُرَ':", o:["صغير", "أصغر", "صاغر", "تصغير"], a:1},
-            {q: "جمع 'نافذة' هو جمع تكسير صورته:", o:["نافذات", "أنفذة", "نوافذ", "نافذون"], a:2},
-            {q: "أعرب 'أباك' في (ساعد أباك):", o:["فاعل", "مفعول به منصوب بالألف", "اسم مجرور", "مبتدأ"], a:1},
-            {q: "ما هو اسم الآلة من 'بَرَدَ'؟", o:["بارد", "مبرد", "مبورد", "براد"], a:1},
-            {q: "إعراب 'تلميذاً' في (جاء عشرون تلميذاً):", o:["حال", "تمييز", "نعت", "مضاف إليه"], a:1},
-            {q: "الفعل المعتل 'سعى' نوعه:", o:["مثال", "أجوف", "ناقص", "لفيف مقرون"], a:2},
-            {q: "علامة جزم الأفعال الخمسة هي:", o:["السكون", "حذف النون", "ثبوت النون", "الفتحة"], a:1},
-            {q: "لماذا كتبت الهمزة على الواو في 'سُؤَال'؟", o:["مكسورة", "مفتوحة وقبلها ضم", "ساكنة", "مضمومة"], a:1},
-            {q: "الجملة المؤولة من (أن تجتهد) هي:", o:["مجتهد", "اجتهادك", "تجتهدون", "جهدك"], a:1}
-        ], 
-        phase4: [
-            {q: "ما هو الوزن الصرفي الصحيح لكلمة 'صِـلَة'؟", a: "عِـلَة"},
-            {q: "حوّل الفعل 'رأى' إلى فعل أمر للمفرد المذكر.", a: "رَ"},
-            {q: "ما هو جمع كلمة 'دَلْو' على وزن 'أَفْعُل'؟", a: "أَدْلٍ"},
-            {q: "حوّل الجملة للمثنى المؤنث: (إنَّ التلميذةَ ذكيةٌ).", a: "إنَّ التلميذتَيْنِ ذكيتانِ"}
-        ], 
+    const defaultData = {
+        phase1: [{q: "الفعل 'شَدَّ' نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2}],
+        phase2: [{q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1}],
+        phase4: [{q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"}],
         stock: { 
-            "المدرسة": [
-                {q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي مَرْفُوعٌ"},
-                {q: "حدد التمييز ونوعه في: (اشْتَرَيْتُ كِيلوغراماً لَحماً).", a: "لحماً (تمييز ملفوظ)"},
-                {q: "حوّل الجملة للمثنى: (إنَّ أَخَاكَ مُجْتَهِدٌ).", a: "إنَّ أخوَيْكَ مجتهدانِ"},
-                {q: "استخرج الحال من جملة: (عادَ الفريقُ الوطنيُّ مُنتصراً).", a: "مُنتصراً"}
-            ], 
-            "المحفظة": [
-                {q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِجٌ"},
-                {q: "صغ اسم المفعول من فعل غير ثلاثي: (أَكْرَمَ).", a: "مُكْرَمٌ"},
-                {q: "ما هو اسم الآلة من فعل: (حَرَثَ)؟", a: "مِحراث"},
-                {q: "صغ اسم الزمان من فعل: (اسْتَقَرَّ).", a: "مُسْتَقَرٌّ"}
-            ], 
-            "الكتاب": [
-                {q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"},
-                {q: "لماذا كتبت الألف مقصورة في كلمة: (مستشفى)؟", a: "اسم غير ثلاثي لم تسبقه ياء"},
-                {q: "متى تثبت ألف 'ابن'؟", a: "إذا وقعت في أول السطر"},
-                {q: "اكتب الهمزة المتطرفة بشكل صحيح للفعل: (جَرُؤَ)", a: "جَرُؤَ"}
-            ] 
-        } 
+            "المدرسة": [{q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي"}],
+            "المحفظة": [{q: "صغ اسم الفاعل من: (استخرج).", a: "مستخرج"}],
+            "الكتاب": [{q: "علل كتابة الهمزة في: (ذِئْب).", a: "ساكنة وما قبلها كسر"}]
+        }
     };
 
     function copyPrompt() {
         const aiTarget = document.querySelector('input[name="ai-target"]:checked').value;
         const lesson = document.getElementById('lesson-name').value || "اللغة العربية";
-        const level = document.getElementById('level').value;
-        const diff = document.getElementById('difficulty').value;
+        
+        let instructions = aiTarget === "gemini" ? 
+            "OUTPUT ONLY RAW JSON. NO MARKDOWN. NO ```json BLOCKS. START WITH { AND END WITH }." :
+            "OUTPUT AS RAW JSON CODE BLOCK. NO CONVERSATION.";
 
-        // تم تثبيت الأعداد برمجياً هنا بناءً على طلبك
-        const qCount = 12;
-        const sCount = 4;
-
-        let aiRules = aiTarget === "gemini" ? 
-            "STRICT FOR GEMINI: NO markdown blocks. START response with { and END with }. NO conversational text." : 
-            "STRICT FOR CHATGPT: Output as a RAW JSON code block. No conversation.";
-
-        const promptText = `SYSTEM: Act as a Moroccan Curriculum Expert & JSON Generator. Output ONLY raw JSON code.
-${aiRules}
-TOPIC: [${lesson}]
-GRADE: [${level}]
-DIFFICULTY: [${diff}]
-
-STRICT RULES:
-1. All Arabic text MUST have full Harakat.
-2. Follow Official Moroccan Educational Program.
-3. Logical Distractors: Plausible errors.
-4. One correct answer.
-5. "stock" section: Groups (المدرسة, المحفظة, الكتاب).
-
-REQUIRED JSON STRUCTURE:
+        const promptText = `Act as an expert Moroccan teacher. Topic: ${lesson}. 
+${instructions}
+JSON Structure:
 {
-  "phase1": [{"q": "سؤال؟", "o": ["0", "1", "2"], "a": 0}],
-  "phase2": [exactly ${qCount} items],
-  "phase4": [4 direct Q&A items],
-  "stock": { "المدرسة": [${sCount} items], "المحفظة": [${sCount} items], "الكتاب": [${sCount} items] }
+  "phase1": [{"q": "text", "o": ["a","b","c","d"], "a": index}],
+  "phase2": [12 items],
+  "phase4": [4 items],
+  "stock": { 
+     "المدرسة": [4 items], 
+     "المحفظة": [4 items], 
+     "الكتاب": [4 items] 
+  }
 }
-Generate ONLY JSON. No chat.`;
+All Arabic must have HARAKAT. Questions must be pedagogical and clear.`;
 
-        const ta = document.createElement("textarea"); ta.value = promptText;
-        document.body.appendChild(ta); ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        showToast(`📋 تم نسخ برومبت ${aiTarget.toUpperCase()} بنجاح!`, aiTarget === "gemini" ? "#1a73e8" : "#7c3aed");
+        navigator.clipboard.writeText(promptText);
+        showToast("✅ تم نسخ البرومبت! ألصقه في " + aiTarget.toUpperCase(), "#7c3aed");
     }
 
     function saveData() {
+        let rawData = document.getElementById('json-editor').value.trim();
+        
+        // تنظيف الكود من مخلفات الذكاء الاصطناعي (مثل علامات ```json)
+        rawData = rawData.replace(/
+```json/g, "").replace(/```/g, "").trim();
+
         try {
-            const data = JSON.parse(document.getElementById('json-editor').value);
+            const data = JSON.parse(rawData);
+            
+            // التأكد من وجود مفاتيح الصناديق الصحيحة
+            if (!data.stock || !data.stock["المدرسة"]) {
+                throw new Error("نقص في بيانات الصناديق");
+            }
+
             localStorage.setItem('moatark_questions', JSON.stringify(data));
-            showToast("✅ تم الحفظ بنجاح!", "#006847");
-        } catch(e) { alert("❌ خطأ في كود JSON."); }
+            showToast("💾 تم الحفظ بنجاح!", "#006847");
+        } catch(e) {
+            alert("❌ خطأ: الكود غير صالح. تأكد من نسخ كود JSON كامل وبدون نصوص زائدة.");
+        }
     }
 
-    function clearEditor() { if(confirm("تفريغ؟")) document.getElementById('json-editor').value = ""; }
-    function resetData() { if(confirm("استعادة؟")) { localStorage.removeItem('moatark_questions'); loadData(); } }
+    function clearEditor() { document.getElementById('json-editor').value = ""; }
+    function resetData() { 
+        if(confirm("هل تريد استعادة الأسئلة الأصلية؟")) {
+            localStorage.removeItem('moatark_questions'); 
+            loadData();
+        } 
+    }
     
     function loadData() {
         const saved = localStorage.getItem('moatark_questions');

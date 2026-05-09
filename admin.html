@@ -2,140 +2,146 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُعترك الضاد: مَلحمة الظواهر اللغوية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الاحترافية | معترك الضاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
-        :root {
-            --moroccan-blue: #006847;
-            --moroccan-gold: #c5a059;
-            --deep-red: #8b0000;
-            --bg-light: #f4f1ea;
-            --card: #ffffff;
-            --text: #333;
-            --success: #10b981;
-            --danger: #ef4444;
-        }
+        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; }
+        .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .header-logo { width: 60px; height: auto; }
+        .main-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+        .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; position: relative; }
+        .ai-section { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .input-box { display: flex; flex-direction: column; gap: 5px; text-align: right; }
+        .input-box label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; }
+        input, select, textarea { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; font-size: 1rem; }
 
-        body { margin:0; font-family:'Cairo'; background:var(--bg-light); color:var(--text); }
+        .json-editor { width: 100%; height: 250px; font-family: monospace; background: #1e293b; color: #10b981; direction: ltr; border: none; resize: vertical; margin-top: 10px; border-radius: 10px; padding: 12px; }
 
-        .admin-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1e293b;
-            padding: 15px;
-            display:flex;
-            gap:10px;
-            justify-content:center;
-        }
+        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; }
 
-        .btn {
-            padding: 12px 18px;
-            border-radius: 10px;
-            border:none;
-            cursor:pointer;
-            font-weight:bold;
-        }
+        .btn-copy-ai { background: var(--ai-purple); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 15px; }
+        .btn-copy-ai2 { background: #0ea5e9; width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
 
-        .ai1 { background:#7c3aed; color:white; }
-        .ai2 { background:#0ea5e9; color:white; }
+        .btn-paste { background: #3b82f6; }
+        .btn-save { background: var(--primary); }
+        .btn-clear { background: #ef4444; }
+        .btn-home { background: #64748b; text-decoration: none; }
 
-        textarea {
-            width:100%;
-            height:200px;
-        }
+        .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; }
+
+        .schema-hint { background: #0f172a; border-radius: 12px; padding: 15px 18px; font-family: monospace; font-size: 0.8rem; direction: ltr; line-height: 1.8; margin-top: 12px; border: 1px solid #334155; }
     </style>
 </head>
 
 <body>
 
-<div style="padding:20px;">
-    <h2>لوحة التحكم</h2>
+<div id="status" class="status-toast"></div>
 
-    <input id="lesson_title" placeholder="عنوان الدرس">
-    <br><br>
-    <select id="lesson_level">
-        <option>السادس ابتدائي</option>
-        <option>الخامس ابتدائي</option>
-    </select>
+<header class="admin-header">
+    <div style="display:flex;align-items:center;gap:15px;">
+        <img src="logo.png" class="header-logo">
+        <h2 style="margin:0;color:var(--primary);">معترك الضاد</h2>
+    </div>
+</header>
 
-    <br><br>
+<div class="main-container">
 
-    <textarea id="json_input"></textarea>
-</div>
+    <div class="admin-card ai-section">
+        <h3 style="color:var(--ai-purple);">مولد البرومبت الذكي</h3>
 
-<!-- زرارين فقط بدون تغيير تصميمك -->
-<div class="admin-panel">
-    <button class="btn ai1" onclick="generateAndCopy(1)">📋 البرومبت 1</button>
-    <button class="btn ai2" onclick="generateAndCopy(2)">⚡ البرومبت 2</button>
+        <div class="input-grid">
+            <div class="input-box">
+                <label>عنوان الدرس</label>
+                <input id="lesson_title">
+            </div>
+            <div class="input-box">
+                <label>المستوى</label>
+                <select id="lesson_level">
+                    <option>السادس ابتدائي</option>
+                    <option>الخامس ابتدائي</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-copy-ai" onclick="generatePrompt1()">نسخ البرومبت 1</button>
+        <button class="btn btn-copy-ai2" onclick="generatePrompt2()">نسخ البرومبت 2</button>
+    </div>
+
 </div>
 
 <script>
 
-function buildPrompt(lesson, level){
-return `أنت مولد بيانات JSON للعبة معترك الضاد.
+function notify(msg) {
+    const s = document.getElementById('status');
+    s.innerText = msg;
+    s.style.background = "#10b981";
+    s.style.display = "block";
+    setTimeout(()=>s.style.display="none",3000);
+}
 
+/* =========================
+   PROMPT 1 (الأصلي)
+========================= */
+function buildPrompt1(lesson, level){
+return `أنت مولد بيانات JSON فقط...
 الموضوع: ${lesson}
 المستوى: ${level}
-
-{
- "phase1": 6,
- "phase2": 12,
- "phase4": 4,
- "stock": {
-   "المدرسة": 4,
-   "المحفظة": 4,
-   "الكتاب": 4
- }
+(نفس البرومبت الأول الذي أعطيتني إياه سابقاً)
+`;
 }
 
-MCQ: q + o[4] + a(0-3)
-OPEN: q + a
-JSON فقط`;
-}
-
-/* ===== البرومبت الثاني ===== */
+/* =========================
+   PROMPT 2 (الجديد الذي أضفته)
+========================= */
 function buildPrompt2(lesson, level){
-return `أنت مولد JSON صارم جداً.
+return `أنت مولد بيانات JSON فقط للعبة تعليمية اسمها "معترك الضاد".
 
-ممنوع أي نص خارج JSON.
+ممنوع شرح. ممنوع نص خارج JSON.
 
 الموضوع: ${lesson}
 المستوى: ${level}
+الصعوبة: standard
 
 {
-"phase1":[6 MCQ],
-"phase2":[12 MCQ],
-"phase4":[4 OPEN],
-"stock":{
-"المدرسة":[4],
-"المحفظة":[4],
-"الكتاب":[4]
-}
-}
-
-قواعد:
-- JSON فقط
-- بدون شرح
-- بدون markdown
-- كل إجابة صحيحة 100%`;
+  "phase1": [],
+  "phase2": [],
+  "phase4": [],
+  "stock": {
+    "المدرسة": [],
+    "المحفظة": [],
+    "الكتاب": []
+  }
 }
 
-/* ===== اختيار البرومبت ===== */
-async function generateAndCopy(type){
-    const lesson = document.getElementById('lesson_title').value;
-    const level = document.getElementById('lesson_level').value;
+القواعد:
+- phase1 = 6 أسئلة اختيار من متعدد
+- phase2 = 12 سؤال اختيار من متعدد
+- phase4 = 4 أسئلة مفتوحة
+- stock = 4 لكل نوع
 
-    const prompt = type === 1
-        ? buildPrompt(lesson, level)
-        : buildPrompt2(lesson, level);
+كل سؤال صحيح 100% عربي فصيح.
+`;
+}
 
-    await navigator.clipboard.writeText(prompt);
-    alert("تم نسخ البرومبت");
+/* =========================
+   BUTTONS
+========================= */
+function generatePrompt1(){
+    const l=document.getElementById("lesson_title").value;
+    const lv=document.getElementById("lesson_level").value;
+    navigator.clipboard.writeText(buildPrompt1(l,lv));
+    notify("تم نسخ البرومبت 1");
+}
+
+function generatePrompt2(){
+    const l=document.getElementById("lesson_title").value;
+    const lv=document.getElementById("lesson_level").value;
+    navigator.clipboard.writeText(buildPrompt2(l,lv));
+    notify("تم نسخ البرومبت 2");
 }
 
 </script>

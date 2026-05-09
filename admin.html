@@ -91,14 +91,90 @@
             return;
         }
 
-        const promptText = `أجب بصيغة JSON فقط. قم بتوليد أسئلة لدرس "${lessonInput.value}" للمستوى "${levelInput.value}". 
-المطلوب:
-- phase1: (6 أسئلة اختيار من متعدد).
-- phase2: (12 سؤال اختيار من متعدد).
-- phase4: (4 أسئلة إجابة مباشرة).
-- stock: { "المدرسة":[], "المحفظة":[], "الكتاب":[] } (بكل منها 4 أسئلة).
-تأكد أن الإجابة الصحيحة a هي رقم يبدأ من 0. لا تضف أي نص خارج الكود.`;
+        const promptText = `
+SYSTEM MODE: JSON OUTPUT ENGINE ONLY
 
+You are NOT a chatbot.
+You are NOT allowed to explain, comment, or format text.
+
+OUTPUT RULE:
+- Output MUST be valid JSON ONLY.
+- No markdown. No \`\`\`. No text. No explanation. No headings.
+- If you output anything except JSON, the output is INVALID.
+
+HARD CONSTRAINTS:
+1. Output must start with "{" and end with "}"
+2. Must be valid JSON parseable by JSON.parse()
+3. No trailing commas allowed
+4. All strings must use double quotes "
+5. No comments allowed anywhere
+6. No extra keys allowed outside schema below
+
+STRICT SCHEMA (DO NOT CHANGE KEYS):
+
+{
+  "phase1": [
+    {
+      "question": "string",
+      "options": ["string", "string", "string", "string"],
+      "a": 0
+    }
+  ],
+  "phase2": [
+    {
+      "question": "string",
+      "options": ["string", "string", "string", "string"],
+      "a": 0
+    }
+  ],
+  "phase4": [
+    {
+      "question": "string",
+      "answer": "string"
+    }
+  ],
+  "stock": {
+    "المدرسة": [
+      {
+        "question": "string",
+        "options": ["string", "string", "string", "string"],
+        "a": 0
+      }
+    ],
+    "المحفظة": [
+      {
+        "question": "string",
+        "options": ["string", "string", "string", "string"],
+        "a": 0
+      }
+    ],
+    "الكتاب": [
+      {
+        "question": "string",
+        "options": ["string", "string", "string", "string"],
+        "a": 0
+      }
+    ]
+  }
+}
+
+CONTENT RULES:
+- All questions must be in Arabic (Modern Standard Arabic).
+- All questions must match lesson: "${lessonInput.value}"
+- Level: "${levelInput.value}"
+- Each multiple-choice question MUST have exactly 4 options.
+- "a" MUST be an integer: 0, 1, 2, or 3 only.
+- "a" must match the correct answer index strictly.
+
+OUTPUT VALIDATION RULE:
+Before outputting:
+- Ensure JSON is valid
+- Ensure it can be parsed by JSON.parse()
+- Ensure no extra text exists
+
+FINAL RULE:
+Return ONLY JSON. Nothing else.
+`;
         // محاولة النسخ بالطريقة الحديثة
         try {
             if (navigator.clipboard && navigator.clipboard.writeText) {

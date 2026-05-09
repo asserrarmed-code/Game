@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التخصيص الاحترافية | معترك الضاد</title>
+    <title>لوحة التحكم الاحترافية | معترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* التنسيق الجمالي الأصلي مع تحسينات طفيفة للملاءمة */
         :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; }
         .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
@@ -26,10 +25,7 @@
         .btn-save { background: var(--primary); }
         .btn-clear { background: #ef4444; }
         .btn-home { background: #64748b; text-decoration: none; }
-        
-        /* رسالة الحالة السحابية المحدثة */
-        .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: pop 0.3s ease; }
-        @keyframes pop { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -45,7 +41,6 @@
 </header>
 
 <div class="main-container">
-    <!-- قسم توليد البرومبت (الذكاء الاصطناعي) -->
     <div class="admin-card ai-section">
         <h3 style="margin-top: 0; color: var(--ai-purple);">✨ مولد البرومبت الذكي</h3>
         <div class="input-grid">
@@ -61,10 +56,9 @@
                 </select>
             </div>
         </div>
-        <button class="btn btn-copy-ai" onclick="generateAndCopy()">📋 نسخ برومبت الأسئلة لـ Gemini</button>
+        <button id="btn_generate" class="btn btn-copy-ai" onclick="generateAndCopy()">📋 نسخ برومبت الأسئلة لـ AI</button>
     </div>
 
-    <!-- قسم استيراد الكود -->
     <div class="admin-card">
         <h3 style="margin-top: 0; color: var(--primary);">📥 استيراد بيانات الدرس (JSON)</h3>
         <textarea id="json_input" class="json-editor" placeholder="الصق كود الـ JSON الناتج من الذكاء الاصطناعي هنا..."></textarea>
@@ -79,7 +73,6 @@
 </div>
 
 <script>
-    // نظام الإشعارات المطور
     function notify(msg, type = 'success') {
         const s = document.getElementById('status');
         s.innerText = msg;
@@ -88,57 +81,70 @@
         setTimeout(() => s.style.display = 'none', 3500);
     }
 
-    // دالة توليد ونسخ البرومبت المتوافقة مع GitHub HTTPS
+    // الدالة المصححة كلياً لضمان التوليد والنسخ
     async function generateAndCopy() {
-        const title = document.getElementById('lesson_title').value;
-        const level = document.getElementById('lesson_level').value;
+        const lessonInput = document.getElementById('lesson_title');
+        const levelInput = document.getElementById('lesson_level');
 
-        if(!title) return notify('⚠️ يرجى إدخال عنوان الدرس أولاً', 'error');
+        if (!lessonInput.value.trim()) {
+            notify('⚠️ يرجى إدخال عنوان الدرس أولاً', 'error');
+            return;
+        }
 
-        const prompt = `أجب بصيغة JSON فقط. قم بتوليد أسئلة لدرس "${title}" للمستوى "${level}". 
+        const promptText = `أجب بصيغة JSON فقط. قم بتوليد أسئلة لدرس "${lessonInput.value}" للمستوى "${levelInput.value}". 
 المطلوب:
 - phase1: (6 أسئلة اختيار من متعدد).
 - phase2: (12 سؤال اختيار من متعدد).
 - phase4: (4 أسئلة إجابة مباشرة).
-- stock: كائن يحتوي على (المدرسة، المحفظة، الكتاب) بكل منها 4 أسئلة.
+- stock: { "المدرسة":[], "المحفظة":[], "الكتاب":[] } (بكل منها 4 أسئلة).
 تأكد أن الإجابة الصحيحة a هي رقم يبدأ من 0. لا تضف أي نص خارج الكود.`;
 
+        // محاولة النسخ بالطريقة الحديثة
         try {
-            await navigator.clipboard.writeText(prompt);
-            notify('✅ تم نسخ البرومبت! الصقه الآن في Gemini');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(promptText);
+                notify('✅ تم نسخ البرومبت بنجاح!');
+            } else {
+                throw new Error('Clipboard API unavailable');
+            }
         } catch (err) {
-            // حل احتياطي للمتصفحات التي تمنع الوصول المباشر
+            // الحل البديل (Fallback)
             const t = document.createElement("textarea");
-            t.value = prompt; document.body.appendChild(t);
-            t.select(); document.execCommand('copy');
+            t.value = promptText;
+            t.style.position = "fixed";
+            document.body.appendChild(t);
+            t.select();
+            try {
+                document.execCommand('copy');
+                notify('✅ تم النسخ (طريقة احتياطية)');
+            } catch (e) {
+                notify('❌ فشل النسخ، يرجى المحاولة يدوياً', 'error');
+            }
             document.body.removeChild(t);
-            notify('✅ تم النسخ (طريقة احتياطية)');
         }
     }
 
-    // دالة اللصق الذكي
     async function pasteData() {
         try {
             const text = await navigator.clipboard.readText();
             document.getElementById('json_input').value = text;
             notify('📋 تم اللصق من الحافظة');
         } catch (err) {
-            notify('⚠️ عذراً، الصق يدوياً باستخدام Ctrl+V', 'error');
+            notify('⚠️ يرجى اللصق يدوياً Ctrl+V', 'error');
         }
     }
 
-    // دالة الحفظ التي تصلح "أخطاء التوازن" مع الاندكس
     function saveToGame() {
         let raw = document.getElementById('json_input').value.trim();
         if(!raw) return notify('❌ الصندوق فارغ!', 'error');
 
         try {
-            // تنظيف الكود من زوائد Markdown مثل ```json
-            const clean = raw.replace(/
-```json/g, "").replace(/```/g, "").trim();
+            // تنظيف الكود من زوائد Markdown
+            const clean = raw.replace(/```json/g, "").replace(/
+```/g, "").trim();
             const parsed = JSON.parse(clean);
             
-            // التأكد من أسماء المفاتيح (Mapping) لضمان التوافق مع الاندكس
+            // توحيد الأسماء لضمان قراءة صفحة الاندكس لها
             const finalData = {
                 phase1: parsed.phase1 || [],
                 phase2: parsed.phase2 || [],
@@ -147,7 +153,7 @@
             };
 
             localStorage.setItem('moatark_questions', JSON.stringify(finalData));
-            notify('💾 ممتاز! تم حفظ الدرس وتحديث اللعبة بنجاح');
+            notify('💾 تم حفظ الدرس بنجاح!');
         } catch (e) {
             notify('❌ خطأ في تنسيق JSON. تأكد من نسخ الكود كاملاً', 'error');
         }
@@ -158,6 +164,5 @@
         notify('🗑️ تم تنظيف الصندوق');
     }
 </script>
-
 </body>
 </html>

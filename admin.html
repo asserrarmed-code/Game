@@ -8,30 +8,37 @@
     <style>
         :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
+        
         .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .header-logo { width: 70px; height: auto; }
+        
         .main-container { max-width: 950px; margin: 25px auto; padding: 0 20px; }
         .admin-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        
         .ai-section { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border: 2px dashed var(--ai-purple); }
         
-        /* تصميم خانة إدخال الدروس */
         .lesson-input-group { margin: 15px 0; display: flex; flex-direction: column; gap: 8px; }
         .lesson-input-group label { font-weight: bold; color: var(--ai-purple); }
         .lesson-input-group input { padding: 12px; border: 2px solid var(--ai-purple); border-radius: 10px; font-family: 'Cairo'; font-size: 1rem; outline: none; }
 
         .json-editor { width: 100%; height: 300px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #0f172a; border-radius: 12px; direction: ltr; text-align: left; background: #0f172a; color: #10b981; font-size: 14px; outline: none; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
         
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
         .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.9rem; }
+        
         .btn-copy { background: var(--ai-purple); color: white; width: 100%; justify-content: center; font-size: 1.1rem; }
         .btn-save { background: var(--primary); color: white; }
-        .btn-reset { background: #3b82f6; color: white; }
         .btn-clear { background: #ef4444; color: white; }
+        .btn-reset { background: #3b82f6; color: white; }
         .btn-home { background: var(--dark); color: white; }
+        
         .btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
+        /* ستايل الملاحظة الهامة */
+        .device-notice { background: #fffbeb; border: 1px solid #fcd34d; padding: 15px; border-radius: 12px; font-size: 0.9rem; margin: 20px 0; color: #92400e; text-align: center; line-height: 1.6; }
+
         .footer-credit { text-align: center; padding: 20px; color: #94a3b8; font-size: 0.75rem; font-weight: bold; }
-        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -45,14 +52,18 @@
     </header>
 
     <main class="main-container">
+        
+        <div class="device-notice">
+            ⚠️ <b>تنبيه هام جداً:</b> هذه الأسئلة تُحفظ فقط في ذاكرة <b>هذا المتصفح وهذا الجهاز</b>. إذا قمت بتغيير الأسئلة هنا، يجب أن تستخدم نفس هذا الحاسوب عند عرض المسابقة للتلاميذ في القسم.
+        </div>
+
         <div class="admin-card ai-section">
             <h3 style="margin-top:0">✨ صانع الأسئلة الآلي</h3>
             <div class="lesson-input-group">
-                <label>📚 أدخل عنوان الدرس أو الدروس المراد اختبارها:</label>
-                <input type="text" id="lesson-name" placeholder="مثلاً: المفعول به، اسم الفاعل، همزة الوصل...">
+                <label>📚 أدخل عنوان الدرس أو الدروس:</label>
+                <input type="text" id="lesson-name" placeholder="مثلاً: المفعول به، اسم الفاعل...">
             </div>
-            <button class="btn btn-copy" onclick="copyPrompt()">📋 نسخ الأمر للذكاء الاصطناعي</button>
-            <p style="font-size: 0.8rem; color: #6b21a8; margin-top: 10px;">* بعد النسخ، ألصقه في ChatGPT وستحصل على الكود جاهزاً تماماً للصقه بالأسفل.</p>
+            <button class="btn btn-copy" id="copyBtn" onclick="copyPrompt()">📋 نسخ الأمر (Prompt) للذكاء الاصطناعي</button>
         </div>
 
         <div class="admin-card">
@@ -87,29 +98,7 @@
         document.getElementById('json-editor').value = JSON.stringify(saved ? JSON.parse(saved) : defaultData, null, 4);
     }
 
-    function clearEditor() {
-        if(confirm("هل تريد تفريغ المحرر بالكامل؟")) {
-            document.getElementById('json-editor').value = "";
-            showToast("🗑️ تم تفريغ المحرر", "#ef4444");
-        }
-    }
-
-    function saveData() {
-        try {
-            const data = JSON.parse(document.getElementById('json-editor').value);
-            localStorage.setItem('moatark_questions', JSON.stringify(data));
-            showToast("✅ تم الحفظ والاعتماد!", var(--primary));
-        } catch(e) { alert("❌ خطأ في تنسيق الكود! تأكد من لصق الكود كاملاً."); }
-    }
-
-    function resetData() {
-        if(confirm("استعادة الأسئلة الافتراضية؟")) {
-            localStorage.removeItem('moatark_questions');
-            loadData();
-            showToast("🔄 استعادة الأصلي", "#3b82f6");
-        }
-    }
-
+    // كود النسخ المطور والمضمون
     function copyPrompt() {
         const lesson = document.getElementById('lesson-name').value || "(لم يتم تحديد درس)";
         const promptText = `أريدك أن تعمل كمؤلف أسئلة تربوي لمستوى السادس ابتدائي بالمغرب. قم بتوليد أسئلة لدرس: [${lesson}] بصيغة JSON حصراً. 
@@ -124,12 +113,43 @@
     "phase1": [{"q": "", "o": [], "a": 0}],
     "phase2": [{"q": "", "o": [], "a": 0}],
     "phase4": [{"q": "", "a": ""}],
-    "stock": { "تراكيب": [{"q":"", "a":""}], "صرف": [], "إملاء": [] }
+    "stock": { "تراكيب": [], "صرف": [], "إملاء": [] }
 }`;
-        
-        navigator.clipboard.writeText(promptText).then(() => {
-            showToast("📋 تم نسخ الأمر لدرس: " + lesson, "#7c3aed");
-        });
+
+        const textArea = document.createElement("textarea");
+        textArea.value = promptText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast("📋 تم نسخ الأمر بنجاح!", "#7c3aed");
+        } catch (err) {
+            alert("عذراً، تعذر النسخ التلقائي. يرجى نسخ النص يدوياً.");
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function clearEditor() {
+        if(confirm("هل تريد تفريغ المحرر بالكامل؟")) {
+            document.getElementById('json-editor').value = "";
+            showToast("🗑️ تم تفريغ المحرر", "#ef4444");
+        }
+    }
+
+    function saveData() {
+        try {
+            const data = JSON.parse(document.getElementById('json-editor').value);
+            localStorage.setItem('moatark_questions', JSON.stringify(data));
+            showToast("✅ تم الحفظ والاعتماد!", "#006847");
+        } catch(e) { alert("❌ خطأ في تنسيق الكود! تأكد من لصق الكود كاملاً وبشكل صحيح."); }
+    }
+
+    function resetData() {
+        if(confirm("استعادة الأسئلة الافتراضية؟")) {
+            localStorage.removeItem('moatark_questions');
+            loadData();
+            showToast("🔄 استعادة الأصلي", "#3b82f6");
+        }
     }
 
     function showToast(msg, color) {

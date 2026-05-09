@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم الاحترافية | معترك الضاد</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap](https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap)" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; --warn: #fffbeb; --warn-border: #fef3c7; --warn-text: #92400e; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
@@ -20,48 +20,48 @@
         .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .input-box { display: flex; flex-direction: column; gap: 5px; }
         .input-box label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; }
-        .input-box select, .input-box input { padding: 10px; border: 2px solid #ddd; border-radius: 10px; font-family: 'Cairo'; outline: none; }
+        .input-box input, .input-box select { padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-family: 'Cairo'; outline: none; transition: 0.3s; }
         
         .ai-selector { display: flex; gap: 15px; margin-top: 5px; background: white; padding: 10px; border-radius: 12px; border: 1px solid #ddd; }
         .ai-option { cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 0.9rem; }
         
         .json-editor { width: 100%; height: 350px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #0f172a; border-radius: 12px; direction: ltr; text-align: left; background: #0f172a; color: #10b981; font-size: 14px; box-sizing: border-box; resize: vertical; }
         .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
-        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
         .btn-copy { background: var(--ai-purple); color: white; width: 100%; justify-content: center; font-size: 1.1rem; }
         .btn-save { background: var(--primary); color: white; }
         .btn-clear { background: #ef4444; color: white; }
         .btn-reset { background: #3b82f6; color: white; }
-        .btn-home { background: var(--dark); color: white; text-decoration: none; }
-        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; font-weight: bold; }
+        .btn-home { background: var(--dark); color: white; }
+        .status-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; display: none; z-index: 10000; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
     <header class="admin-header">
-        <img src="logo.png" class="header-logo" alt="Logo">
+        <img src="logo.png" class="header-logo">
         <h2 style="margin:0; color:var(--primary)">⚙️ لوحة التخصيص الذكي</h2>
-        <img src="logo-cup.png" class="header-logo" alt="Cup Logo">
+        <img src="logo-cup.png" class="header-logo">
     </header>
 
     <main class="main-container">
         <div class="notice-card">
             <span>⚠️</span>
-            <p class="notice-text">تنبيه: التعديلات تُحفظ محلياً على هذا الجهاز. تأكد من لصق كود JSON صحيح لضمان عمل مجموعات الصناديق.</p>
+            <p class="notice-text">تنبيه: التعديلات تُحفظ محلياً. عند استخدام Gemini، انسخ النتيجة كاملة وسيتم تنظيفها تلقائياً عند الحفظ.</p>
         </div>
 
         <div class="admin-card ai-section">
-            <h3 style="margin-top:0; color:var(--ai-purple)">✨ صانع الأسئلة الذكي</h3>
+            <h3 style="margin-top:0; color:var(--ai-purple)">✨ صانع الأسئلة (نسخ مخصص)</h3>
             <div class="config-grid">
                 <div class="input-box" style="grid-column: span 2;">
                     <label>📚 موضوع الدرس:</label>
-                    <input type="text" id="lesson-name" placeholder="مثلاً: المفعول المطلق...">
+                    <input type="text" id="lesson-name" placeholder="أدخل اسم الدرس هنا...">
                 </div>
                 <div class="input-box" style="grid-column: span 2;">
-                    <label>🤖 نوع الذكاء الاصطناعي:</label>
+                    <label>🤖 نوع الذكاء الاصطناعي المستهدف:</label>
                     <div class="ai-selector">
-                        <label class="ai-option"><input type="radio" name="ai-target" value="gpt" checked> ChatGPT</label>
-                        <label class="ai-option"><input type="radio" name="ai-target" value="gemini"> Gemini (خام)</label>
+                        <label class="ai-option"><input type="radio" name="ai-target" value="gpt" checked> ChatGPT (كود بلوك)</label>
+                        <label class="ai-option"><input type="radio" name="ai-target" value="gemini"> Google Gemini (كود خام)</label>
                     </div>
                 </div>
                 <div class="input-box">
@@ -76,15 +76,15 @@
                     </select>
                 </div>
             </div>
-            <button class="btn btn-copy" onclick="copyPrompt()">📋 نسخ البرومبت المطور</button>
+            <button class="btn btn-copy" onclick="copyPrompt()">📋 نسخ البرومبت والتوجه للتوليد</button>
         </div>
 
         <div class="admin-card">
-            <label style="display:block; margin-bottom:10px; font-weight:bold;">📦 محرر JSON (الصق النتيجة هنا):</label>
-            <textarea id="json-editor" class="json-editor" spellcheck="false" placeholder="ألصق الكود هنا..."></textarea>
+            <label style="display:block; margin-bottom:10px; font-weight:bold;">📦 محرر المحتوى (ألصق هنا):</label>
+            <textarea id="json-editor" class="json-editor" spellcheck="false" placeholder="ألصق كود JSON الناتج من الذكاء الاصطناعي هنا..."></textarea>
             <div class="btn-group">
-                <button class="btn btn-save" onclick="saveData()">💾 حفظ الأسئلة</button>
-                <button class="btn btn-clear" onclick="clearEditor()">🗑️ مسح</button>
+                <button class="btn btn-save" onclick="saveData()">💾 حفظ واعتماد الأسئلة</button>
+                <button class="btn btn-clear" onclick="clearEditor()">🗑️ تفريغ</button>
                 <button class="btn btn-reset" onclick="resetData()">🔄 الافتراضي</button>
                 <a href="index.html" class="btn btn-home">🎮 رجوع للمسابقة</a>
             </div>
@@ -108,55 +108,68 @@
     function copyPrompt() {
         const aiTarget = document.querySelector('input[name="ai-target"]:checked').value;
         const lesson = document.getElementById('lesson-name').value || "اللغة العربية";
-        
-        let instructions = aiTarget === "gemini" ? 
-            "OUTPUT ONLY RAW JSON. NO MARKDOWN. NO ```json BLOCKS. START WITH { AND END WITH }." :
-            "OUTPUT AS RAW JSON CODE BLOCK. NO CONVERSATION.";
+        const level = document.getElementById('level').value;
+        const diff = document.getElementById('difficulty').value;
 
-        const promptText = `Act as an expert Moroccan teacher. Topic: ${lesson}. 
-${instructions}
-JSON Structure:
+        let aiSpecificHeader = "";
+        if (aiTarget === "gemini") {
+            aiSpecificHeader = `
+[STRICT SYSTEM COMMAND: ZERO CONVERSATION]
+- DO NOT use markdown code blocks like \`\`\`json.
+- START your entire response with the opening curly bracket {
+- END your entire response with the closing curly bracket }
+- NO introductions, NO "Here is your JSON", NO explanations.
+- If you fail to output ONLY the JSON object, a system error will occur.`;
+        } else {
+            aiSpecificHeader = `[COMMAND: Output only the raw JSON code within a markdown block.]`;
+        }
+
+        const promptText = `${aiSpecificHeader}
+ACT as a Moroccan Curriculum Expert for Grade 6 Primary.
+TOPIC: ${lesson}
+DIFFICULTY: ${diff}
+
+GENERATE the following JSON exactly:
 {
-  "phase1": [{"q": "text", "o": ["a","b","c","d"], "a": index}],
-  "phase2": [12 items],
-  "phase4": [4 items],
+  "phase1": [{"q": "سؤال خيارات", "o": ["اختيار0", "اختيار1", "اختيار2", "اختيار3"], "a": 0}],
+  "phase2": [12 items similar to phase 1],
+  "phase4": [{"q": "سؤال مباشر", "a": "جواب مباشر"}],
   "stock": { 
      "المدرسة": [4 items], 
      "المحفظة": [4 items], 
      "الكتاب": [4 items] 
   }
 }
-All Arabic must have HARAKAT. Questions must be pedagogical and clear.`;
+RULES: 
+1. ALL Arabic text must have full Harakat.
+2. Output ONLY JSON.`;
 
         navigator.clipboard.writeText(promptText);
-        showToast("✅ تم نسخ البرومبت! ألصقه في " + aiTarget.toUpperCase(), "#7c3aed");
+        showToast(`✅ تم النسخ لـ ${aiTarget.toUpperCase()}!`, aiTarget === "gemini" ? "#1a73e8" : "#7c3aed");
     }
 
     function saveData() {
-        let rawData = document.getElementById('json-editor').value.trim();
+        let rawContent = document.getElementById('json-editor').value.trim();
         
-        // تنظيف الكود من مخلفات الذكاء الاصطناعي (مثل علامات ```json)
-        rawData = rawData.replace(/
-```json/g, "").replace(/```/g, "").trim();
+        // جراحة برمجية لتنظيف أي شيء قد يضيفه جيميني بالخطأ
+        rawContent = rawContent.replace(/```json/g, "").replace(/```/g, "").trim();
 
         try {
-            const data = JSON.parse(rawData);
+            const data = JSON.parse(rawContent);
             
-            // التأكد من وجود مفاتيح الصناديق الصحيحة
-            if (!data.stock || !data.stock["المدرسة"]) {
-                throw new Error("نقص في بيانات الصناديق");
-            }
+            // التأكد من أن الهيكل سليم للمسابقة
+            if (!data.stock || !data.stock["المدرسة"]) throw new Error("Missing Stock Data");
 
             localStorage.setItem('moatark_questions', JSON.stringify(data));
             showToast("💾 تم الحفظ بنجاح!", "#006847");
         } catch(e) {
-            alert("❌ خطأ: الكود غير صالح. تأكد من نسخ كود JSON كامل وبدون نصوص زائدة.");
+            alert("❌ خطأ: الكود غير صالح. تأكد من أن جيميني أعطاك كود يبدأ بـ { وينتهي بـ }");
         }
     }
 
     function clearEditor() { document.getElementById('json-editor').value = ""; }
     function resetData() { 
-        if(confirm("هل تريد استعادة الأسئلة الأصلية؟")) {
+        if(confirm("استعادة الأسئلة الأصلية؟")) {
             localStorage.removeItem('moatark_questions'); 
             loadData();
         } 

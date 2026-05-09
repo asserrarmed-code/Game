@@ -59,6 +59,7 @@
 
 <body>
 
+
 <div class="header-top">
     <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
     <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
@@ -129,14 +130,10 @@
         <div id="admin-score-controls" style="display:flex; gap:12px; flex-wrap:nowrap;"></div>
     </div>
 </div>
-
 <script>
 
 function refreshPage(btn) { btn.classList.add('refresh-active'); setTimeout(() => location.reload(), 500); }
 
-/* ================================================
-   تحميل البيانات — محمي بـ try/catch
-================================================ */
 let customData = null;
 try {
     const savedDataRaw = localStorage.getItem('moatark_questions');
@@ -537,6 +534,40 @@ function syncAnswer(v) {
 }
 
 updateTeamInputs(4);
+
+/* ===== next() بعد الحقن ===== */
+function next() {
+    const p = phasesData[currentPhase];
+    if (!p) return;
+
+    currentQ++;
+    const limit = (p.type === 'target' || p.type === 'free')
+        ? phaseTurns.length
+        : (p.questions ? p.questions.length : 0);
+
+    if (currentQ >= limit) {
+        currentQ = 0;
+        currentPhase++;
+        if (currentPhase < phasesData.length) prepareTurns();
+    }
+
+    if (currentPhase >= phasesData.length) {
+
+        // 🔧 FIX: منع تداخل آخر سؤال مع شاشة النهائي
+        clearInterval(timer);
+        document.getElementById('q-text').innerText = '';
+        document.getElementById('opt-container').innerHTML = '';
+        document.getElementById('manual-zone').style.display = 'none';
+        document.getElementById('component-selection').style.display = 'none';
+
+        document.getElementById('timer').innerText = "🏁";
+        document.getElementById('finish-screen').style.display = 'block';
+
+    } else {
+        init();
+    }
+}
+
 </script>
 
 </body>

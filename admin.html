@@ -1,193 +1,77 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الأدمين - معترك الضاد</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"><style>
-:root{
-  --primary:#006847;
-  --gold:#c5a059;
-  --bg:#f4f1ea;
-  --card:#fff;
-  --text:#1e293b;
-  --ai:#7c3aed;
-  --danger:#ef4444;
-}
+    <meta charset="UTF-8">
+    <title>إدارة معترك الضاد</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; padding: 20px; }
+        .box { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        textarea { width: 90%; height: 100px; margin: 10px 0; border: 2px solid #ccc; padding: 10px; font-family: monospace; }
+        button { padding: 10px 20px; cursor: pointer; font-weight: bold; margin: 5px; border: none; border-radius: 5px; color: white; }
+        .bg-purple { background: #7c3aed; }
+        .bg-green { background: #006847; }
+        .bg-red { background: #ef4444; }
+    </style>
+</head>
+<body>
 
-body{
-  margin:0;
-  font-family:'Cairo';
-  background:var(--bg);
-  color:var(--text);
-}
+    <div class="box">
+        <h2>1. استخراج البرومبت</h2>
+        <input type="text" id="lesson_name" placeholder="اسم الدرس" style="padding:10px; width:80%;">
+        <button class="bg-purple" onclick="copyPrompt()">نسخ البرومبت</button>
+        <p id="msg1" style="color: blue;"></p>
+    </div>
 
-header{
-  background:#fff;
-  padding:15px;
-  text-align:center;
-  border-bottom:4px solid var(--gold);
-  font-weight:900;
-}
+    <br>
 
-.container{
-  max-width:1000px;
-  margin:auto;
-  padding:20px;
-}
+    <div class="box">
+        <h2>2. حفظ الكود القادم من AI</h2>
+        <textarea id="json_data" placeholder="الصق الكود هنا"></textarea>
+        <br>
+        <button class="bg-green" onclick="saveData()">💾 حفظ في اللعبة</button>
+        <button class="bg-red" onclick="document.getElementById('json_data').value=''">مسح</button>
+        <p id="msg2" style="color: green;"></p>
+        <br>
+        <a href="index.html">الرجوع للعبة</a>
+    </div>
 
-.card{
-  background:var(--card);
-  padding:20px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.08);
-  margin-bottom:20px;
-}
+    <script>
+        // دالة النسخ التقليدية جداً
+        function copyPrompt() {
+            var lesson = document.getElementById('lesson_name').value;
+            if(!lesson) { alert("اكتب الدرس"); return; }
+            var text = "أجب بصيغة JSON فقط لدرس " + lesson + ". الأقسام: phase1, phase2, phase4, stock. أجب بالكود فقط.";
+            
+            var temp = document.createElement("textarea");
+            document.body.appendChild(temp);
+            temp.value = text;
+            temp.select();
+            document.execCommand("copy"); // الطريقة القديمة المضمونة
+            document.body.removeChild(temp);
+            
+            document.getElementById('msg1').innerText = "✅ تم النسخ! اذهب لـ Gemini";
+        }
 
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-@media(max-width:700px){
-  .grid{grid-template-columns:1fr;}
-}
-
-label{
-  font-weight:700;
-  color:var(--ai);
-  font-size:0.9rem;
-}
-
-input,select{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:2px solid #e2e8f0;
-  font-family:'Cairo';
-  margin-top:5px;
-}
-
-textarea{
-  width:100%;
-  height:280px;
-  margin-top:10px;
-  border-radius:15px;
-  padding:15px;
-  font-family:monospace;
-  border:2px solid #e2e8f0;
-  resize:vertical;
-}
-
-.btns{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:15px;
-}
-
-button{
-  padding:12px 18px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:900;
-  font-family:'Cairo';
-  transition:0.2s;
-}
-
-button:active{transform:scale(0.95);}
-
-.ai-btn{background:var(--ai);color:#fff;}
-.paste{background:#6366f1;color:#fff;}
-.save{background:var(--primary);color:#fff;}
-.clear{background:var(--danger);color:#fff;}
-
-.status{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#111;
-  color:#fff;
-  padding:10px 20px;
-  border-radius:20px;
-  display:none;
-}
-</style></head><body><header>⚙️ لوحة الأدمين الذكية - معترك الضاد</header><div class="container"><div class="card">
-<h3>✨ مولد البرومبت</h3><div class="grid">
-<div>
-<label>📚 الدرس</label>
-<input id="lesson" placeholder="مثال: التوكيد">
-</div><div>
-<label>🎓 المستوى</label>
-<input id="level" value="السادس ابتدائي">
-</div><div>
-<label>📊 الصعوبة</label>
-<select id="diff">
-<option value="standard">متوسط</option>
-<option value="hard">صعب</option>
-</select>
-</div><div>
-<label>🤖 الذكاء الاصطناعي</label>
-<select id="ai">
-<option value="gemini">Gemini</option>
-<option value="gpt">ChatGPT</option>
-</select>
-</div>
-</div><button class="ai-btn" onclick="generate()">📋 توليد ونسخ البرومبت</button>
-
-</div><div class="card">
-<h3>📦 بنك الأسئلة</h3>
-<textarea id="json" placeholder="الصق JSON هنا..."></textarea><div class="btns">
-<button class="paste" onclick="paste()">لصق</button>
-<button class="save" onclick="save()">حفظ</button>
-<button class="clear" onclick="clearBox()">تفريغ</button>
-</div>
-</div></div><div class="status" id="status"></div><script>
-
-function show(msg){
- const s=document.getElementById('status');
- s.innerText=msg;
- s.style.display='block';
- setTimeout(()=>s.style.display='none',2000);
-}
-
-function generate(){
- const lesson=document.getElementById('lesson').value||"غير محدد";
- const level=document.getElementById('level').value;
- const diff=document.getElementById('diff').value;
- const ai=document.getElementById('ai').value;
-
- const prompt=`الدرس: ${lesson}\nالمستوى: ${level}\nالصعوبة: ${diff}\n\nأعد JSON فقط بدون شرح.`;
-
- navigator.clipboard.writeText(prompt)
- .then(()=>show('تم النسخ'))
- .catch(()=>show('فشل النسخ'));
-}
-
-async function paste(){
- try{
- const t=await navigator.clipboard.readText();
- document.getElementById('json').value=t;
- show('تم اللصق');
- }catch(e){show('فشل اللصق');}
-}
-
-function save(){
- try{
- const d=JSON.parse(document.getElementById('json').value);
- localStorage.setItem('moatark_questions',JSON.stringify(d));
- show('تم الحفظ');
- }catch(e){
- show('JSON غير صالح');
- }
-}
-
-function clearBox(){
- document.getElementById('json').value='';
- show('تم التفريغ');
-}
-
-</script></body>
+        // دالة الحفظ المباشرة
+        function saveData() {
+            var raw = document.getElementById('json_data').value;
+            if(!raw) { alert("الصندوق فارغ"); return; }
+            
+            try {
+                // تنظيف يدوي بسيط
+                var clean = raw.replace(/```json/g, "").replace(/
+```/g, "").trim();
+                var obj = JSON.parse(clean);
+                
+                // الحفظ في المستودع الذي يقرأ منه الاندكس
+                localStorage.setItem('moatark_questions', JSON.stringify(obj));
+                
+                document.getElementById('msg2').innerText = "💾 تم الحفظ بنجاح!";
+                alert("تم الحفظ! يمكنك الآن فتح اللعبة");
+            } catch (e) {
+                alert("خطأ: الكود الذي لصقته ليس JSON صحيحاً");
+            }
+        }
+    </script>
+</body>
 </html>

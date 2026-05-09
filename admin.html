@@ -1,483 +1,150 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>لوحة التحكم الاحترافية | معترك الضاد</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التخصيص الذكي | معترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-
     <style>
-        :root{
-            --primary:#006847;
-            --gold:#c5a059;
-            --bg:#f8fafc;
-            --dark:#1e293b;
-            --ai-purple:#7c3aed;
-            --warn:#fffbeb;
-            --warn-border:#fef3c7;
-            --warn-text:#92400e;
-        }
+        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --dark: #1e293b; --ai-purple: #7c3aed; --warn: #fffbeb; --warn-border: #fef3c7; --warn-text: #92400e; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--dark); }
+        .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); }
+        .header-logo { width: 70px; }
+        .main-container { max-width: 950px; margin: 20px auto; padding: 0 20px; }.notice-card { background: var(--warn); border: 1px solid var(--warn-border); border-right: 5px solid var(--gold); padding: 15px 20px; border-radius: 15px; margin-bottom: 20px; display: flex; gap: 15px; }
+    .notice-text { font-size: 0.9rem; color: var(--warn-text); font-weight: 600; }
 
-        *{box-sizing:border-box}
+    .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+    .ai-section { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
 
-        body{
-            font-family:'Cairo',sans-serif;
-            background:var(--bg);
-            margin:0;
-            color:var(--dark);
-        }
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .input-box { display: flex; flex-direction: column; gap: 5px; }
+    .input-box label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; }
+    .input-box input, select { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; }
 
-        .admin-header{
-            background:#fff;
-            padding:15px 40px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            border-bottom:4px solid var(--gold);
-            box-shadow:0 4px 15px rgba(0,0,0,.05);
-        }
+    .ai-selector { display: flex; gap: 15px; background: white; padding: 10px; border-radius: 12px; border: 1px solid #ddd; }
 
-        .header-logo{
-            width:70px;
-            height:auto;
-        }
+    .json-editor { width: 100%; height: 320px; font-family: monospace; padding: 15px; border-radius: 12px; background: #0f172a; color: #10b981; direction: ltr; }
 
-        .main-container{
-            max-width:950px;
-            margin:20px auto;
-            padding:0 20px;
-        }
+    .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 15px; }
+    .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-copy { background: var(--ai-purple); color: white; width: 100%; }
+    .btn-save { background: var(--primary); color: white; }
+    .btn-clear { background: #ef4444; color: white; }
+    .btn-reset { background: #3b82f6; color: white; }
+    .btn-home { background: var(--dark); color: white; text-decoration:none; display:flex; align-items:center; justify-content:center; }
 
-        .notice-card{
-            background:var(--warn);
-            border:1px solid var(--warn-border);
-            border-right:5px solid var(--gold);
-            padding:15px 20px;
-            border-radius:15px;
-            margin-bottom:20px;
-            display:flex;
-            align-items:center;
-            gap:15px;
-        }
+    .prompt-box { width:100%; height:200px; margin-top:10px; font-family:monospace; direction:ltr; }
 
-        .notice-text{
-            margin:0;
-            font-size:.9rem;
-            color:var(--warn-text);
-            line-height:1.6;
-            font-weight:600;
-        }
+    .status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: black; color: white; padding: 10px 20px; border-radius: 30px; display:none; }
 
-        .admin-card{
-            background:#fff;
-            border-radius:20px;
-            padding:25px;
-            box-shadow:0 10px 25px rgba(0,0,0,.05);
-            margin-bottom:20px;
-            border:1px solid #e2e8f0;
-        }
+    @media(max-width:768px){
+        .config-grid{grid-template-columns:1fr;}
+        .admin-header{flex-direction:column; gap:10px;}
+    }
+</style>
 
-        .ai-section{
-            background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%);
-            border:2px dashed var(--ai-purple);
-        }
-
-        .config-grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:15px;
-            margin-bottom:20px;
-        }
-
-        .input-box{
-            display:flex;
-            flex-direction:column;
-            gap:5px;
-        }
-
-        .input-box label{
-            font-weight:bold;
-            color:var(--ai-purple);
-            font-size:.85rem;
-        }
-
-        .input-box input,
-        .input-box select{
-            padding:12px;
-            border:2px solid #ddd;
-            border-radius:10px;
-            font-family:'Cairo';
-            outline:none;
-        }
-
-        .ai-selector{
-            display:flex;
-            gap:15px;
-            margin-top:5px;
-            background:#fff;
-            padding:10px;
-            border-radius:12px;
-            border:1px solid #ddd;
-            flex-wrap:wrap;
-        }
-
-        .ai-option{
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            gap:8px;
-            font-weight:bold;
-            font-size:.9rem;
-        }
-
-        .json-editor{
-            width:100%;
-            height:350px;
-            font-family:'Courier New',monospace;
-            padding:15px;
-            border:2px solid #0f172a;
-            border-radius:12px;
-            direction:ltr;
-            text-align:left;
-            background:#0f172a;
-            color:#10b981;
-            font-size:14px;
-            resize:vertical;
-        }
-
-        .btn-group{
-            display:flex;
-            gap:10px;
-            justify-content:center;
-            margin-top:15px;
-            flex-wrap:wrap;
-        }
-
-        .btn{
-            padding:12px 25px;
-            border:none;
-            border-radius:10px;
-            cursor:pointer;
-            font-family:'Cairo';
-            font-weight:bold;
-            display:flex;
-            align-items:center;
-            gap:8px;
-            font-size:.9rem;
-            text-decoration:none;
-            transition:.25s;
-        }
-
-        .btn:hover{
-            transform:translateY(-2px);
-        }
-
-        .btn-copy{
-            background:var(--ai-purple);
-            color:#fff;
-            width:100%;
-            justify-content:center;
-            font-size:1.1rem;
-        }
-
-        .btn-save{background:var(--primary);color:#fff}
-        .btn-clear{background:#ef4444;color:#fff}
-        .btn-reset{background:#3b82f6;color:#fff}
-        .btn-home{background:var(--dark);color:#fff}
-
-        .status-toast{
-            position:fixed;
-            bottom:20px;
-            left:50%;
-            transform:translateX(-50%);
-            padding:12px 30px;
-            border-radius:50px;
-            color:#fff;
-            display:none;
-            z-index:10000;
-            font-weight:bold;
-            box-shadow:0 5px 15px rgba(0,0,0,.2);
-        }
-
-        @media(max-width:768px){
-            .config-grid{
-                grid-template-columns:1fr;
-            }
-
-            .admin-header{
-                padding:15px;
-                flex-direction:column;
-                gap:10px;
-            }
-
-            .header-logo{
-                width:55px;
-            }
-        }
-    </style>
 </head>
-<body>
+<body><header class="admin-header">
+    <img src="logo.png" class="header-logo">
+    <h2>⚙️ لوحة التخصيص الذكي</h2>
+    <img src="logo-cup.png" class="header-logo">
+</header><div class="main-container"><div class="notice-card">
+    <span>⚠️</span>
+    <p class="notice-text">التعديلات تحفظ محلياً. انسخ الـ Prompt ثم الصقه في ChatGPT أو Gemini.</p>
+</div>
 
-<header class="admin-header">
-    <img src="logo.png" class="header-logo" onerror="this.style.display='none'">
-    <h2 style="margin:0;color:var(--primary)">⚙️ لوحة التخصيص الذكي</h2>
-    <img src="logo-cup.png" class="header-logo" onerror="this.style.display='none'">
-</header>
+<div class="admin-card ai-section">
+    <h3 style="color:var(--ai-purple)">✨ مولّد البرومبت الذكي</h3>
 
-<main class="main-container">
-
-    <div class="notice-card">
-        <span>⚠️</span>
-        <p class="notice-text">
-            تنبيه: التعديلات تُحفظ محلياً. عند استخدام Gemini، انسخ النتيجة كاملة وسيتم تنظيفها تلقائياً عند الحفظ.
-        </p>
-    </div>
-
-    <div class="admin-card ai-section">
-        <h3 style="margin-top:0;color:var(--ai-purple)">✨ صانع الأسئلة (نسخ مخصص)</h3>
-
-        <div class="config-grid">
-
-            <div class="input-box" style="grid-column:span 2;">
-                <label>📚 موضوع الدرس:</label>
-                <input type="text" id="lesson-name" placeholder="أدخل اسم الدرس هنا...">
-            </div>
-
-            <div class="input-box" style="grid-column:span 2;">
-                <label>🤖 نوع الذكاء الاصطناعي المستهدف:</label>
-
-                <div class="ai-selector">
-                    <label class="ai-option">
-                        <input type="radio" name="ai-target" value="gpt" checked>
-                        ChatGPT (كود بلوك)
-                    </label>
-
-                    <label class="ai-option">
-                        <input type="radio" name="ai-target" value="gemini">
-                        Google Gemini (كود خام)
-                    </label>
-                </div>
-            </div>
-
-            <div class="input-box">
-                <label>🎓 المستهدف:</label>
-                <input type="text" id="level" value="السادس ابتدائي">
-            </div>
-
-            <div class="input-box">
-                <label>📊 الصعوبة:</label>
-                <select id="difficulty">
-                    <option value="standard">متوسط</option>
-                    <option value="challenging">صعب</option>
-                </select>
-            </div>
+    <div class="config-grid">
+        <div class="input-box">
+            <label>📚 الدرس</label>
+            <input id="lesson">
         </div>
 
-        <button class="btn btn-copy" onclick="copyPrompt()">📋 نسخ البرومبت والتوجه للتوليد</button>
-    </div>
+        <div class="input-box">
+            <label>🎓 المستوى</label>
+            <input id="level" value="السادس ابتدائي">
+        </div>
 
-    <div class="admin-card">
-        <label style="display:block;margin-bottom:10px;font-weight:bold;">📦 محرر المحتوى (ألصق هنا):</label>
+        <div class="input-box">
+            <label>📊 الصعوبة</label>
+            <select id="diff">
+                <option value="standard">متوسط</option>
+                <option value="hard">صعب</option>
+            </select>
+        </div>
 
-        <textarea
-            id="json-editor"
-            class="json-editor"
-            spellcheck="false"
-            placeholder="ألصق كود JSON الناتج من الذكاء الاصطناعي هنا..."
-        ></textarea>
-
-        <div class="btn-group">
-            <button class="btn btn-save" onclick="saveData()">💾 حفظ واعتماد الأسئلة</button>
-            <button class="btn btn-clear" onclick="clearEditor()">🗑️ تفريغ</button>
-            <button class="btn btn-reset" onclick="resetData()">🔄 الافتراضي</button>
-            <a href="index.html" class="btn btn-home">🎮 رجوع للمسابقة</a>
+        <div class="input-box">
+            <label>🤖 النموذج</label>
+            <select id="ai">
+                <option value="gpt">ChatGPT</option>
+                <option value="gemini">Gemini</option>
+            </select>
         </div>
     </div>
 
-</main>
+    <button class="btn btn-copy" onclick="generatePrompt()">📋 توليد البرومبت</button>
+    <textarea id="prompt" class="prompt-box"></textarea>
+</div>
 
-<div id="toast" class="status-toast"></div>
+<div class="admin-card">
+    <label>📦 JSON الناتج</label>
+    <textarea id="json" class="json-editor"></textarea>
 
-<script>
-const STORAGE_KEY = "moatark_questions";
+    <div class="btn-group">
+        <button class="btn btn-save" onclick="save()">💾 حفظ</button>
+        <button class="btn btn-clear" onclick="clearBox()">🗑️ تفريغ</button>
+        <button class="btn btn-reset" onclick="reset()">🔄 افتراضي</button>
+        <a class="btn btn-home" href="index.html">🎮 المسابقة</a>
+    </div>
+</div>
 
-const defaultData = {
-    phase1:[
-        {
-            q:"الفعل 'شَدَّ' نوعه:",
-            o:["سالم","مهموز","مضعف","معتل"],
-            a:2
-        }
-    ],
-    phase2:[
-        {
-            q:"إعراب 'المسافرون' في (وصل المسافرون):",
-            o:["مفعول به","فاعل مرفوع بالواو","مبتدأ","نعت"],
-            a:1
-        }
-    ],
-    phase4:[
-        {q:"ما هو الوزن الصرفي لكلمة 'صِـلَة'؟",a:"عِـلَة"},
-        {q:"حدد نوع الجمع في كلمة 'قُضاة'.",a:"جمع تكسير"},
-        {q:"ما أصل الألف في فعل 'سعى'؟",a:"ياء"},
-        {q:"أعرب كلمة 'مُسْرِعاً' في: 'جاءَ الولدُ مُسْرِعاً'.",a:"حال منصوب"}
-    ],
-    stock:{
-        "المدرسة":[
-            {q:"أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).",a:"توكيد معنوي"}
-        ],
-        "المحفظة":[
-            {q:"صغ اسم الفاعل من: (استخرج).",a:"مستخرج"}
-        ],
-        "الكتاب":[
-            {q:"علل كتابة الهمزة في: (ذِئْب).",a:"ساكنة وما قبلها كسر"}
-        ]
-    }
-};
+</div><div class="status" id="status"></div><script>
+const def = {phase1:[],phase2:[],phase4:[],stock:{"المدرسة":[],"المحفظة":[],"الكتاب":[]}};
 
-function sanitizeText(text){
-    return String(text).replace(/[<>]/g,"").trim();
+function show(msg){
+    const s=document.getElementById('status');
+    s.innerText=msg;s.style.display='block';
+    setTimeout(()=>s.style.display='none',2000);
 }
 
-function showToast(msg,color="#006847"){
-    const t=document.getElementById("toast");
-    t.innerText=msg;
-    t.style.background=color;
-    t.style.display="block";
+function generatePrompt(){
+    const lesson=document.getElementById('lesson').value;
+    const level=document.getElementById('level').value;
+    const diff=document.getElementById('diff').value;
+    const ai=document.getElementById('ai').value;
 
-    clearTimeout(window.toastTimer);
-    window.toastTimer=setTimeout(()=>{
-        t.style.display="none";
-    },3000);
+    let p=`أنت خبير مناهج مغربي.
+أنشئ أسئلة JSON حول: ${lesson}
+المستوى: ${level}
+الصعوبة: ${diff}
+
+الهيكل إلزامي:
+{
+ phase1:6,
+ phase2:12,
+ phase4:4,
+ stock:{المدرسة,المحفظة,الكتاب}
 }
 
-function validateData(data){
-    if(!data || typeof data!=="object") throw new Error("JSON غير صالح");
+ممنوع أي نص خارج JSON`;
 
-    if(!Array.isArray(data.phase1)) throw new Error("phase1 مفقود");
-    if(!Array.isArray(data.phase2)) throw new Error("phase2 مفقود");
-    if(!Array.isArray(data.phase4)) throw new Error("phase4 مفقود");
+    if(ai==='gemini') p="STRICT JSON ONLY\n"+p;
 
-    if(!data.stock || typeof data.stock!=="object")
-        throw new Error("stock مفقود");
-
-    if(!Array.isArray(data.stock["المدرسة"]))
-        throw new Error("المدرسة مفقودة");
-
-    if(!Array.isArray(data.stock["المحفظة"]))
-        throw new Error("المحفظة مفقودة");
-
-    if(!Array.isArray(data.stock["الكتاب"]))
-        throw new Error("الكتاب مفقود");
-
-    return true;
+    document.getElementById('prompt').value=p;
+    navigator.clipboard.writeText(p);
+    show('تم توليد البرومبت');
 }
 
-function copyPrompt(){
-    const aiTarget=document.querySelector('input[name="ai-target"]:checked').value;
-    const lesson=sanitizeText(document.getElementById("lesson-name").value) || "اللغة العربية";
-    const level=sanitizeText(document.getElementById("level").value) || "السادس ابتدائي";
-    const diff=document.getElementById("difficulty").value;
-
-    let aiSpecificHeader="";
-
-    if(aiTarget==="gemini"){
-        aiSpecificHeader=
-`[STRICT SYSTEM COMMAND: ZERO CONVERSATION]
-- DO NOT use markdown code blocks like \`\`\`json.
-- START your entire response with {
-- END your entire response with }
-- NO introductions, NO explanations.`;
-    }else{
-        aiSpecificHeader=`[COMMAND: Output only the raw JSON code within a markdown block.]`;
-    }
-
-    const promptText=
-`${aiSpecificHeader}
-ACT as a Moroccan Curriculum Expert for Grade 6 Primary.
-TOPIC: ${lesson}
-LEVEL: ${level}
-DIFFICULTY: ${diff}
-
-GENERATE valid JSON exactly with:
-phase1, phase2, phase4, stock
-
-RULES:
-1) ALL Arabic text with full Harakat.
-2) Output ONLY valid JSON.`;
-
-    navigator.clipboard.writeText(promptText)
-        .then(()=>{
-            showToast(`✅ تم النسخ لـ ${aiTarget.toUpperCase()}!`, aiTarget==="gemini" ? "#1a73e8" : "#7c3aed");
-        })
-        .catch(()=>{
-            showToast("❌ تعذر النسخ التلقائي", "#ef4444");
-        });
-}
-
-function saveData(){
-    let rawContent=document.getElementById("json-editor").value.trim();
-
-    if(!rawContent){
-        showToast("❌ لا يوجد محتوى للحفظ", "#ef4444");
-        return;
-    }
-
-    if(rawContent.length > 500000){
-        showToast("❌ الملف كبير جداً", "#ef4444");
-        return;
-    }
-
-    rawContent = rawContent.replace(/```(?:json)?|```/g,"").trim();
-
+function save(){
     try{
-        const data = JSON.parse(rawContent);
-
-        validateData(data);
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
-        showToast("💾 تم الحفظ بنجاح!", "#006847");
-    }
-    catch(err){
-        showToast("❌ JSON غير صالح أو ناقص البنية", "#ef4444");
-        console.error(err);
-    }
+        const d=JSON.parse(document.getElementById('json').value);
+        localStorage.setItem('moatark_questions',JSON.stringify(d));
+        show('تم الحفظ');
+    }catch(e){show('JSON غير صالح');}
 }
 
-function clearEditor(){
-    document.getElementById("json-editor").value="";
-    showToast("🗑️ تم التفريغ", "#ef4444");
-}
-
-function resetData(){
-    const ok = confirm("استعادة الأسئلة الأصلية؟");
-    if(!ok) return;
-
-    localStorage.removeItem(STORAGE_KEY);
-    loadData();
-
-    showToast("🔄 تمت الاستعادة", "#3b82f6");
-}
-
-function loadData(){
-    try{
-        const saved = localStorage.getItem(STORAGE_KEY);
-
-        const data = saved ? JSON.parse(saved) : defaultData;
-
-        document.getElementById("json-editor").value =
-            JSON.stringify(data,null,4);
-
-    }catch(err){
-        document.getElementById("json-editor").value =
-            JSON.stringify(defaultData,null,4);
-    }
-}
-
-window.onload = loadData;
-</script>
-
-</body>
+function clearBox(){document.getElementById('json').value='';}
+function reset(){localStorage.removeItem('moatark_questions');show('تم الرجوع');}
+</script></body>
 </html>

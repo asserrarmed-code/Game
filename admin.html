@@ -1,121 +1,200 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم السحابية - معترك الضاد</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --p: #006847; --g: #c5a059; --bg: #f4f7f6; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 800px; margin: auto; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 6px solid var(--g); }
-        h2 { color: var(--p); margin-top: 0; display: flex; align-items: center; gap: 10px; }
-        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; font-family: 'Cairo'; font-size: 16px; }
-        .btn { padding: 15px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; transition: 0.3s; color: white; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-gen { background: #7c3aed; width: 100%; font-size: 18px; }
-        .btn-save { background: var(--p); flex: 2; }
-        .btn-paste { background: #3b82f6; flex: 1; }
-        .btn-clear { background: #ef4444; }
-        .status { position: fixed; top: 20px; right: 20px; padding: 15px 30px; border-radius: 12px; color: white; font-weight: bold; display: none; z-index: 10000; animation: slideIn 0.3s; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        textarea { height: 180px; background: #f9f9f9; font-family: monospace; direction: ltr; }
-        .flex-btns { display: flex; gap: 10px; margin-top: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التخصيص الذكي | معترك الضاد</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--primary:#006847;
+--gold:#c5a059;
+--bg:#f8fafc;
+--dark:#1e293b;
+--ai-purple:#7c3aed;
+}
+
+body{
+font-family:'Cairo';
+background:var(--bg);
+margin:0;
+}
+
+.admin-header{
+background:#fff;
+padding:15px;
+display:flex;
+justify-content:space-between;
+border-bottom:4px solid var(--gold);
+}
+
+.main-container{
+max-width:950px;
+margin:auto;
+padding:20px;
+}
+
+.admin-card{
+background:#fff;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+.btn{
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.btn-copy-ai{background:var(--ai-purple);color:#fff;}
+.btn-paste{background:#6366f1;color:#fff;}
+.btn-save{background:var(--primary);color:#fff;}
+
+.json-editor{
+width:100%;
+height:250px;
+font-family:monospace;
+}
+.status{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#000;
+color:#fff;
+padding:10px 20px;
+border-radius:20px;
+display:none;
+}
+</style>
 </head>
+
 <body>
 
-<div id="status" class="status"></div>
+<header class="admin-header">
+<h2>لوحة التخصيص</h2>
+</header>
 
-<div class="container">
-    <div class="card">
-        <h2>📝 إعداد الدرس الجديد</h2>
-        <input type="text" id="lesson" placeholder="ما هو عنوان الدرس؟ (مثلاً: الأسماء الخمسة)">
-        <select id="level">
-            <option>المستوى السادس ابتدائي</option>
-            <option>المستوى الخامس ابتدائي</option>
-        </select>
-        <button class="btn btn-gen" onclick="generatePrompt()">🚀 توليد ونسخ البرومبت لـ AI</button>
-    </div>
+<div class="main-container">
 
-    <div class="card">
-        <h2>📥 استيراد بيانات JSON</h2>
-        <textarea id="jsonInput" placeholder="بمجرد الحصول على الكود من AI، اضغط على لصق هنا..."></textarea>
-        <div class="flex-btns">
-            <button class="btn btn-paste" onclick="pasteCode()">📋 لصق</button>
-            <button class="btn btn-save" onclick="saveData()">💾 حفظ نهائي</button>
-            <button class="btn btn-clear" onclick="clearAll()">🗑️</button>
-        </div>
-        <div style="margin-top: 20px;">
-            <a href="index.html" style="color: var(--p); font-weight: bold; text-decoration: none;">🏠 العودة للرئيسية</a>
-        </div>
-    </div>
+<div class="admin-card">
+<h3>مولد البرومبت</h3>
+
+<input id="lesson" placeholder="الدرس">
+<input id="level" value="السادس ابتدائي">
+
+<select id="diff">
+<option value="standard">متوسط</option>
+<option value="hard">صعب</option>
+</select>
+
+<button id="genBtn" class="btn btn-copy-ai" onclick="generate()">توليد ونسخ</button>
 </div>
 
+<div class="admin-card">
+<textarea id="json" class="json-editor"></textarea>
+
+<div>
+<button class="btn btn-paste" onclick="paste()">لصق</button>
+<button class="btn btn-save" onclick="save()">حفظ</button>
+</div>
+</div>
+
+</div>
+
+<div class="status" id="status"></div>
+
 <script>
-    function notify(msg, type = 'success') {
-        const s = document.getElementById('status');
-        s.innerText = msg;
-        s.style.background = type === 'success' ? '#10b981' : '#ef4444';
-        s.style.display = 'block';
-        setTimeout(() => s.style.display = 'none', 4000);
-    }
 
-    // دالة التوليد المتوافقة مع GitHub HTTPS
-    async function generatePrompt() {
-        const lesson = document.getElementById('lesson').value;
-        if(!lesson) return notify('⚠️ فضلاً اكتب عنوان الدرس', 'error');
+const btn = document.getElementById("genBtn");
 
-        const promptText = `قم بتوليد ملف JSON لدرس "${lesson}". الأقسام المطلوبة: phase1 (6 أسئلة)، phase2 (12 سؤال)، phase4 (4 أسئلة)، و stock يحتوي على (المدرسة، المحفظة، الكتاب). تأكد أن الإجابة الصحيحة a هي رقم من 0 إلى 3. أجب بالكود فقط.`;
+function show(msg){
+const s=document.getElementById("status");
+s.innerText=msg;
+s.style.display="block";
+setTimeout(()=>s.style.display="none",2500);
+}
 
-        try {
-            await navigator.clipboard.writeText(promptText);
-            notify('✅ تم النسخ! اذهب لـ Gemini والصق البرومبت');
-        } catch (err) {
-            // حل احتياطي في حال فشل navigator.clipboard
-            const t = document.createElement("textarea");
-            t.value = promptText;
-            document.body.appendChild(t);
-            t.select();
-            document.execCommand('copy');
-            document.body.removeChild(t);
-            notify('✅ تم النسخ (طريقة احتياطية)');
-        }
-    }
+// تحسين البرومبت
+function generate(){
 
-    // دالة اللصق الحديثة لـ GitHub
-    async function pasteCode() {
-        try {
-            const text = await navigator.clipboard.readText();
-            document.getElementById('jsonInput').value = text;
-            notify('📋 تم اللصق من الحافظة');
-        } catch (err) {
-            notify('⚠️ يرجى اللصق يدوياً Ctrl+V', 'error');
-        }
-    }
+if(btn.disabled) return;
+btn.disabled=true;
 
-    function saveData() {
-        let raw = document.getElementById('jsonInput').value.trim();
-        if(!raw) return notify('❌ لا يوجد كود للصقه', 'error');
+const lesson = document.getElementById("lesson").value || "غير محدد";
+const level = document.getElementById("level").value;
+const diff = document.getElementById("diff").value;
 
-        try {
-            // تنظيف الكود من أي زوائد نصية قد يضعها AI
-            const clean = raw.replace(/```json/g, "").replace(/
-```/g, "").trim();
-            const parsed = JSON.parse(clean);
-            
-            // الحفظ في التخزين المتصفح
-            localStorage.setItem('moatark_questions', JSON.stringify(parsed));
-            notify('💾 تم حفظ الدرس بنجاح في متصفحك');
-        } catch (e) {
-            notify('❌ خطأ في تنسيق JSON.. تأكد من نسخ الكود كاملاً', 'error');
-        }
-    }
+let prompt = `
+أنشئ JSON فقط بدون أي شرح.
 
-    function clearAll() {
-        document.getElementById('jsonInput').value = '';
-        notify('🗑️ تم تنظيف الصندوق');
-    }
+الدرس: ${lesson}
+المستوى: ${level}
+الصعوبة: ${diff}
+
+القالب:
+{
+ "phase1": [],
+ "phase2": [],
+ "phase4": [],
+ "stock": {
+   "syntax": [],
+   "morphology": [],
+   "dictation": []
+ }
+}
+`;
+
+navigator.clipboard.writeText(prompt)
+.then(()=>{
+show("تم النسخ");
+})
+.catch(()=>{
+show("فشل النسخ");
+})
+.finally(()=>{
+btn.disabled=false;
+});
+
+}
+
+// لصق آمن
+async function paste(){
+try{
+const t = await navigator.clipboard.readText();
+document.getElementById("json").value = t;
+show("تم اللصق");
+}catch(e){
+show("فشل اللصق");
+}
+}
+
+// حفظ مع تحقق أقوى
+function save(){
+try{
+const data = JSON.parse(document.getElementById("json").value);
+
+if(
+!data.phase1 || !data.phase2 || !data.phase4 || !data.stock
+){
+show("JSON غير مكتمل");
+return;
+}
+
+localStorage.setItem("data",JSON.stringify(data));
+show("تم الحفظ");
+
+}catch(e){
+show("JSON غير صالح");
+}
+}
+
 </script>
+
 </body>
 </html>

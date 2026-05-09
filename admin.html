@@ -97,7 +97,12 @@
     const defaultData = {
         phase1: [{q: "الفعل 'شَدَّ' نوعه:", o:["سالم", "مهموز", "مضعف", "معتل"], a:2}],
         phase2: [{q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1}],
-        phase4: [{q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"}],
+        phase4: [
+            {q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"},
+            {q: "حدد نوع الجمع في كلمة 'قُضاة'.", a: "جمع تكسير"},
+            {q: "ما أصل الألف في فعل 'سعى'؟", a: "ياء"},
+            {q: "أعرب كلمة 'مُسْرِعاً' في: 'جاءَ الولدُ مُسْرِعاً'.", a: "حال منصوب"}
+        ],
         stock: { 
             "المدرسة": [{q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي"}],
             "المحفظة": [{q: "صغ اسم الفاعل من: (استخرج).", a: "مستخرج"}],
@@ -116,10 +121,9 @@
             aiSpecificHeader = `
 [STRICT SYSTEM COMMAND: ZERO CONVERSATION]
 - DO NOT use markdown code blocks like \`\`\`json.
-- START your entire response with the opening curly bracket {
-- END your entire response with the closing curly bracket }
-- NO introductions, NO "Here is your JSON", NO explanations.
-- If you fail to output ONLY the JSON object, a system error will occur.`;
+- START your entire response with {
+- END your entire response with }
+- NO introductions, NO explanations.`;
         } else {
             aiSpecificHeader = `[COMMAND: Output only the raw JSON code within a markdown block.]`;
         }
@@ -131,18 +135,23 @@ DIFFICULTY: ${diff}
 
 GENERATE the following JSON exactly:
 {
-  "phase1": [{"q": "سؤال خيارات", "o": ["اختيار0", "اختيار1", "اختيار2", "اختيار3"], "a": 0}],
-  "phase2": [12 items similar to phase 1],
-  "phase4": [{"q": "سؤال مباشر", "a": "جواب مباشر"}],
+  "phase1": [6 items related to basic concepts],
+  "phase2": [12 items similar to phase 1 (3 for each of the 4 teams)],
+  "phase4": [
+     {"q": "Rapid question 1", "a": "Direct Answer 1"},
+     {"q": "Rapid question 2", "a": "Direct Answer 2"},
+     {"q": "Rapid question 3", "a": "Direct Answer 3"},
+     {"q": "Rapid question 4", "a": "Direct Answer 4"}
+  ],
   "stock": { 
-     "المدرسة": [4 items], 
-     "المحفظة": [4 items], 
-     "الكتاب": [4 items] 
+     "المدرسة": [5 items related to Tarakib], 
+     "المحفظة": [5 items related to Sarf/Tahwil], 
+     "الكتاب": [5 items related to Imlae] 
   }
 }
 RULES: 
 1. ALL Arabic text must have full Harakat.
-2. Output ONLY JSON.`;
+2. Output ONLY valid JSON.`;
 
         navigator.clipboard.writeText(promptText);
         showToast(`✅ تم النسخ لـ ${aiTarget.toUpperCase()}!`, aiTarget === "gemini" ? "#1a73e8" : "#7c3aed");
@@ -150,15 +159,14 @@ RULES:
 
     function saveData() {
         let rawContent = document.getElementById('json-editor').value.trim();
-        
-        // جراحة برمجية لتنظيف أي شيء قد يضيفه جيميني بالخطأ
-        rawContent = rawContent.replace(/```json/g, "").replace(/```/g, "").trim();
+        rawContent = rawContent.replace(/```json/g, "").replace(/
+```/g, "").trim();
 
         try {
             const data = JSON.parse(rawContent);
             
-            // التأكد من أن الهيكل سليم للمسابقة
-            if (!data.stock || !data.stock["المدرسة"]) throw new Error("Missing Stock Data");
+            // تأمين الربط بين الصناديق
+            if (!data.stock) throw new Error("Missing Stock");
 
             localStorage.setItem('moatark_questions', JSON.stringify(data));
             showToast("💾 تم الحفظ بنجاح!", "#006847");

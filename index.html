@@ -24,7 +24,10 @@
         .title-area { flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 0 10px; }
         .title-area img { width: 100%; max-height: clamp(50px, 10vh, 100px); object-fit: contain; }
         .top-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; flex-shrink: 0; }
-        .icon-btn { background: var(--moroccan-gold); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 1rem; }
+        .icon-btn { background: var(--moroccan-gold); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 1rem; transition: transform 0.4s ease; }
+        /* تأثير التدوير عند التحديث */
+        .refresh-active { transform: rotate(360deg); }
+        
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 20000; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); border: 3px solid var(--moroccan-gold); width: 90%; max-width: 500px; padding: 25px; border-radius: 20px; text-align: right; position: relative; color: var(--text); line-height: 1.6; }
         .modal-content h2 { color: var(--moroccan-blue); border-bottom: 2px solid var(--moroccan-gold); padding-bottom: 10px; margin-top: 0; }
@@ -63,6 +66,7 @@
     <div class="top-controls">
         <button class="icon-btn" onclick="toggleTheme()">🌙</button>
         <button class="icon-btn" onclick="openGuide()" title="الدليل الشامل">📖</button>
+        <button class="icon-btn" id="refresh-btn" onclick="refreshPage(this)" title="تحديث الصفحة">🔄</button>
         <button class="icon-btn" id="admin-icon" onclick="location.href='admin.html'" title="لوحة التحكم">⚙️</button>
         <button class="icon-btn" id="back-to-setup" onclick="goBack()" style="display:none; background:var(--deep-red); color:white;">🏠</button>
     </div>
@@ -74,7 +78,7 @@
             
             <div class="rule-box"><strong>1. الاستجابة الجماعية:</strong> 6 أسئلة تُحل كتابياً من طرف جميع الفرق في آن واحد (20 ثانية).</div>
             <div class="rule-box"><strong>2. المواجهة الموجهة:</strong> لكل فريق 3 أسئلة خاصة تظهر عشوائياً، ولا يجوز لغيره الإجابة (20 ثانية).</div>
-            <div class="rule-box"><strong>3. الاختيار الحر:</strong> يختار الفريق مكونه المفضل مرتين فقط من المخزون (30 ثانية).</div>
+            <div class="rule-box"><strong>3. الاختيار الحر:</strong> يختار الفريق (المدرسة، المحفظة، أو الكتاب) مرتين فقط من المخزون (30 ثانية).</div>
             <div class="rule-box"><strong>4. جولة السرعة:</strong> 4 أسئلة خاطفة للجميع، يختفي السؤال بعد 8 ثوانٍ ويُكشف الجواب يدوياً.</div>
             
             <div class="rule-box" style="border-color: var(--success);">
@@ -115,9 +119,9 @@
             <div id="timer">15</div>
             <div id="q-text"></div>
             <div id="component-selection" style="display:none; gap:8px; flex-wrap:wrap; justify-content:center;">
-                <button class="component-btn" id="btn-تراكيب" onclick="selectComponent('تراكيب')">تراكيب <span id="count-تراكيب"></span></button>
-                <button class="component-btn" id="btn-صرف" onclick="selectComponent('صرف')">صرف <span id="count-صرف"></span></button>
-                <button class="component-btn" id="btn-إملاء" onclick="selectComponent('إملاء')">إملاء <span id="count-إملاء"></span></button>
+                <button class="component-btn" id="btn-المدرسة" onclick="selectComponent('المدرسة')">المدرسة <span id="count-المدرسة"></span></button>
+                <button class="component-btn" id="btn-المحفظة" onclick="selectComponent('المحفظة')">المحفظة <span id="count-المحفظة"></span></button>
+                <button class="component-btn" id="btn-الكتاب" onclick="selectComponent('الكتاب')">الكتاب <span id="count-الكتاب"></span></button>
             </div>
             <div class="options-grid" id="opt-container"></div>
             <div id="manual-zone" style="display:none;"><div id="manual-answer-display" style="font-size:1.4rem; color:var(--moroccan-blue); font-weight:900;">...</div></div>
@@ -140,13 +144,20 @@
     </div>
 
 <script>
+    // وظيفة التحديث مع التأثير الحركي
+    function refreshPage(btn) {
+        btn.classList.add('refresh-active');
+        setTimeout(() => { location.reload(); }, 500);
+    }
+
     // [حقن مجهري] استرداد البيانات المخصصة
     const savedData = localStorage.getItem('moatark_questions');
     const customData = savedData ? JSON.parse(savedData) : null;
 
     let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
     let votedOnThisQuestion = [], currentModelAnswer = "";
-    let masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
+    // تم تغيير المفاتيح هنا للمسميات الجديدة
+    let masterStock = { "المدرسة": [], "المحفظة": [], "الكتاب": [] };
     let lifelinesState = []; 
     let rocketActive = -1;
 
@@ -188,20 +199,25 @@
         ]}
     ];
 
-    const currentStock = (customData && customData.stock) ? customData.stock : {
-        "تراكيب": [
+    // تم تغيير مسميات الأقسام هنا للحقن المباشر
+    const currentStock = (customData && customData.stock) ? {
+        "المدرسة": customData.stock.Group_A || customData.stock.تراكيب || [],
+        "المحفظة": customData.stock.Group_B || customData.stock.صرف || [],
+        "الكتاب": customData.stock.Group_C || customData.stock.إملاء || []
+    } : {
+        "المدرسة": [
             {q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي مرفوع"},
             {q: "حدد التمييز ونوعه في: (اشْتَرَيْتُ كِيلوغراماً لَحماً).", a: "لحماً (تمييز ملفوظ)"},
             {q: "حوّل الجملة للمثنى: (إنَّ أَخَاكَ مُجْتَهِدٌ).", a: "إنَّ أخوَيْكَ مجتهدانِ"},
             {q: "استخرج الحال من جملة: (عادَ الفريقُ الوطنيُّ مُنتصراً).", a: "مُنتصراً"}
         ],
-        "صرف": [
+        "المحفظة": [
             {q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"},
             {q: "صغ اسم المفعول من فعل غير ثلاثي: (أَكْرَمَ).", a: "مُكْرَم"},
             {q: "ما هو اسم الآلة من فعل: (حَرَثَ)؟", a: "مِحراث"},
             {q: "صغ اسم الزمان من فعل: (اسْتَقَرَّ).", a: "مُسْتَقَرّ"}
         ],
-        "إملاء": [
+        "الكتاب": [
             {q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"},
             {q: "لماذا كتبت الألف مقصورة في كلمة: (مستشفى)؟", a: "اسم غير ثلاثي لم تسبقه ياء"},
             {q: "متى تثبت (تُكتب) ألف 'ابن'؟ (اذكر حالة واحدة).", a: "إذا وقعت في أول السطر"},
@@ -232,7 +248,7 @@
 
     function setupMasterStock() {
         const count = teamNames.length;
-        masterStock = { "تراكيب": [], "صرف": [], "إملاء": [] };
+        masterStock = { "المدرسة": [], "المحفظة": [], "الكتاب": [] };
         for(let key in currentStock) {
             let list = [...currentStock[key]];
             while(list.length < count) list.push(list[0] || {q:"", a:""});
@@ -272,7 +288,6 @@
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'flex';
         document.getElementById('back-to-setup').style.display = 'flex';
-        // [حقن مجهري] إخفاء أيقونة الإدارة بمجرد البدء
         document.getElementById('admin-icon').style.display = 'none';
         renderInterface();
         prepareTurns();

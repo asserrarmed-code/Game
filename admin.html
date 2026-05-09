@@ -313,8 +313,7 @@ async function generateAndCopy2() {
     const lesson = document.getElementById('lesson_title').value;
     const level = document.getElementById('lesson_level').value;
 
-    const promptText = buildPrompt2(lesson, level);
-
+    const promptText = buildStrictPrompt2(lesson, level);
     try {
         await navigator.clipboard.writeText(promptText);
         notify('تم نسخ البرومبت الثاني');

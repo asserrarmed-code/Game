@@ -110,17 +110,8 @@
             <div class="level-chip"><input type="checkbox" id="lvl6" value="المستوى السادس" checked><label for="lvl6">السادس</label></div>
         </div>
 
-        <div class="schema-hint">
-            <span class="sh-label">مزدوج</span>
-            <span class="sh-key">"moatrak_match"</span> و <span class="sh-key">"final_grand"</span>
-            <span class="sh-comment"> ← توليد أسئلة المعترك والنهائي معاً</span><br>
-            <span class="sh-label">النهائي</span>
-            <span class="sh-key">"مقلمة، دفتر، قلم"</span>
-            <span class="sh-comment"> ← بنية الاختيار الحر الجديدة</span>
-        </div>
-
         <button class="btn btn-copy-ai"  onclick="generateAndCopy()">📋 نسخ البرومبت الأول لـ AI</button>
-        <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت الثاني (معترك + نهائي)</button>
+        <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت المطور (معترك + نهائي)</button>
     </div>
 
     <div class="admin-card">
@@ -165,6 +156,7 @@ function clearAllLevels() {
     document.querySelectorAll('.level-chip input[type="checkbox"]').forEach(cb => cb.checked = false);
 }
 
+/* التحقق القوي (Validator) كما في الكود الأصلي */
 function isValidStructure(data) {
     try {
         if (!Array.isArray(data.phase1) || !Array.isArray(data.phase2) || !data.stock) return 'البنية غير مكتملة';
@@ -180,9 +172,6 @@ function buildPrompt(lesson, level) {
 }`;
 }
 
-/* ================================================
-   PROMPT 2: المطور والمدمج
-================================================ */
 function buildStrictPrompt2(lesson, level, difficulty) {
     return `أنت مولد بيانات JSON فقط للعبة تعليمية اسمها "معترك الضاد".
 ممنوع أي شرح. ممنوع markdown. أخرج JSON صالحاً فقط.
@@ -241,9 +230,6 @@ async function pasteData() {
     } catch { notify('❌ فشل اللصق', 'error'); }
 }
 
-/* ================================================
-   SAVE: الحقن المجهري للتوزيع التلقائي
-================================================ */
 function saveToGame() {
     let raw = document.getElementById('json_input').value.trim();
     if (!raw) return notify('الحقل فارغ', 'error');
@@ -252,7 +238,6 @@ function saveToGame() {
 ```/g, "").trim();
         const parsed = JSON.parse(clean);
 
-        // توزيع البيانات إذا كانت بالنمط المزدوج الجديد
         if (parsed.moatrak_match && parsed.final_grand) {
             const moatrakData = {
                 phase1: parsed.moatrak_match.phase1,
@@ -264,7 +249,6 @@ function saveToGame() {
             localStorage.setItem('final_questions', JSON.stringify(parsed.final_grand));
             notify('✅ تم توزيع وحفظ بيانات المعترك والنهائي بنجاح');
         } else {
-            // التوافق مع النمط القديم
             const validResult = isValidStructure(parsed);
             if (validResult !== true) return notify('❌ ' + validResult, 'error');
             localStorage.setItem('moatark_questions', JSON.stringify(parsed));

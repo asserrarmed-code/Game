@@ -152,7 +152,52 @@
             animation:slideUpPanel 0.55s cubic-bezier(0.34,1.2,0.64,1) both;
         }
 
-        /* باقي التصميم كما هو بدون أي تغيير */
+    .admin-toggle-btn {
+            position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+            background:var(--final-gold); color:black; border:none; cursor:pointer;
+            font-family:'Cairo'; font-weight:900; font-size:0.85rem;
+            padding:5px 28px; border-radius:12px 12px 0 0;
+            z-index:10001; transition:background 0.2s;
+            box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+        }
+        .admin-toggle-btn:hover { background:#d4af6a; }
+
+        .admin-panel {
+            position:fixed; bottom:0; left:0; right:0; background:#020617;
+            border-top:3px solid var(--final-gold);
+            display:flex; flex-wrap:nowrap; justify-content:center; align-items:center;
+            gap:clamp(8px,1.5vw,16px); z-index:10000;
+            padding:clamp(6px,1vh,10px) clamp(10px,2vw,20px);
+            transform:translateY(100%);
+            transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+            overflow-x:auto;
+        }
+        .admin-panel.open {
+            transform:translateY(0);
+            animation:panelSlideUp 0.35s cubic-bezier(0.34,1.2,0.64,1) both;
+        }
+        .admin-panel-inner { display:flex; align-items:center; gap:clamp(8px,1.5vw,14px); flex-wrap:nowrap; }
+
+        .admin-group { text-align:center; background:#1e293b; padding:clamp(5px,0.8vh,8px) clamp(6px,1.2vw,12px); border-radius:10px; border:1px solid var(--final-gold); display:flex; flex-direction:column; gap:4px; align-items:center; flex-shrink:0; transition:background 0.2s; }
+        .admin-group:hover { background:#263347; }
+        .admin-group-name { font-size:clamp(0.65rem,1.1vh,0.8rem); color:var(--final-gold); font-weight:900; }
+
+        .btn-admin { padding:clamp(5px,1vh,8px) clamp(8px,1.3vw,14px); border-radius:7px; border:none; cursor:pointer; font-family:'Cairo'; font-weight:900; font-size:clamp(0.75rem,1.3vh,0.95rem); transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.18s; white-space:nowrap; }
+        .btn-admin:hover { transform:translateY(-2px) scale(1.05); box-shadow:0 3px 10px rgba(0,0,0,0.25); }
+        .btn-admin:active { transform:scale(0.94); }
+
+        .icon-btn { background:var(--card-dark); border:2px solid var(--final-gold); color:var(--final-gold); width:clamp(36px,4.5vh,46px); height:clamp(36px,4.5vh,46px); border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.25s; font-size:clamp(0.85rem,1.5vh,1.05rem); border:none; }
+        .icon-btn:hover { transform:scale(1.15); box-shadow:0 3px 12px rgba(197,160,89,0.28); }
+        .icon-btn:active { transform:scale(0.9); }
+
+        #answer-input { padding:clamp(5px,1vh,9px); width:clamp(90px,12vw,130px); border-radius:7px; text-align:center; font-weight:bold; font-size:clamp(0.82rem,1.4vh,0.98rem); border:2px solid var(--final-gold); background:#0f172a; color:white; transition:transform 0.22s,box-shadow 0.22s; }
+        #answer-input:focus { outline:none; transform:scale(1.04); box-shadow:0 0 12px rgba(197,160,89,0.4); }
+
+        /* ===== MODAL ===== */
+        .modal { display:none; position:fixed; z-index:40000; inset:0; background:rgba(0,0,0,0.9); align-items:flex-start; justify-content:center; overflow-y:auto; padding:20px; }
+        .modal-content { background:var(--card-dark); padding:clamp(18px,2.8vh,32px); border-radius:20px; border:3px solid var(--final-gold); width:100%; max-width:800px; text-align:right; line-height:1.6; margin-top:20px; margin-bottom:20px; animation:modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .modal-content h3 { color:var(--final-gold); border-bottom:2px solid var(--final-gold); padding-bottom:10px; margin-top:0; font-size:clamp(0.95rem,2vh,1.3rem); }
+    /* باقي التصميم كما هو بدون أي تغيير */
 
         @media (max-width: 768px) {
             .container {

@@ -95,7 +95,7 @@
         }
 
         /* ============================================================
-           هيكل الصفحة — بدون تغيير
+           هيكل الصفحة
         ============================================================ */
         .header-top {
             display: flex; justify-content: space-between; align-items: center;
@@ -238,7 +238,6 @@
             font-weight: bold; font-size: clamp(0.8rem,2vh,1rem);
             transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
         }
-        /* تدرّج ظهور الخيارات */
         .opt:nth-child(1) { animation: optIn 0.35s ease 0.06s both; }
         .opt:nth-child(2) { animation: optIn 0.35s ease 0.14s both; }
         .opt:nth-child(3) { animation: optIn 0.35s ease 0.22s both; }
@@ -300,9 +299,6 @@
         }
         .btn-admin:active { transform: scale(0.94); }
 
-        /* ============================================================
-           المؤقت
-        ============================================================ */
         #timer {
             font-size: clamp(1.5rem,6vh,2.8rem); line-height: 1;
             margin: 2px 0; color: var(--danger); font-weight: 900;
@@ -310,14 +306,10 @@
             animation: timerBeat 1s ease-in-out infinite;
             transition: color 0.4s;
         }
-        /* يُضاف بـ MutationObserver عند ≤5 */
         #timer.urgent {
             animation: timerShake 0.45s ease-in-out infinite !important;
         }
 
-        /* ============================================================
-           نص السؤال
-        ============================================================ */
         #q-text {
             font-size: clamp(1.1rem,3.5vh,1.5rem); line-height: 1.3;
             margin-bottom: 8px; font-family: 'Amiri'; font-weight: bold;
@@ -327,9 +319,6 @@
             animation: fadeSlideUp 0.4s ease both;
         }
 
-        /* ============================================================
-           علامة النمط والمُعلن
-        ============================================================ */
         #phase-label {
             background: var(--moroccan-blue); color: white;
             padding: 2px 12px; border-radius: 50px; font-size: 0.75rem;
@@ -343,9 +332,6 @@
             animation: announcerIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
         }
 
-        /* ============================================================
-           منطقة الجواب اليدوي
-        ============================================================ */
         #manual-answer-display {
             font-size: 1.4rem; color: var(--moroccan-blue); font-weight: 900;
             transition: color 0.4s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
@@ -355,9 +341,6 @@
             animation: answerReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
         }
 
-        /* ============================================================
-           حقل الإدخال
-        ============================================================ */
         #answer-input {
             padding: 15px; width: 145px; font-size: 1.1rem;
             border-radius: 10px; border: 3px solid var(--moroccan-gold);
@@ -369,9 +352,6 @@
             box-shadow: 0 0 18px rgba(197,160,89,0.45);
         }
 
-        /* ============================================================
-           شاشة الإعداد — حقل الاختيار
-        ============================================================ */
         #team-count {
             padding: 10px; border-radius: 8px; margin-bottom: 15px;
             font-weight: bold; border: 2px solid var(--moroccan-gold);
@@ -382,9 +362,6 @@
             box-shadow: 0 0 14px rgba(197,160,89,0.35);
         }
 
-        /* ============================================================
-           شاشة النهاية
-        ============================================================ */
         .final-gate {
             background: linear-gradient(45deg,#0f172a,#1e293b);
             border: 3px solid #c5a059; color: #c5a059;
@@ -394,9 +371,6 @@
             animation: royalPulse 2s infinite; cursor: pointer;
         }
 
-        /* ============================================================
-           شريط التذييل
-        ============================================================ */
         .footer-credit {
             position: fixed; bottom: 145px; left: 0; right: 0;
             font-size: 0.75rem; color: rgba(0,0,0,0.3); font-weight: bold;
@@ -404,9 +378,6 @@
         }
         body.dark-mode .footer-credit { color: rgba(255,255,255,0.15); }
 
-        /* ============================================================
-           شاشات كبيرة — تحسينات المقاسات
-        ============================================================ */
         @media (min-width: 1200px) {
             .container { max-width: 1100px; }
             .card { padding: clamp(18px, 3vh, 34px); border-radius: 28px; }
@@ -424,17 +395,6 @@
             .header-top { max-width: 1300px; }
             .modal-content { max-width: 680px; padding: 36px; }
             .lifeline-icons span { width: 24px; height: 24px; font-size: 0.9rem; }
-        }
-        @media (min-width: 1600px) {
-            .container { max-width: 1400px; }
-            .card { border-radius: 34px; }
-            #q-text { font-size: clamp(1.6rem, 2.5vh, 2.4rem); }
-            .opt { font-size: clamp(1rem, 1.6vh, 1.3rem); padding: 18px; border-radius: 14px; }
-            .options-grid { gap: 18px; }
-            .scoreboard { gap: 18px; }
-            .admin-panel { min-height: 180px; }
-            #phase-label { font-size: 0.9rem; padding: 4px 18px; }
-            #target-announcer { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -512,10 +472,6 @@
     </div>
 </div>
 
-<!-- ================================================================
-     MutationObserver: يضيف كلاس urgent للمؤقت عند ≤5 ثوانٍ
-     لا يلمس أي دالة موجودة
-================================================================ -->
 <script>
 (function() {
     const observer = new MutationObserver(function() {
@@ -530,12 +486,9 @@
     });
     document.addEventListener('DOMContentLoaded', function() {
         const timerEl = document.getElementById('timer');
-        if (timerEl) observer.observe(timerEl, { childList: true, characterData: true, subtree: true });
+        if (timerEl) observer.observe(timerEl, { childList: true, characterCharacterData: true, characterData: true, subtree: true });
     });
 })();
-</script>
-
-<script>
 
 function refreshPage(btn) { btn.classList.add('refresh-active'); setTimeout(() => location.reload(), 500); }
 
@@ -544,11 +497,9 @@ try {
     const savedDataRaw = localStorage.getItem('moatark_questions');
     if (savedDataRaw) customData = JSON.parse(savedDataRaw);
 } catch (e) {
-    console.warn('بيانات localStorage تالفة، سيتم استخدام الأسئلة الافتراضية');
     customData = null;
 }
 
-/* ===== البيانات الافتراضية ===== */
 const defaultPhases = [
     {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم","مهموز","مضعف","معتل"], a:2},
     {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء","واو","ألف","نون"], a:1},
@@ -557,7 +508,6 @@ const defaultPhases = [
     {q: "الفعل المضارع 'يذهبُ' يصبح منصوباً إذا سبقه:", o:["لَمْ","لَنْ","لا الناهية","مِنْ"], a:1}
 ];
 
-/* ===== أسئلة النمط 2 الافتراضية ===== */
 const defaultPhases2 = [
     {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
     {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1},
@@ -594,70 +544,34 @@ const defaultStock = {
     ]
 };
 
-/* ===== متغيرات اللعبة ===== */
 let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
 let votedOnThisQuestion = [], currentModelAnswer = "", currentQuestionText = "";
 let lifelinesState = [], rocketActive = -1;
-
-/* ===== متغيرات النمط 3 ===== */
 let stockCounts = {};
 let usedByBox   = {};
 const STOCK_KEYS = ["المدرسة", "المحفظة", "الكتاب"];
 
 const phasesData = [
-    {
-        name: "النمط 1: الاستجابة الجماعية",
-        type: "all",
-        time: 20,
-        questions: (customData && Array.isArray(customData.phase1) && customData.phase1.length > 0)
-            ? customData.phase1 : defaultPhases
-    },
-    {
-        name: "النمط 2: المواجهة الموجهة",
-        type: "target",
-        time: 20,
-        questions: (customData && Array.isArray(customData.phase2) && customData.phase2.length > 0)
-            ? customData.phase2 : defaultPhases2
-    },
-    {
-        name: "النمط 3: الصناديق العجيبة",
-        type: "free",
-        time: 30
-    },
-    {
-        name: "النمط 4: جولة السرعة",
-        type: "speed",
-        time: 8,
-        questions: (customData && Array.isArray(customData.phase4) && customData.phase4.length > 0)
-            ? customData.phase4
-            : [
-                {q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"},
-                {q: "حدد نوع الجمع في كلمة 'قُضاة'.", a: "جمع تكسير"},
-                {q: "ما أصل الألف في فعل 'سعى'؟", a: "ياء (سعى يسعى)"},
-                {q: "أعرب كلمة 'مُسْرِعاً' في: 'جاءَ الولدُ مُسْرِعاً'.", a: "حال منصوب"}
-            ]
-    }
+    { name: "النمط 1: الاستجابة الجماعية", type: "all", time: 20, questions: (customData && customData.phase1) ? customData.phase1 : defaultPhases },
+    { name: "النمط 2: المواجهة الموجهة", type: "target", time: 20, questions: (customData && customData.phase2) ? customData.phase2 : defaultPhases2 },
+    { name: "النمط 3: الصناديق العجيبة", type: "free", time: 30 },
+    { name: "النمط 4: جولة السرعة", type: "speed", time: 8, questions: (customData && customData.phase4) ? customData.phase4 : [
+        {q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"},
+        {q: "حدد نوع الجمع في كلمة 'قُضاة'.", a: "جمع تكسير"},
+        {q: "ما أصل الألف في فعل 'سعى'؟", a: "ياء (سعى يسعى)"},
+        {q: "أعرب كلمة 'مُسْرِعاً' في: 'جاءَ الولدُ مُسْرِعاً'.", a: "حال منصوب"}
+    ]}
 ];
 
 function getStockData() {
-    if (customData && customData.stock) {
-        return {
-            "المدرسة": customData.stock["المدرسة"] || defaultStock["المدرسة"],
-            "المحفظة": customData.stock["المحفظة"] || defaultStock["المحفظة"],
-            "الكتاب":  customData.stock["الكتاب"]  || defaultStock["الكتاب"]
-        };
-    }
+    if (customData && customData.stock) return customData.stock;
     return defaultStock;
 }
 
 function initStockCounts() {
     const n = teamNames.length;
-    stockCounts = {};
-    usedByBox   = {};
-    STOCK_KEYS.forEach(key => {
-        stockCounts[key] = n;
-        usedByBox[key]   = new Set();
-    });
+    stockCounts = {}; usedByBox = {};
+    STOCK_KEYS.forEach(key => { stockCounts[key] = n; usedByBox[key] = new Set(); });
 }
 
 function updateTeamInputs(count) {
@@ -689,28 +603,26 @@ function startMarathon() {
 }
 
 function renderInterface() {
-    const sb        = document.getElementById('dynamic-scoreboard');
+    const sb = document.getElementById('dynamic-scoreboard');
     const adminCtrl = document.getElementById('admin-score-controls');
     sb.innerHTML = ''; adminCtrl.innerHTML = '';
     teamNames.forEach((name, i) => {
-        sb.innerHTML += `
-            <div class="team-box" id="t-card-${i}">
-                <div class="lifeline-icons">
-                    <span id="ico-${i}-del" onclick="useLifeline(${i}, 'del', this)">💡</span>
-                    <span id="ico-${i}-dou" onclick="useLifeline(${i}, 'dou', this)">🚀</span>
-                    <span id="ico-${i}-stp" onclick="useLifeline(${i}, 'stp', this)">⏱️</span>
-                </div>
-                <span id="s-${i}" style="font-size:1.4rem; font-weight:900;">0</span>
-                <div style="font-size:0.7rem">${name}</div>
-            </div>`;
-        adminCtrl.innerHTML += `
-            <div class="admin-group">
-                <div style="font-size:0.8rem; color:var(--moroccan-gold); font-weight:900;">${name}</div>
-                <div style="display:flex; gap:6px">
-                    <button class="btn-admin" style="background:var(--success); color:white" onclick="modifyScore(${i}, 10)">+10</button>
-                    <button class="btn-admin" style="background:var(--danger);  color:white" onclick="modifyScore(${i}, -5)">-5</button>
-                </div>
-            </div>`;
+        sb.innerHTML += `<div class="team-box" id="t-card-${i}">
+            <div class="lifeline-icons">
+                <span id="ico-${i}-del" onclick="useLifeline(${i}, 'del', this)">💡</span>
+                <span id="ico-${i}-dou" onclick="useLifeline(${i}, 'dou', this)">🚀</span>
+                <span id="ico-${i}-stp" onclick="useLifeline(${i}, 'stp', this)">⏱️</span>
+            </div>
+            <span id="s-${i}" style="font-size:1.4rem; font-weight:900;">0</span>
+            <div style="font-size:0.7rem">${name}</div>
+        </div>`;
+        adminCtrl.innerHTML += `<div class="admin-group">
+            <div style="font-size:0.8rem; color:var(--moroccan-gold); font-weight:900;">${name}</div>
+            <div style="display:flex; gap:6px">
+                <button class="btn-admin" style="background:var(--success); color:white" onclick="modifyScore(${i}, 10)">+10</button>
+                <button class="btn-admin" style="background:var(--danger);  color:white" onclick="modifyScore(${i}, -5)">-5</button>
+            </div>
+        </div>`;
     });
 }
 
@@ -729,17 +641,12 @@ function useLifeline(teamIdx, type, element) {
         const p = phasesData[currentPhase];
         if (p && p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
             const correct = parseInt(p.questions[currentQ].a);
-            const opts    = Array.from(document.querySelectorAll('.opt'));
+            const opts = Array.from(document.querySelectorAll('.opt'));
             let wrong = opts.map((_, i) => i).filter(i => i !== correct);
-            wrong.sort(() => Math.random() - 0.5).slice(0, 2).forEach(idx => {
-                opts[idx].style.visibility = 'hidden';
-            });
+            wrong.sort(() => Math.random() - 0.5).slice(0, 2).forEach(idx => { opts[idx].style.visibility = 'hidden'; });
         }
-    } else if (type === 'dou') {
-        rocketActive = teamIdx;
-    } else if (type === 'stp') {
-        clearInterval(timer);
-    }
+    } else if (type === 'dou') { rocketActive = teamIdx; }
+    else if (type === 'stp') { clearInterval(timer); }
     lifelinesState[teamIdx][type] = true;
     element.style.opacity = "0.2";
 }
@@ -747,32 +654,26 @@ function useLifeline(teamIdx, type, element) {
 function prepareTurns() {
     phaseTurns = [];
     const count = teamNames.length;
-    const p     = phasesData[currentPhase];
+    const p = phasesData[currentPhase];
     if (!p) return;
-    if (p.type === 'target') {
-        for (let i = 0; i < count; i++) for (let j = 0; j < 3; j++) phaseTurns.push(i);
-    } else if (p.type === 'free') {
-        for (let i = 0; i < count; i++) for (let j = 0; j < 2; j++) phaseTurns.push(i);
-    }
+    if (p.type === 'target') { for (let i = 0; i < count; i++) for (let j = 0; j < 3; j++) phaseTurns.push(i); }
+    else if (p.type === 'free') { for (let i = 0; i < count; i++) for (let j = 0; j < 2; j++) phaseTurns.push(i); }
     phaseTurns.sort(() => Math.random() - 0.5);
 }
 
 function init() {
     votedOnThisQuestion = teamNames.map(() => false);
     const p = phasesData[currentPhase];
-    currentModelAnswer  = "";
-    currentQuestionText = "";
-    rocketActive = -1;
+    currentModelAnswer  = ""; currentQuestionText = ""; rocketActive = -1;
     clearInterval(timer);
 
-    document.getElementById('q-text').innerText                = '';
-    document.getElementById('opt-container').innerHTML         = '';
+    document.getElementById('q-text').innerText = '';
+    document.getElementById('opt-container').innerHTML = '';
     document.getElementById('component-selection').style.display = 'none';
-    document.getElementById('manual-zone').style.display       = 'none';
-    document.getElementById('target-announcer').style.display  = 'none';
-    document.getElementById('answer-input').value              = '';
+    document.getElementById('manual-zone').style.display = 'none';
+    document.getElementById('target-announcer').style.display = 'none';
+    document.getElementById('answer-input').value = '';
     document.getElementById('manual-answer-display').innerText = '...';
-    document.getElementById('manual-answer-display').style.color = 'var(--moroccan-blue)';
     document.getElementById('manual-answer-display').classList.remove('revealed');
     document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
 
@@ -785,6 +686,8 @@ function init() {
         document.getElementById('target-announcer').innerHTML = `🎯 الصندوق العجيب لـ: ${teamNames[tid]}`;
         document.getElementById(`t-card-${tid}`).classList.add('active-turn');
         showFreeSelection();
+        // 🛠️ تعديل النمط 3: يبدأ المؤقت بمجرد ظهور اسم الفريق
+        startTimer(p.time); 
 
     } else if (p.type === 'target') {
         const tid = phaseTurns[currentQ];
@@ -796,8 +699,7 @@ function init() {
     } else if (p.type === 'speed') {
         const q = p.questions[currentQ];
         if (!q) return;
-        currentQuestionText = q.q;
-        currentModelAnswer  = q.a;
+        currentQuestionText = q.q; currentModelAnswer = q.a;
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('manual-zone').style.display = 'block';
         startTimer(p.time, true);
@@ -810,11 +712,7 @@ function init() {
 function displayQuestion(q) {
     if (!q) return;
     document.getElementById('q-text').innerText = q.q;
-    if (q.o) {
-        q.o.forEach(opt => {
-            document.getElementById('opt-container').innerHTML += `<button class="opt">${opt}</button>`;
-        });
-    }
+    if (q.o) { q.o.forEach(opt => { document.getElementById('opt-container').innerHTML += `<button class="opt">${opt}</button>`; }); }
     startTimer(phasesData[currentPhase].time);
 }
 
@@ -822,26 +720,19 @@ function showFreeSelection() {
     document.getElementById('component-selection').style.display = 'flex';
     STOCK_KEYS.forEach(key => {
         const remaining = stockCounts[key];
-        const countEl   = document.getElementById(`count-${key}`);
-        const btnEl     = document.getElementById(`btn-${key}`);
+        const countEl = document.getElementById(`count-${key}`);
+        const btnEl = document.getElementById(`btn-${key}`);
         countEl.innerText = `(${remaining})`;
-        if (remaining <= 0) {
-            btnEl.disabled = true;
-            btnEl.classList.add('depleted');
-            btnEl.onclick = null;
-        } else {
-            btnEl.disabled = false;
-            btnEl.classList.remove('depleted');
-            btnEl.onclick = () => selectComponent(key);
-        }
+        if (remaining <= 0) { btnEl.disabled = true; btnEl.classList.add('depleted'); btnEl.onclick = null; }
+        else { btnEl.disabled = false; btnEl.classList.remove('depleted'); btnEl.onclick = () => selectComponent(key); }
     });
 }
 
 function selectComponent(key) {
     if (stockCounts[key] <= 0) return;
-    const stock     = getStockData();
+    const stock = getStockData();
     const questions = stock[key];
-    if (!questions || questions.length === 0) return alert("هذا الصندوق فارغ!");
+    if (!questions || questions.length === 0) return;
 
     let available = questions.filter(q => !usedByBox[key].has(q.q));
     if (available.length === 0) { usedByBox[key].clear(); available = questions; }
@@ -853,16 +744,14 @@ function selectComponent(key) {
     document.getElementById(`count-${key}`).innerText = `(${stockCounts[key]})`;
     if (stockCounts[key] <= 0) {
         const btnEl = document.getElementById(`btn-${key}`);
-        btnEl.disabled = true;
-        btnEl.classList.add('depleted');
-        btnEl.onclick = null;
+        btnEl.disabled = true; btnEl.classList.add('depleted'); btnEl.onclick = null;
     }
 
     document.getElementById('component-selection').style.display = 'none';
     document.getElementById('manual-zone').style.display = 'block';
     document.getElementById('q-text').innerText = `📦 ${key}: ${item.q}`;
     currentModelAnswer = item.a;
-    startTimer(30);
+    // 🛠️ تم إزالة استدعاء startTimer من هنا لكي لا يبدأ من جديد
 }
 
 function startTimer(s, isSpeed = false) {
@@ -873,9 +762,7 @@ function startTimer(s, isSpeed = false) {
         document.getElementById('timer').innerText = tl;
         if (tl <= 0) {
             clearInterval(timer);
-            if (isSpeed) {
-                document.getElementById('q-text').innerText = '';
-            }
+            if (isSpeed) document.getElementById('q-text').innerText = '';
         }
     }, 1000);
 }
@@ -883,23 +770,19 @@ function startTimer(s, isSpeed = false) {
 function reveal() {
     clearInterval(timer);
     const p = phasesData[currentPhase];
-
     if (currentModelAnswer !== "") {
-        if (currentQuestionText) {
-            document.getElementById('q-text').innerText = currentQuestionText;
-        }
+        if (currentQuestionText) document.getElementById('q-text').innerText = currentQuestionText;
         const dispEl = document.getElementById('manual-answer-display');
-        dispEl.innerText   = currentModelAnswer;
+        dispEl.innerText = currentModelAnswer;
         dispEl.style.color = 'var(--success)';
         dispEl.classList.remove('revealed');
-        void dispEl.offsetWidth; /* إعادة تشغيل الانيميشن */
+        void dispEl.offsetWidth; 
         dispEl.classList.add('revealed');
         document.getElementById('manual-zone').style.display = 'block';
-
     } else if (p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
-        const d    = p.questions[currentQ];
+        const d = p.questions[currentQ];
         const opts = document.querySelectorAll('.opt');
-        const idx  = parseInt(d.a);
+        const idx = parseInt(d.a);
         if (opts[idx]) { opts[idx].style.background = 'var(--success)'; opts[idx].style.color = 'white'; }
     }
 }
@@ -907,41 +790,23 @@ function reveal() {
 function next() {
     const p = phasesData[currentPhase];
     if (!p) return;
-
     currentQ++;
-    const limit = (p.type === 'target' || p.type === 'free')
-        ? phaseTurns.length
-        : (p.questions ? p.questions.length : 0);
-
-    if (currentQ >= limit) {
-        currentQ = 0;
-        currentPhase++;
-        if (currentPhase < phasesData.length) prepareTurns();
-    }
-
+    const limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
+    if (currentQ >= limit) { currentQ = 0; currentPhase++; if (currentPhase < phasesData.length) prepareTurns(); }
     if (currentPhase >= phasesData.length) {
-
-        // 🔧 FIX: منع تداخل آخر سؤال مع شاشة النهائي
         clearInterval(timer);
         document.getElementById('q-text').innerText = '';
         document.getElementById('opt-container').innerHTML = '';
         document.getElementById('manual-zone').style.display = 'none';
         document.getElementById('component-selection').style.display = 'none';
-
         document.getElementById('timer').innerText = "🏁";
         document.getElementById('finish-screen').style.display = 'block';
-
-    } else {
-        init();
-    }
+    } else { init(); }
 }
 
-function syncAnswer(v) {
-    document.getElementById('manual-answer-display').innerText = v || '...';
-}
+function syncAnswer(v) { document.getElementById('manual-answer-display').innerText = v || '...'; }
 
 updateTeamInputs(4);
-
 </script>
 </body>
 </html>

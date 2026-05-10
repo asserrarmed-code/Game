@@ -4,77 +4,262 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معترك الضاد - النهائي الكبير</title>
-    <!-- هنا تبقى كافة التنسيقات (CSS) الأصلية الخاصة بك دون تغيير حرف واحد -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* سأضع هنا نفس الـ CSS الذي كان في ملفك الأصلي تماماً */
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --bg-color: #f4f7f6;
+            --gold: #ffcc00;
+            --gold-glow: #ffae00;
+            --dark-bg: #0a0a0a;
+            --panel-bg: #1a1a1a;
+            --text-color: #ffffff;
         }
-        /* ... (تكملة كافة الستاييلات الأصلية لصفحتك) ... */
-        body { font-family: 'Cairo', sans-serif; background: #000; color: #fff; margin: 0; }
-        .container { display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        /* التوقيع الثابت أسفل الصفحة كما طلبت */
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 3px solid var(--gold);
+            background: linear-gradient(to bottom, #1a1a1a, #000);
+            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        .final-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            padding: 40px;
+            flex-grow: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .mode-button {
+            background: var(--panel-bg);
+            border: 2px solid #333;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-button:hover {
+            border-color: var(--gold);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
+        }
+
+        .mode-button i { font-size: 4rem; margin-bottom: 15px; }
+        .mode-button h2 { margin: 0; font-size: 2rem; color: var(--gold); }
+        .mode-button p { margin: 10px 0 0; color: #aaa; }
+
+        /* نافذة السؤال */
+        .question-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .question-box {
+            background: #fff;
+            color: #000;
+            width: 85%;
+            max-width: 900px;
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            position: relative;
+            border: 8px solid var(--gold);
+        }
+
+        .q-text { font-size: 2.5rem; font-weight: 900; margin-bottom: 30px; }
+        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .option:hover { background: var(--gold); color: #000; }
+
+        .close-btn {
+            position: absolute;
+            top: -25px;
+            right: -25px;
+            background: #ff4444;
+            color: white;
+            border: 4px solid white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
         .footer-signature {
+            background: white;
+            color: #000;
+            text-align: center;
+            padding: 15px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            border-top: 5px solid #ff4444;
             position: fixed;
             bottom: 0;
             width: 100%;
-            background: #fff;
-            color: #2c3e50;
-            text-align: center;
-            padding: 10px;
-            font-weight: bold;
-            border-top: 3px solid #e74c3c;
-            z-index: 1000;
+        }
+
+        .timer-circle {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ff4444;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- هنا يبقى هيكل الـ HTML الأصلي الخاص بك (الأنماط الأربعة) -->
-    <div class="container">
-        <!-- محتوى صفحتك الأصلي: المواجهة الموجهة، المزاد، التحدي، الحسم -->
+    <header>
+        <h1>🏆 النهائي الكبير 🏆</h1>
+    </header>
+
+    <div class="final-grid">
+        <div class="mode-button" onclick="launchGame('moajaha')">
+            <i>⚔️</i>
+            <h2>المواجهة الموجهة</h2>
+            <p>تحدي الرأس بالرأس</p>
+        </div>
+        <div class="mode-button" onclick="launchGame('mazad')">
+            <i>💰</i>
+            <h2>جولة المزاد</h2>
+            <p>من يراهن أكثر؟</p>
+        </div>
+        <div class="mode-button" onclick="launchGame('tahadi')">
+            <i>🔥</i>
+            <h2>تحدي النخبة</h2>
+            <p>أسئلة للمتفوقين فقط</p>
+        </div>
+        <div class="mode-button" onclick="launchGame('hasm')">
+            <i>🏁</i>
+            <h2>جولة الحسم</h2>
+            <p>تحديد البطل النهائي</p>
+        </div>
+    </div>
+
+    <div id="overlay" class="question-overlay">
+        <div class="question-box">
+            <button class="close-btn" onclick="hideQ()">×</button>
+            <div id="q-content" class="q-text"></div>
+            <div id="options-box" class="options-container"></div>
+            <div id="timer" class="timer-circle"></div>
+        </div>
     </div>
 
     <div class="footer-signature">
-        إعداد وتصميم الأستاذ: محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش
+        تصميم وإعداد الأستاذ: محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش
     </div>
 
     <script>
-        /* هذا هو الجزء الذي سأحقنه داخل الـ Script الأصلي لربطه بالأدمن */
+        // مخزن الأسئلة الافتراضي (إذا لم يتم الرفع من الأدمن)
+        let finalData = {
+            moajaha: [{q: "ما هو جمع 'حليب'؟", a: ["أحلبة", "حلبان", "لا جمع له", "حلب"], c: 2}],
+            mazad: [{q: "متى تم تأسيس جامعة القرويين؟", a: ["859م", "900م", "1050م", "750م"], c: 0}],
+            tahadi: [{q: "ما إعراب 'كلا' في: جاء الرجلان كلاهما؟", a: ["توكيد معنوي", "فاعل", "بدل", "مبتدأ ثانٍ"], c: 0}],
+            hasm: [{q: "من هو مؤلف كتاب 'البيان والتبيين'؟", a: ["الجاحظ", "ابن المقفع", "المتنبي", "طه حسين"], c: 0}]
+        };
 
-        // 1. المصفوفات الأصلية (تتركها كاحتياط Fallback)
-        let moajahaQuestions = []; 
-        let mazadQuestions = [];
-        let tahadiQuestions = [];
-        let hasmQuestions = [];
-
-        // 2. دالة الجلب الذكي من الأدمن
-        function loadDynamicQuestions() {
-            const savedData = localStorage.getItem('final_questions');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                
-                // تصفية الأسئلة الـ 17 وتوزيعها على مصفوفاتك الأصلية
-                moajahaQuestions = data.filter(q => q.type === 'moajaha');
-                mazadQuestions = data.filter(q => q.type === 'mazad');
-                tahadiQuestions = data.filter(q => q.type === 'tahadi');
-                hasmQuestions = data.filter(q => q.type === 'hasm');
-                
-                console.log("تم تحديث أسئلة النهائي من لوحة التحكم");
+        // دالة جلب الأسئلة من الأدمن (الـ 17 سؤال المخصصة)
+        function fetchQuestionsFromAdmin() {
+            const raw = localStorage.getItem('final_questions');
+            if (raw) {
+                const data = JSON.parse(raw);
+                // تصفية الأسئلة حسب النوع
+                const filtered = { moajaha: [], mazad: [], tahadi: [], hasm: [] };
+                data.forEach(item => {
+                    if (filtered[item.type]) filtered[item.type].push(item);
+                });
+                // تحديث البيانات إذا كانت موجودة
+                if (filtered.moajaha.length > 0) finalData = filtered;
             }
         }
 
-        // استدعاء الجلب عند تحميل الصفحة
-        window.onload = () => {
-            loadDynamicQuestions();
-            // هنا تكملة دوال التشغيل الأصلية الخاصة بك (initGame, etc.)
-        };
+        window.onload = fetchQuestionsFromAdmin;
 
-        /* باقي منطق العمل (الأنماط، الحركة، المؤثرات الصوتية) يبقى كما هو في ملفك الأصلي */
+        let interval;
+        function launchGame(mode) {
+            const list = finalData[mode];
+            if (!list || list.length === 0) return alert("لا توجد أسئلة!");
+            
+            const qObj = list[Math.floor(Math.random() * list.length)];
+            document.getElementById('q-content').innerText = qObj.q;
+            const optBox = document.getElementById('options-box');
+            optBox.innerHTML = '';
+            
+            qObj.a.forEach((txt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerText = txt;
+                div.onclick = () => {
+                    if(i === qObj.c) alert("✅ إجابة صحيحة!");
+                    else alert("❌ إجابة خاطئة!");
+                    hideQ();
+                };
+                optBox.appendChild(div);
+            });
+
+            document.getElementById('overlay').style.display = 'flex';
+            startClock(30);
+        }
+
+        function startClock(sec) {
+            let t = sec;
+            const display = document.getElementById('timer');
+            display.innerText = t;
+            clearInterval(interval);
+            interval = setInterval(() => {
+                t--;
+                display.innerText = t;
+                if(t <= 0) {
+                    clearInterval(interval);
+                    alert("انتهى الوقت!");
+                    hideQ();
+                }
+            }, 1000);
+        }
+
+        function hideQ() {
+            document.getElementById('overlay').style.display = 'none';
+            clearInterval(interval);
+        }
     </script>
 </body>
 </html>

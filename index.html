@@ -20,45 +20,426 @@
             height: 100vh; display: flex; flex-direction: column;
             transition: background 0.3s; overflow: hidden; position: relative;
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; flex-shrink: 0; width: 100%; max-width: 1000px; margin: 0 auto; }
-        .logo-box { width: clamp(40px, 7vh, 65px); height: clamp(40px, 7vh, 65px); background: white; border-radius: 50%; border: 2px solid var(--moroccan-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+        /* ============================================================
+           ✨ KEYFRAMES — مؤثرات الحركة
+        ============================================================ */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(28px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.82); }
+            to   { opacity: 1; transform: scale(1);    }
+        }
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-22px); }
+            to   { opacity: 1; transform: translateY(0);     }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(35px); }
+            to   { opacity: 1; transform: translateX(0);    }
+        }
+        @keyframes slideUpPanel {
+            from { transform: translateY(100%); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.78) translateY(24px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);    }
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0);   }
+            50%       { transform: translateY(-5px); }
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(239,68,68,0.35); }
+            50%       { box-shadow: 0 0 32px rgba(239,68,68,0.75), 0 0 55px rgba(239,68,68,0.2); }
+        }
+        @keyframes timerBeat {
+            0%, 100% { transform: scale(1);    }
+            50%       { transform: scale(1.07); }
+        }
+        @keyframes timerShake {
+            0%, 100% { transform: translateX(0);    }
+            18%       { transform: translateX(-6px); }
+            36%       { transform: translateX(6px);  }
+            54%       { transform: translateX(-5px); }
+            72%       { transform: translateX(5px);  }
+        }
+        @keyframes optIn {
+            from { opacity: 0; transform: translateY(14px) scale(0.93); }
+            to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        @keyframes phaseTag {
+            from { opacity: 0; transform: translateY(-10px) scale(0.88); }
+            to   { opacity: 1; transform: translateY(0)     scale(1);    }
+        }
+        @keyframes announcerIn {
+            from { opacity: 0; transform: translateX(28px); }
+            to   { opacity: 1; transform: translateX(0);    }
+        }
+        @keyframes answerReveal {
+            0%   { transform: scale(1);    }
+            45%  { transform: scale(1.18); }
+            100% { transform: scale(1);    }
+        }
+        @keyframes royalPulse {
+            0%   { transform: scale(1);    box-shadow: 0 0 20px rgba(197,160,89,0.4); }
+            50%  { transform: scale(1.05); box-shadow: 0 0 40px rgba(197,160,89,0.7); }
+            100% { transform: scale(1);    box-shadow: 0 0 20px rgba(197,160,89,0.4); }
+        }
+
+        /* ============================================================
+           هيكل الصفحة — بدون تغيير
+        ============================================================ */
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 5px 15px; flex-shrink: 0; width: 100%;
+            max-width: 1000px; margin: 0 auto;
+            animation: slideInDown 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        .logo-box {
+            width: clamp(40px,7vh,65px); height: clamp(40px,7vh,65px);
+            background: white; border-radius: 50%;
+            border: 2px solid var(--moroccan-gold);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            animation: logoFloat 3.5s ease-in-out infinite;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .logo-box:hover { box-shadow: 0 4px 18px rgba(197,160,89,0.35); }
+        .logo-box:last-child { animation-delay: 1.7s; }
         .logo-box img { width: 100%; height: 100%; object-fit: cover; }
-        .title-area { flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 0 10px; }
-        .title-area img { width: 100%; max-height: clamp(50px, 10vh, 100px); object-fit: contain; }
-        .top-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; flex-shrink: 0; }
-        .icon-btn { background: var(--moroccan-gold); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 1rem; transition: transform 0.4s ease; }
-        .refresh-active { transform: rotate(360deg); }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 20000; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--card); border: 3px solid var(--moroccan-gold); width: 90%; max-width: 500px; padding: 25px; border-radius: 20px; text-align: right; position: relative; color: var(--text); line-height: 1.6; }
+
+        .title-area {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            overflow: hidden; padding: 0 10px;
+            animation: fadeIn 0.7s ease 0.2s both;
+        }
+        .title-area img { width: 100%; max-height: clamp(50px,10vh,100px); object-fit: contain; }
+
+        .top-controls {
+            display: flex; justify-content: center; gap: 10px;
+            margin-bottom: 5px; flex-shrink: 0;
+            animation: fadeIn 0.6s ease 0.35s both;
+        }
+
+        .icon-btn {
+            background: var(--moroccan-gold); border: none;
+            width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 1rem;
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+        }
+        .icon-btn:hover {
+            transform: scale(1.18) translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.28);
+        }
+        .icon-btn:active { transform: scale(0.9); }
+        .refresh-active { transform: rotate(360deg) !important; transition: transform 0.5s ease !important; }
+
+        /* ============================================================
+           مودال الدليل
+        ============================================================ */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center;
+            z-index: 20000; backdrop-filter: blur(5px);
+            animation: fadeIn 0.25s ease both;
+        }
+        .modal-content {
+            background: var(--card); border: 3px solid var(--moroccan-gold);
+            width: 90%; max-width: 500px; padding: 25px; border-radius: 20px;
+            text-align: right; position: relative; color: var(--text); line-height: 1.6;
+            animation: modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
         .modal-content h2 { color: var(--moroccan-blue); border-bottom: 2px solid var(--moroccan-gold); padding-bottom: 10px; margin-top: 0; }
-        .rule-box { margin-bottom: 15px; border-right: 4px solid var(--moroccan-gold); padding-right: 15px; }
-        .close-modal { position: absolute; top: 10px; left: 15px; font-size: 1.5rem; cursor: pointer; color: var(--danger); font-weight: bold; }
-        .container { width: 95%; max-width: 900px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 160px; overflow-y: auto; z-index: 2; }
-        .card { background: var(--card); padding: clamp(10px, 2.5vh, 20px); border-radius: 20px; border-top: 6px solid var(--moroccan-blue); box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center; width: 100%; }
-        .scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; flex-shrink: 0; }
-        @media (max-width: 600px) { .scoreboard { grid-template-columns: repeat(2, 1fr); } }
-        .team-box { background: var(--card); padding: 5px; border-radius: 12px; border: 2px solid #ddd; position: relative; transition: all 0.3s; }
-        .team-box.active-turn { border-color: var(--danger); border-width: 4px; transform: scale(1.05); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+        .rule-box {
+            margin-bottom: 15px; border-right: 4px solid var(--moroccan-gold); padding-right: 15px;
+            transition: transform 0.2s, border-right-width 0.2s;
+            animation: slideInRight 0.4s ease both;
+        }
+        .rule-box:nth-child(1) { animation-delay: 0.05s; }
+        .rule-box:nth-child(2) { animation-delay: 0.13s; }
+        .rule-box:nth-child(3) { animation-delay: 0.21s; }
+        .rule-box:nth-child(4) { animation-delay: 0.29s; }
+        .rule-box:hover { transform: translateX(-5px); border-right-width: 6px; }
+        .close-modal {
+            position: absolute; top: 10px; left: 15px; font-size: 1.5rem;
+            cursor: pointer; color: var(--danger); font-weight: bold;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .close-modal:hover { transform: scale(1.3) rotate(12deg); }
+
+        /* ============================================================
+           الحاوية والكروت
+        ============================================================ */
+        .container {
+            width: 95%; max-width: 900px; margin: 0 auto;
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: center; padding-bottom: 160px;
+            overflow-y: auto; z-index: 2;
+        }
+        .card {
+            background: var(--card); padding: clamp(10px,2.5vh,20px);
+            border-radius: 20px; border-top: 6px solid var(--moroccan-blue);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center; width: 100%;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.34,1.2,0.64,1) both;
+            transition: box-shadow 0.3s;
+        }
+        .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.14); }
+
+        /* ============================================================
+           لوحة النقاط
+        ============================================================ */
+        .scoreboard {
+            display: grid; grid-template-columns: repeat(4,1fr);
+            gap: 8px; margin-bottom: 8px; flex-shrink: 0;
+        }
+        @media (max-width: 600px) { .scoreboard { grid-template-columns: repeat(2,1fr); } }
+
+        .team-box {
+            background: var(--card); padding: 5px; border-radius: 12px;
+            border: 2px solid #ddd; position: relative;
+            transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            animation: scaleIn 0.45s ease both;
+        }
+        .team-box:nth-child(1) { animation-delay: 0.04s; }
+        .team-box:nth-child(2) { animation-delay: 0.1s;  }
+        .team-box:nth-child(3) { animation-delay: 0.16s; }
+        .team-box:nth-child(4) { animation-delay: 0.22s; }
+        .team-box.active-turn {
+            border-color: var(--danger); border-width: 4px;
+            transform: scale(1.06);
+            animation: glowPulse 1.6s ease-in-out infinite;
+        }
+
         .lifeline-icons { position: absolute; top: -8px; right: 2px; display: flex; gap: 2px; }
-        .lifeline-icons span { background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.3s; cursor: pointer; }
-        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0; }
-        .opt, .component-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 10px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: clamp(0.8rem, 2vh, 1rem); }
+        .lifeline-icons span {
+            background: white; border-radius: 50%; width: 18px; height: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: pointer;
+        }
+        .lifeline-icons span:hover { transform: scale(1.35); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
+
+        /* ============================================================
+           خيارات الإجابة
+        ============================================================ */
+        .options-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin: 8px 0; }
+
+        .opt, .component-btn {
+            background: #f8fafc; border: 2px solid #e2e8f0; padding: 10px;
+            border-radius: 10px; cursor: pointer; font-family: 'Cairo';
+            font-weight: bold; font-size: clamp(0.8rem,2vh,1rem);
+            transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        /* تدرّج ظهور الخيارات */
+        .opt:nth-child(1) { animation: optIn 0.35s ease 0.06s both; }
+        .opt:nth-child(2) { animation: optIn 0.35s ease 0.14s both; }
+        .opt:nth-child(3) { animation: optIn 0.35s ease 0.22s both; }
+        .opt:nth-child(4) { animation: optIn 0.35s ease 0.30s both; }
+
+        .opt:hover {
+            transform: translateY(-4px) scale(1.04);
+            border-color: var(--moroccan-gold);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.13);
+        }
+        .opt:active { transform: scale(0.96); }
+
+        /* ============================================================
+           أزرار الصناديق
+        ============================================================ */
+        .component-btn {
+            animation: scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        .component-btn:not(.depleted):hover {
+            transform: translateY(-5px) scale(1.07);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+            border-color: var(--moroccan-gold);
+        }
+        .component-btn:active:not(.depleted) { transform: scale(0.95); }
         .component-btn.depleted { opacity: 0.3; cursor: not-allowed; background: #e2e8f0; border-color: #cbd5e1; }
-        .admin-panel { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: white; padding: 15px 10px; border-top: 5px solid var(--moroccan-gold); display: flex; flex-wrap: nowrap; overflow-x: auto; justify-content: center; align-items: center; gap: 15px; z-index: 10000; min-height: 140px; padding-bottom: env(safe-area-inset-bottom, 15px); }
-        .admin-group { border: 2px solid #475569; padding: 10px 8px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 125px; background: rgba(255,255,255,0.08); }
-        .btn-admin { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 0.95rem; }
-        #timer { font-size: clamp(1.5rem, 6vh, 2.8rem); line-height: 1; margin: 2px 0; color: var(--danger); font-weight: 900; }
-        #q-text { font-size: clamp(1.1rem, 3.5vh, 1.5rem); line-height: 1.3; margin-bottom: 8px; font-family: 'Amiri'; font-weight: bold; }
-        #answer-input { padding: 15px; width: 145px; font-size: 1.1rem; border-radius: 10px; border: 3px solid var(--moroccan-gold); text-align: center; font-weight: 900; background: #ffffff; color: #000; }
-        .footer-credit { position: fixed; bottom: 145px; left: 0; right: 0; font-size: 0.75rem; color: rgba(0,0,0,0.3); font-weight: bold; text-align: center; width: 100%; z-index: 1; pointer-events: none; }
+
+        /* ============================================================
+           لوحة المدير
+        ============================================================ */
+        .admin-panel {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #1e293b; color: white;
+            padding: 15px 10px; border-top: 5px solid var(--moroccan-gold);
+            display: flex; flex-wrap: nowrap; overflow-x: auto;
+            justify-content: center; align-items: center;
+            gap: 15px; z-index: 10000; min-height: 140px;
+            padding-bottom: env(safe-area-inset-bottom, 15px);
+            animation: slideUpPanel 0.55s cubic-bezier(0.34,1.2,0.64,1) both;
+        }
+        .admin-group {
+            border: 2px solid #475569; padding: 10px 8px; border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            flex-shrink: 0; min-width: 125px; background: rgba(255,255,255,0.08);
+            transition: transform 0.25s, background 0.25s;
+        }
+        .admin-group:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.15) !important;
+        }
+
+        .btn-admin {
+            padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer;
+            font-family: 'Cairo'; font-weight: 900; font-size: 0.95rem;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+        }
+        .btn-admin:hover {
+            transform: translateY(-3px) scale(1.07);
+            box-shadow: 0 5px 14px rgba(0,0,0,0.25);
+        }
+        .btn-admin:active { transform: scale(0.94); }
+
+        /* ============================================================
+           المؤقت
+        ============================================================ */
+        #timer {
+            font-size: clamp(1.5rem,6vh,2.8rem); line-height: 1;
+            margin: 2px 0; color: var(--danger); font-weight: 900;
+            display: inline-block;
+            animation: timerBeat 1s ease-in-out infinite;
+            transition: color 0.4s;
+        }
+        /* يُضاف بـ MutationObserver عند ≤5 */
+        #timer.urgent {
+            animation: timerShake 0.45s ease-in-out infinite !important;
+        }
+
+        /* ============================================================
+           نص السؤال
+        ============================================================ */
+        #q-text {
+            font-size: clamp(1.1rem,3.5vh,1.5rem); line-height: 1.3;
+            margin-bottom: 8px; font-family: 'Amiri'; font-weight: bold;
+            transition: opacity 0.35s, transform 0.35s;
+        }
+        #q-text.question-enter {
+            animation: fadeSlideUp 0.4s ease both;
+        }
+
+        /* ============================================================
+           علامة النمط والمُعلن
+        ============================================================ */
+        #phase-label {
+            background: var(--moroccan-blue); color: white;
+            padding: 2px 12px; border-radius: 50px; font-size: 0.75rem;
+            display: inline-block; margin-bottom: 5px;
+            animation: phaseTag 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        #target-announcer {
+            background: var(--danger); color: white; padding: 5px 15px;
+            border-radius: 10px; font-size: 1.1rem; margin-bottom: 10px;
+            display: none; font-weight: 900;
+            animation: announcerIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        /* ============================================================
+           منطقة الجواب اليدوي
+        ============================================================ */
+        #manual-answer-display {
+            font-size: 1.4rem; color: var(--moroccan-blue); font-weight: 900;
+            transition: color 0.4s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            display: inline-block;
+        }
+        #manual-answer-display.revealed {
+            animation: answerReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        /* ============================================================
+           حقل الإدخال
+        ============================================================ */
+        #answer-input {
+            padding: 15px; width: 145px; font-size: 1.1rem;
+            border-radius: 10px; border: 3px solid var(--moroccan-gold);
+            text-align: center; font-weight: 900; background: #ffffff; color: #000;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        #answer-input:focus {
+            outline: none; transform: scale(1.04);
+            box-shadow: 0 0 18px rgba(197,160,89,0.45);
+        }
+
+        /* ============================================================
+           شاشة الإعداد — حقل الاختيار
+        ============================================================ */
+        #team-count {
+            padding: 10px; border-radius: 8px; margin-bottom: 15px;
+            font-weight: bold; border: 2px solid var(--moroccan-gold);
+            transition: box-shadow 0.25s, transform 0.25s;
+        }
+        #team-count:focus {
+            outline: none; transform: scale(1.03);
+            box-shadow: 0 0 14px rgba(197,160,89,0.35);
+        }
+
+        /* ============================================================
+           شاشة النهاية
+        ============================================================ */
+        .final-gate {
+            background: linear-gradient(45deg,#0f172a,#1e293b);
+            border: 3px solid #c5a059; color: #c5a059;
+            padding: 20px 40px; font-size: 1.5rem; border-radius: 50px;
+            text-decoration: none; display: inline-block; margin-top: 25px;
+            font-weight: 900; box-shadow: 0 0 20px rgba(197,160,89,0.4);
+            animation: royalPulse 2s infinite; cursor: pointer;
+        }
+
+        /* ============================================================
+           شريط التذييل
+        ============================================================ */
+        .footer-credit {
+            position: fixed; bottom: 145px; left: 0; right: 0;
+            font-size: 0.75rem; color: rgba(0,0,0,0.3); font-weight: bold;
+            text-align: center; width: 100%; z-index: 1; pointer-events: none;
+        }
         body.dark-mode .footer-credit { color: rgba(255,255,255,0.15); }
-        .final-gate { background: linear-gradient(45deg, #0f172a, #1e293b); border: 3px solid #c5a059; color: #c5a059; padding: 20px 40px; font-size: 1.5rem; border-radius: 50px; text-decoration: none; display: inline-block; margin-top: 25px; font-weight: 900; box-shadow: 0 0 20px rgba(197,160,89,0.4); animation: royalPulse 2s infinite; cursor: pointer; }
-        @keyframes royalPulse { 0% { transform: scale(1); box-shadow: 0 0 20px rgba(197,160,89,0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(197,160,89,0.7); } 100% { transform: scale(1); box-shadow: 0 0 20px rgba(197,160,89,0.4); } }
+
+        /* ============================================================
+           شاشات كبيرة — تحسينات المقاسات
+        ============================================================ */
+        @media (min-width: 1200px) {
+            .container { max-width: 1100px; }
+            .card { padding: clamp(18px, 3vh, 34px); border-radius: 28px; }
+            #q-text { font-size: clamp(1.3rem, 2.8vh, 2rem); }
+            .opt { padding: 14px 18px; font-size: clamp(0.95rem, 1.8vh, 1.15rem); }
+            .options-grid { gap: 14px; }
+            .team-box { padding: 10px; border-radius: 18px; }
+            .scoreboard { gap: 14px; margin-bottom: 14px; }
+            #timer { font-size: clamp(2rem, 7vh, 3.8rem); }
+            .admin-panel { min-height: 160px; gap: 22px; padding: 20px; }
+            .admin-group { min-width: 150px; padding: 14px 12px; }
+            .btn-admin { font-size: 1.05rem; padding: 10px 18px; }
+            .component-btn { padding: 14px 20px; font-size: 1.05rem; }
+            #answer-input { width: 180px; font-size: 1.25rem; padding: 18px; }
+            .header-top { max-width: 1300px; }
+            .modal-content { max-width: 680px; padding: 36px; }
+            .lifeline-icons span { width: 24px; height: 24px; font-size: 0.9rem; }
+        }
+        @media (min-width: 1600px) {
+            .container { max-width: 1400px; }
+            .card { border-radius: 34px; }
+            #q-text { font-size: clamp(1.6rem, 2.5vh, 2.4rem); }
+            .opt { font-size: clamp(1rem, 1.6vh, 1.3rem); padding: 18px; border-radius: 14px; }
+            .options-grid { gap: 18px; }
+            .scoreboard { gap: 18px; }
+            .admin-panel { min-height: 180px; }
+            #phase-label { font-size: 0.9rem; padding: 4px 18px; }
+            #target-announcer { font-size: 1.3rem; }
+        }
     </style>
 </head>
 
 <body>
-
 
 <div class="header-top">
     <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
@@ -130,6 +511,30 @@
         <div id="admin-score-controls" style="display:flex; gap:12px; flex-wrap:nowrap;"></div>
     </div>
 </div>
+
+<!-- ================================================================
+     MutationObserver: يضيف كلاس urgent للمؤقت عند ≤5 ثوانٍ
+     لا يلمس أي دالة موجودة
+================================================================ -->
+<script>
+(function() {
+    const observer = new MutationObserver(function() {
+        const timerEl = document.getElementById('timer');
+        if (!timerEl) return;
+        const val = parseInt(timerEl.innerText);
+        if (!isNaN(val) && val <= 5 && val > 0) {
+            timerEl.classList.add('urgent');
+        } else {
+            timerEl.classList.remove('urgent');
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const timerEl = document.getElementById('timer');
+        if (timerEl) observer.observe(timerEl, { childList: true, characterData: true, subtree: true });
+    });
+})();
+</script>
+
 <script>
 
 function refreshPage(btn) { btn.classList.add('refresh-active'); setTimeout(() => location.reload(), 500); }
@@ -356,7 +761,7 @@ function init() {
     votedOnThisQuestion = teamNames.map(() => false);
     const p = phasesData[currentPhase];
     currentModelAnswer  = "";
-    currentQuestionText = ""; // ← تصفير نص السؤال المحفوظ
+    currentQuestionText = "";
     rocketActive = -1;
     clearInterval(timer);
 
@@ -368,6 +773,7 @@ function init() {
     document.getElementById('answer-input').value              = '';
     document.getElementById('manual-answer-display').innerText = '...';
     document.getElementById('manual-answer-display').style.color = 'var(--moroccan-blue)';
+    document.getElementById('manual-answer-display').classList.remove('revealed');
     document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
 
     if (!p) return;
@@ -388,13 +794,9 @@ function init() {
         displayQuestion(p.questions[currentQ]);
 
     } else if (p.type === 'speed') {
-        /* ================================================
-           النمط 4: يعرض السؤال — يختفي بعد 8 ثوانٍ
-           الكشف يُعيد السؤال ويظهر الجواب معاً
-        ================================================ */
         const q = p.questions[currentQ];
         if (!q) return;
-        currentQuestionText = q.q;          // ← حفظ نص السؤال
+        currentQuestionText = q.q;
         currentModelAnswer  = q.a;
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('manual-zone').style.display = 'block';
@@ -463,9 +865,6 @@ function selectComponent(key) {
     startTimer(30);
 }
 
-/* ================================================
-   startTimer — النمط 4: السؤال يختفي عند انتهاء الوقت
-================================================ */
 function startTimer(s, isSpeed = false) {
     let tl = s;
     document.getElementById('timer').innerText = tl;
@@ -475,27 +874,26 @@ function startTimer(s, isSpeed = false) {
         if (tl <= 0) {
             clearInterval(timer);
             if (isSpeed) {
-                // ← السؤال يختفي — لا يظهر إلا عند الكشف
                 document.getElementById('q-text').innerText = '';
             }
         }
     }, 1000);
 }
 
-/* ================================================
-   reveal — النمط 4: يُعيد السؤال ويظهر الجواب معاً
-================================================ */
 function reveal() {
     clearInterval(timer);
     const p = phasesData[currentPhase];
 
     if (currentModelAnswer !== "") {
-        // إعادة نص السؤال إن كان مخفياً (النمط 4 أو الصناديق)
         if (currentQuestionText) {
             document.getElementById('q-text').innerText = currentQuestionText;
         }
-        document.getElementById('manual-answer-display').innerText   = currentModelAnswer;
-        document.getElementById('manual-answer-display').style.color = 'var(--success)';
+        const dispEl = document.getElementById('manual-answer-display');
+        dispEl.innerText   = currentModelAnswer;
+        dispEl.style.color = 'var(--success)';
+        dispEl.classList.remove('revealed');
+        void dispEl.offsetWidth; /* إعادة تشغيل الانيميشن */
+        dispEl.classList.add('revealed');
         document.getElementById('manual-zone').style.display = 'block';
 
     } else if (p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
@@ -506,36 +904,6 @@ function reveal() {
     }
 }
 
-function next() {
-    const p = phasesData[currentPhase];
-    if (!p) return;
-
-    currentQ++;
-    const limit = (p.type === 'target' || p.type === 'free')
-        ? phaseTurns.length
-        : (p.questions ? p.questions.length : 0);
-
-    if (currentQ >= limit) {
-        currentQ = 0;
-        currentPhase++;
-        if (currentPhase < phasesData.length) prepareTurns();
-    }
-
-    if (currentPhase >= phasesData.length) {
-        document.getElementById('timer').innerText = "🏁";
-        document.getElementById('finish-screen').style.display = 'block';
-    } else {
-        init();
-    }
-}
-
-function syncAnswer(v) {
-    document.getElementById('manual-answer-display').innerText = v || '...';
-}
-
-updateTeamInputs(4);
-
-/* ===== next() بعد الحقن ===== */
 function next() {
     const p = phasesData[currentPhase];
     if (!p) return;
@@ -568,7 +936,12 @@ function next() {
     }
 }
 
-</script>
+function syncAnswer(v) {
+    document.getElementById('manual-answer-display').innerText = v || '...';
+}
 
+updateTeamInputs(4);
+
+</script>
 </body>
 </html>

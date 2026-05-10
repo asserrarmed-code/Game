@@ -2,264 +2,314 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معترك الضاد - النهائي الكبير</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>النهائي الكبير: مُعترك الضاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #ffcc00;
-            --gold-glow: #ffae00;
-            --dark-bg: #0a0a0a;
-            --panel-bg: #1a1a1a;
-            --text-color: #ffffff;
+        *, *::before, *::after { box-sizing: border-box; }
+        :root { 
+            --final-gold: #c5a059; --final-black: #0f172a; --card-dark: #1e293b; 
+            --text-gold: #f3e5ab; --success: #10b981; --danger: #ef4444;
+        }
+        body { 
+            background-color: var(--final-black); background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            color: white; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; min-height: 100vh; 
+            display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-color);
-            font-family: 'Cairo', sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+        .main-header {
+            width: 100%; background: #020617; border-bottom: 4px solid var(--final-gold);
+            padding: 15px; display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
 
-        header {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 3px solid var(--gold);
-            background: linear-gradient(to bottom, #1a1a1a, #000);
-            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.2);
+        .center-banner { width: 100%; max-width: 650px; height: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+
+        #setup-screen {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 3rem;
-            color: var(--gold);
-            text-shadow: 0 0 15px var(--gold-glow);
+        .setup-card {
+            background: var(--card-dark); padding: 30px; border-radius: 20px; border: 3px solid var(--final-gold);
+            text-align: center; width: 95%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 10px;
         }
 
-        .final-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            padding: 40px;
-            flex-grow: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
+        .setup-card input {
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 2px solid var(--final-gold);
+            font-family: 'Cairo'; font-weight: bold; text-align: center; font-size: 1rem; background: rgba(255,255,255,0.05); color: white;
         }
 
-        .mode-button {
-            background: var(--panel-bg);
-            border: 2px solid #333;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mode-button:hover {
-            border-color: var(--gold);
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
-        }
-
-        .mode-button i { font-size: 4rem; margin-bottom: 15px; }
-        .mode-button h2 { margin: 0; font-size: 2rem; color: var(--gold); }
-        .mode-button p { margin: 10px 0 0; color: #aaa; }
-
-        /* نافذة السؤال */
-        .question-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .question-box {
-            background: #fff;
-            color: #000;
-            width: 85%;
-            max-width: 900px;
-            padding: 40px;
-            border-radius: 30px;
-            text-align: center;
-            position: relative;
-            border: 8px solid var(--gold);
-        }
-
-        .q-text { font-size: 2.5rem; font-weight: 900; margin-bottom: 30px; }
-        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .option {
-            background: #f0f0f0;
-            padding: 20px;
-            border-radius: 15px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .option:hover { background: var(--gold); color: #000; }
-
-        .close-btn {
-            position: absolute;
-            top: -25px;
-            right: -25px;
-            background: #ff4444;
-            color: white;
-            border: 4px solid white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 2rem;
-            cursor: pointer;
+        .page-title {
+            text-align: center; font-size: 2.2rem; font-weight: 900; color: var(--final-gold);
+            text-shadow: 0 0 15px rgba(197, 160, 89, 0.5); margin: 20px 0; letter-spacing: 2px;
         }
 
         .footer-signature {
-            background: white;
-            color: #000;
-            text-align: center;
-            padding: 15px;
-            font-weight: 900;
-            font-size: 1.2rem;
-            border-top: 5px solid #ff4444;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            width: 100%; text-align: center; padding: 20px 10px; font-size: 0.75rem;
+            color: rgba(197, 160, 89, 0.6); font-weight: bold; margin-top: auto;
         }
 
-        .timer-circle {
-            font-size: 3rem;
-            font-weight: 900;
-            color: #ff4444;
-            margin-top: 20px;
+        .hide-header .main-header { display: none; }
+        
+        .container { 
+            width: 95%; max-width: 850px; margin: auto; flex: 1; display: none; 
+            flex-direction: column; justify-content: center; padding-bottom: 160px; 
+        }
+        
+        .admin-panel { 
+            position: fixed; bottom: 0; left: 0; right: 0; background: #020617; 
+            padding: 10px; border-top: 5px solid var(--final-gold); 
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; 
+            gap: 15px; z-index: 10000; min-height: 140px; 
+        }
+
+        .icon-btn { background: var(--card-dark); border: 2px solid var(--final-gold); color: var(--final-gold); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        
+        .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .team-box { background: #0f172a; padding: 15px; border-radius: 15px; border: 3px solid #334155; text-align: center; color: var(--text-gold); }
+        .active-team { border-color: var(--final-gold); box-shadow: 0 0 20px var(--final-gold); }
+        
+        .card { background: var(--card-dark); padding: 25px; border-radius: 20px; border-top: 6px solid var(--final-gold); text-align: center; min-height: 280px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .btn-admin { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: 900; }
+        
+        .cat-badge { background: #020617; color: var(--final-gold); padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; margin-right: 5px; border: 1px solid var(--final-gold); }
+
+        /* تعديل النمط لضمان ظهور الدليل من البداية عمودياً */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 40000; 
+            inset: 0; 
+            background: rgba(0,0,0,0.9); 
+            align-items: flex-start; /* التعديل هنا لتبدأ من الأعلى */
+            justify-content: center; 
+            overflow-y: auto; 
+            padding: 20px; 
+        }
+
+        .modal-content { 
+            background: var(--card-dark); 
+            padding: 30px; 
+            border-radius: 20px; 
+            border: 3px solid var(--final-gold); 
+            width: 100%; 
+            max-width: 800px; 
+            text-align: right; 
+            line-height: 1.6; 
+            margin-top: 20px; 
+            margin-bottom: 20px;
         }
     </style>
 </head>
-<body>
+<body id="main-body">
 
-    <header>
-        <h1>🏆 النهائي الكبير 🏆</h1>
+    <header class="main-header" id="top-banner">
+        <img src="banner-final.png" class="center-banner" alt="بانر النهائي">
     </header>
 
-    <div class="final-grid">
-        <div class="mode-button" onclick="launchGame('moajaha')">
-            <i>⚔️</i>
-            <h2>المواجهة الموجهة</h2>
-            <p>تحدي الرأس بالرأس</p>
+    <div id="setup-screen">
+        <div style="display: flex; gap: 15px; margin: 15px 0;">
+            <button class="icon-btn" onclick="window.location.href='index.html'">🏠</button>
+            <button class="icon-btn" onclick="toggleModal(true)">📖 الدليل</button>
         </div>
-        <div class="mode-button" onclick="launchGame('mazad')">
-            <i>💰</i>
-            <h2>جولة المزاد</h2>
-            <p>من يراهن أكثر؟</p>
+        <div class="setup-card">
+            <h2 style="color:var(--final-gold); margin-top: 0;">⚔️ مُعترك الضاد: النهائي ⚔️</h2>
+            <input type="text" id="name1" placeholder="اسم المجموعة الأولى">
+            <input type="text" id="name2" placeholder="اسم المجموعة الثانية">
+            <button class="btn-admin" style="background:var(--final-gold); color:black; width:100%; margin-top:10px; font-size:1.1rem;" onclick="startFinal()">بدء المعترك 🚀</button>
         </div>
-        <div class="mode-button" onclick="launchGame('tahadi')">
-            <i>🔥</i>
-            <h2>تحدي النخبة</h2>
-            <p>أسئلة للمتفوقين فقط</p>
+        <div class="footer-signature">من إعداد وتصميم الأستاذ محمد أسرار -مديرية مراكش-</div>
+    </div>
+
+    <div id="quiz-screen" class="container">
+        <div style="text-align: center; margin-bottom: 10px;">
+            <div class="page-title">🏆 النهائي الكبير 🏆</div>
+            <button class="icon-btn" onclick="toggleModal(true)" style="margin: 0 auto;">📖</button>
         </div>
-        <div class="mode-button" onclick="launchGame('hasm')">
-            <i>🏁</i>
-            <h2>جولة الحسم</h2>
-            <p>تحديد البطل النهائي</p>
+        <div id="dynamic-scoreboard" class="scoreboard"></div>
+        <div class="card" id="main-card">
+            <div id="challenge-alert" style="color: var(--final-gold); font-weight: 900; display: none; margin-bottom: 15px; text-align: center;"></div>
+            <div id="phase-label" style="background:var(--final-gold); color:black; padding:4px 15px; border-radius:50px; font-size:0.8rem; display:inline-block; margin: 0 auto 10px auto; font-weight:900;"></div>
+            <div id="timer" style="font-size: 3.2rem; color: var(--danger); font-weight: 900;">--</div>
+            <div id="q-text" style="font-size: 1.6rem; font-family: 'Amiri'; font-weight: bold; padding: 10px;">يتم التحضير...</div>
+            <div id="choice-container" style="display:none; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;"></div>
+            <div class="answer-box" id="manual-zone" style="display:none; margin-top:15px; padding:15px; border-radius:12px; background:rgba(197,160,89,0.1); border:1px solid var(--final-gold);">
+                <div id="manual-answer-display" style="color: var(--final-gold); font-size: 1.3rem; font-weight: 900; text-align: center;">...</div>
+            </div>
+        </div>
+        <div class="footer-signature">من إعداد وتصميم الأستاذ محمد أسرار -مديرية مراكش-</div>
+
+        <div class="admin-panel" id="admin-p">
+            <div style="display: flex; flex-direction: column; gap: 5px; border-left: 2px solid #334155; padding-left: 10px;">
+                <button class="btn-admin" style="background:var(--danger); color:white; font-size:0.7rem;" onclick="location.href='index.html'">🏠 جديد</button>
+                <button class="btn-admin" style="background:#475569; color:white; font-size:0.7rem;" onclick="location.reload()">↩️ إعادة</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                <input type="text" id="answer-input" style="padding:8px; width:120px; border-radius:8px; text-align:center; font-weight:bold;" placeholder="الجواب...">
+                <div style="display: flex; gap: 5px;">
+                    <button class="btn-admin" style="background:var(--success); color:white" onclick="reveal()">✅ كشف</button>
+                    <button class="btn-admin" style="background:var(--final-gold); color:black" onclick="next()">التالي ➡️</button>
+                </div>
+            </div>
+            <div id="admin-score-controls" style="display:flex; gap:8px;"></div>
         </div>
     </div>
 
-    <div id="overlay" class="question-overlay">
-        <div class="question-box">
-            <button class="close-btn" onclick="hideQ()">×</button>
-            <div id="q-content" class="q-text"></div>
-            <div id="options-box" class="options-container"></div>
-            <div id="timer" class="timer-circle"></div>
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--final-gold); border-bottom: 2px solid var(--final-gold); padding-bottom: 10px;">🏆 دليل معترك الضاد: النهائي الكبير 🏆</h3>
+            <div style="font-size: 0.95rem; color: #e2e8f0;">
+                <p><b>مقدمة:</b><br>
+                أهلاً بكم في المرحلة الختامية من معترك الضاد، حيث يتنافس نوابغ اللغة العربية لإثبات جدارتهم. لضمان سير المسابقة في أجواء من العدالة والمرح، يرجى الالتزام بالقواعد التالية:</p>
+                
+                <p><b>1️⃣ نمط التحدي الفردي (فرسان الضاد)</b><br>
+                القاعدة: يتم اختيار تلميذ واحد من كل مجموعة من طرف المجموعة المنافسة للإجابة على سؤال خاص به.<br>
+                الممنوعات: يمنع منعاً باتاً تدخل بقية أعضاء المجموعة أو التشاور.<br>
+                الهدف: قياس المستوى الفردي والتركيز العالي لكل فارس.</p>
+
+                <p><b>2️⃣ نمط المواجهة الموجهة</b><br>
+                القاعدة: يطرح السؤال على مجموعة محددة، ولهم الحق في التشاور السريع قبل الإجابة.<br>
+                تبادل الأدوار: إذا أخفقت المجموعة في الإجابة، قد ينتقل الدور للمجموعة المنافسة (حسب تقدير الأستاذ).</p>
+
+                <p><b>3️⃣ نمط الاختيار الحر (مخزون النوابغ)</b><br>
+                القاعدة: تظهر أمامكم تصنيفات (تراكيب، صرف، إملاء). لكل مجموعة الحق في اختيار المجال الذي تبرع فيه.<br>
+                الاستراتيجية: اختيار الأسئلة الصعبة قد يمنحكم نقاطاً أكثر، لكنه يحمل مخاطرة أكبر!</p>
+
+                <p><b>4️⃣ جولة الحسم (السرعة القاتلة)</b><br>
+                القاعدة: يظهر السؤال للجميع، والمجموعة التي تضغط على زر الإجابة أولاً هي من تجيب.<br>
+                التوقيت: لديكم 8 ثوانٍ فقط للتفكير والإجابة. السرعة والدقة هما مفتاح الفوز هنا.</p>
+
+                <p><b>⚖️ قوانين التحكيم (سلطة الأستاذ)</b><br>
+                احتساب النقاط: * الإجابة الصحيحة: +10 نقاط.<br>
+                الإجابة الخاطئة أو تجاوز الوقت: -5 نقاط.<br>
+                الروح الرياضية: أي شغب أو تشويش على الفريق الخصم قد يؤدي لخصم نقاط من الفريق المشاغب.<br>
+                قرار الأستاذ: كلمة الأستاذ هي الفيصل والنهائية في قبول أو رفض الإجابات التي تحتمل التأويل.</p>
+            </div>
+            <button class="btn-admin" style="background:var(--success); color:white; width: 100%; margin-top: 15px;" onclick="toggleModal(false)">موافق.. لننطلق!</button>
         </div>
     </div>
 
-    <div class="footer-signature">
-        تصميم وإعداد الأستاذ: محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش
-    </div>
+<script>
+    function startFinal() {
+        teamNames = [document.getElementById('name1').value || "المجموعة 1", document.getElementById('name2').value || "المجموعة 2"];
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'flex';
+        document.getElementById('main-body').classList.add('hide-header');
+        renderScoreboard();
+        init();
+    }
 
-    <script>
-        // مخزن الأسئلة الافتراضي (إذا لم يتم الرفع من الأدمن)
-        let finalData = {
-            moajaha: [{q: "ما هو جمع 'حليب'؟", a: ["أحلبة", "حلبان", "لا جمع له", "حلب"], c: 2}],
-            mazad: [{q: "متى تم تأسيس جامعة القرويين؟", a: ["859م", "900م", "1050م", "750م"], c: 0}],
-            tahadi: [{q: "ما إعراب 'كلا' في: جاء الرجلان كلاهما؟", a: ["توكيد معنوي", "فاعل", "بدل", "مبتدأ ثانٍ"], c: 0}],
-            hasm: [{q: "من هو مؤلف كتاب 'البيان والتبيين'؟", a: ["الجاحظ", "ابن المقفع", "المتنبي", "طه حسين"], c: 0}]
-        };
+    let currentPhase = 0, currentQ = 0, timer, scores = [0,0], teamNames = [];
+    let votedOnThisQuestion = [false, false];
+    let selectionCount = [0, 0];
+    let activeTeam = Math.floor(Math.random() * 2);
 
-        // دالة جلب الأسئلة من الأدمن (الـ 17 سؤال المخصصة)
-        function fetchQuestionsFromAdmin() {
-            const raw = localStorage.getItem('final_questions');
-            if (raw) {
-                const data = JSON.parse(raw);
-                // تصفية الأسئلة حسب النوع
-                const filtered = { moajaha: [], mazad: [], tahadi: [], hasm: [] };
-                data.forEach(item => {
-                    if (filtered[item.type]) filtered[item.type].push(item);
-                });
-                // تحديث البيانات إذا كانت موجودة
-                if (filtered.moajaha.length > 0) finalData = filtered;
-            }
+    const finalPhases = [
+        { name: "1. نمط التحدي الفردي", type: "individual", time: 20, questions: [{q: "أعرب نورٌ إعراباً تاماً: (العلمُ نورٌ يُستضاءُ بهِ).", a: "خبر المبتدأ مرفوع بالضمة"}, {q: "حول للمثنى المؤنث: (هو يَسعى لِـنيلِ الجائزةِ).", a: "هما تسعيانِ لنيلِ الجائزةِ"}, {q: "علل رسم الهمزة في: **'لُؤلُؤ'**.", a: "الأولى: ساكنة بعد ضم / الثانية: متطرفة مسبوقة بضم"}]},
+        { name: "2. نمط المواجهة الموجهة", type: "target", time: 20, questions: [{q: "إعراب **'أبَويك'** في: (أطعْ أبَويك نيلًا لرضا الله)؟", a: "مفعول به منصوب بالياء"}, {q: "اجعل **(اجتهاد)** مفعولاً مطلقاً **لبيان النوع**.", a: "اجتهد اجتهاد المتفوقين"}, {q: "صغ اسم التفضيل من **'آمنَ'**.", a: "أكثرُ إيماناً"}, {q: "صغ اسم الآلة من **'سار'** و **'ذاع'**.", a: "سيارة / مذياع"}]},
+        { name: "3. نمط الاختيار الحر", type: "choice", time: 25, categories: {"تراكيب": [{q: "أعرب **'كلتا'**: (كلتا الشجرتينِ مثمرتانِ).", a: "مبتدأ مرفوع بالضمة المقدرة"}, {q: "استخرج المفعول المطلق: (ورتلِ القرآنَ ترتيلاً).", a: "ترتيلاً"}], "صرف": [{q: "صغ المصدر: (زكّى - تزلزل - استقام).", a: "تزكية - تزلزل - استقامة"}, {q: "اسم الآلة من (قرض) و (برد).", a: "مقراض - مبرد"}], "إملاء": [{q: "الفرق بين: (يحيى) و (يحيا)؟", a: "يحيى: اسم / يحيا: فعل"}, {q: "لماذا كتبت التاء مربوطة في 'رعاة'؟", a: "جمع تكسير ينتهي بتاء قبلها ألف"}]}},
+        { name: "4. جولة الحسم (السرعة)", type: "speed", time: 8, questions: [{q: "صرّف (وقى) في الأمر مع (أنتِ).", a: "قِـي"}, {q: "أعرب الظرف في: (رأيتُ القائدَ فوقَ المنصةِ).", a: "شبه جملة في محل نصب حال"}, {q: "أدخل (كان) على: (أبوك ذو علمٍ).", a: "كان أبوك ذا علمٍ"}, {q: "أداة شرط جازمة: (تدرسون بجدّ تنجحون).", a: "إن تدرسوا بجد تنجحوا"}]}
+    ];
+
+    function renderScoreboard() {
+        const sb = document.getElementById('dynamic-scoreboard');
+        const ctrl = document.getElementById('admin-score-controls');
+        sb.innerHTML = ''; ctrl.innerHTML = '';
+        teamNames.forEach((n, i) => {
+            sb.innerHTML += `<div class="team-box" id="t-card-${i}"><span id="s-${i}" style="font-size:2rem; font-weight:900;">${scores[i]}</span><br><div style="font-size:0.8rem;">${n}</div></div>`;
+            ctrl.innerHTML += `<div style="text-align:center; background:#1e293b; padding:5px; border-radius:10px; border:1px solid var(--final-gold);"><div style="display:flex; gap:4px;"><button class="btn-admin" style="background:var(--success); color:white; padding:4px;" onclick="modifyScore(${i}, 10)">+10</button><button class="btn-admin" style="background:var(--danger); color:white; padding:4px;" onclick="modifyScore(${i}, -5)">-5</button></div></div>`;
+        });
+    }
+
+    function modifyScore(i, v) {
+        if(votedOnThisQuestion[i]) return;
+        scores[i] += v; document.getElementById(`s-${i}`).innerText = scores[i];
+        votedOnThisQuestion[i] = true; document.getElementById(`t-card-${i}`).style.opacity = "0.4";
+    }
+
+    function init() {
+        votedOnThisQuestion = [false, false];
+        document.querySelectorAll('.team-box').forEach(b => { b.style.opacity = "1"; b.classList.remove('active-team'); });
+        const p = finalPhases[currentPhase];
+        const alertBox = document.getElementById('challenge-alert');
+        const qText = document.getElementById('q-text');
+        qText.style.display = 'block'; document.getElementById('phase-label').innerText = p.name;
+        document.getElementById('manual-zone').style.display = "none"; document.getElementById('choice-container').style.display = "none";
+        clearInterval(timer); document.getElementById('timer').innerText = "--";
+
+        if (p.type === 'choice') {
+            qText.innerText = "اختر المكون المناسب:";
+            alertBox.style.display = "block"; alertBox.innerText = `🎲 الدور لـ: ${teamNames[activeTeam]}`;
+            document.getElementById(`t-card-${activeTeam}`).classList.add('active-team');
+            renderCategories(); 
+            document.getElementById('choice-container').style.display = "grid";
+            startTimer(25, false); // يبدأ العداد فور ظهور اسم المجموعة في النمط 3
+        } else {
+            const q = p.questions[currentQ]; qText.innerText = q.q;
+            alertBox.style.display = "block";
+            if (p.type === 'target') {
+                const tid = currentQ % 2; alertBox.innerText = `🎯 الدور لـ: ${teamNames[tid]}`;
+                document.getElementById(`t-card-${tid}`).classList.add('active-team');
+            } else if (p.type === 'individual') alertBox.innerText = "⚔️ تحدي الفرسان ⚔️";
+            startTimer(p.time, p.type === 'speed');
         }
+    }
 
-        window.onload = fetchQuestionsFromAdmin;
-
-        let interval;
-        function launchGame(mode) {
-            const list = finalData[mode];
-            if (!list || list.length === 0) return alert("لا توجد أسئلة!");
+    function renderCategories() {
+        const container = document.getElementById('choice-container'); container.innerHTML = '';
+        Object.keys(finalPhases[2].categories).forEach(cat => {
+            const count = finalPhases[2].categories[cat].length;
+            const btn = document.createElement('button'); btn.className = 'btn-admin'; 
+            btn.style.background = count > 0 ? 'var(--final-gold)' : '#334155';
+            btn.style.position = 'relative';
+            btn.innerHTML = `${cat} <span class="cat-badge">${count}</span>`; // العداد الصغير للمخزون
             
-            const qObj = list[Math.floor(Math.random() * list.length)];
-            document.getElementById('q-content').innerText = qObj.q;
-            const optBox = document.getElementById('options-box');
-            optBox.innerHTML = '';
-            
-            qObj.a.forEach((txt, i) => {
-                const div = document.createElement('div');
-                div.className = 'option';
-                div.innerText = txt;
-                div.onclick = () => {
-                    if(i === qObj.c) alert("✅ إجابة صحيحة!");
-                    else alert("❌ إجابة خاطئة!");
-                    hideQ();
+            if (count > 0) {
+                btn.onclick = () => {
+                    const qObj = finalPhases[2].categories[cat].shift();
+                    document.getElementById('choice-container').style.display = "none";
+                    document.getElementById('q-text').innerText = `[${cat}] ${qObj.q}`;
+                    finalPhases[2].currentA = qObj.a;
+                    selectionCount[activeTeam]++; activeTeam = 1 - activeTeam;
                 };
-                optBox.appendChild(div);
-            });
+            } else {
+                btn.disabled = true; btn.style.opacity = "0.5";
+            }
+            container.appendChild(btn);
+        });
+    }
 
-            document.getElementById('overlay').style.display = 'flex';
-            startClock(30);
-        }
+    function startTimer(s, shouldHide) {
+        let tl = s; document.getElementById('timer').innerText = tl;
+        timer = setInterval(() => { 
+            tl--; document.getElementById('timer').innerText = tl;
+            if(tl <= 0) { clearInterval(timer); if(shouldHide) document.getElementById('q-text').style.display = 'none'; }
+        }, 1000);
+    }
 
-        function startClock(sec) {
-            let t = sec;
-            const display = document.getElementById('timer');
-            display.innerText = t;
-            clearInterval(interval);
-            interval = setInterval(() => {
-                t--;
-                display.innerText = t;
-                if(t <= 0) {
-                    clearInterval(interval);
-                    alert("انتهى الوقت!");
-                    hideQ();
-                }
-            }, 1000);
-        }
+    function reveal() {
+        clearInterval(timer); 
+        const p = finalPhases[currentPhase];
+        const qText = document.getElementById('q-text');
+        if(p.type === 'speed') { qText.style.display = 'block'; document.getElementById('manual-answer-display').innerText = p.questions[currentQ].a; }
+        else if (p.type === 'choice') { document.getElementById('manual-answer-display').innerText = finalPhases[2].currentA || "برجاء اختيار سؤال أولاً"; }
+        else { document.getElementById('manual-answer-display').innerText = p.questions[currentQ].a; }
+        document.getElementById('manual-zone').style.display = "block";
+    }
 
-        function hideQ() {
-            document.getElementById('overlay').style.display = 'none';
-            clearInterval(interval);
+    function next() {
+        const p = finalPhases[currentPhase];
+        if (p.type === 'choice') {
+            if (selectionCount[0] >= 3 && selectionCount[1] >= 3) { currentPhase++; currentQ = 0; init(); } else { init(); }
+        } else {
+            currentQ++; if(currentQ >= (p.questions ? p.questions.length : 0)) { currentQ = 0; currentPhase++; }
+            if(currentPhase >= finalPhases.length) { 
+                document.getElementById('main-card').innerHTML = `<div style="color:var(--final-gold); font-size:1.5rem;">🏆 تم الانتهاء 🏆</div>`; 
+                document.getElementById('phase-label').innerText = "انتهى المعترك";
+            } else init();
         }
-    </script>
+    }
+
+    function toggleModal(show) { document.getElementById('guideModal').style.display = show ? 'flex' : 'none'; }
+</script>
 </body>
 </html>

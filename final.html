@@ -608,15 +608,42 @@
     }
 
     function reveal() {
-        clearInterval(timer);
-        const p = finalPhases[currentPhase];
-        const dispEl = document.getElementById('manual-answer-display');
-        if(p.type === 'speed') { document.getElementById('q-text').style.display = 'block'; dispEl.innerText = p.questions[currentQ].a; }
-        else if (p.type === 'choice') { dispEl.innerText = finalPhases[2].currentA || "برجاء اختيار سؤال أولاً"; }
-        else { dispEl.innerText = p.questions[currentQ].a; }
-        dispEl.classList.remove('revealed'); void dispEl.offsetWidth; dispEl.classList.add('revealed');
-        document.getElementById('manual-zone').style.display = "block";
+
+    clearInterval(timer);
+
+    const p = finalPhases[currentPhase];
+
+    const dispEl = document.getElementById('manual-answer-display');
+
+    if(p.type === 'speed') {
+
+        document.getElementById('q-text').style.display = 'block';
+
+        dispEl.innerText = p.questions[currentQ].a;
+
     }
+
+    else if (p.type === 'choice') {
+
+        dispEl.innerText =
+            finalPhases[2].currentA || "برجاء اختيار سؤال أولاً";
+
+    }
+
+    else {
+
+        dispEl.innerText = p.questions[currentQ].a;
+    }
+
+    /* إعادة تشغيل الأنيميشن */
+    dispEl.classList.remove('revealed');
+
+    void dispEl.offsetWidth;
+
+    dispEl.classList.add('revealed');
+
+    document.getElementById('manual-zone').style.display = "block";
+}
 
     function next() {
         const p = finalPhases[currentPhase];

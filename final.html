@@ -3,102 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>النهائي الكبير | معترك الضاد</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <title>معترك الضاد - النهائي الكبير</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --moroccan-blue: #006847; --moroccan-gold: #c5a059; --deep-red: #8b0000; --bg-light: #f4f1ea; }
-        body { 
-            background-color: var(--bg-light); font-family: 'Cairo', sans-serif; margin: 0; overflow: hidden;
-            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --dark: #0f0f0f;
+            --gold: #ffd700;
         }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 30px; background: white; border-bottom: 4px solid var(--moroccan-gold); }
-        .logo { width: 60px; height: auto; }
-        .container { max-width: 900px; margin: 40px auto; text-align: center; padding: 20px; }
-        .final-card { background: white; border-radius: 30px; padding: 40px; border-top: 8px solid var(--moroccan-blue); box-shadow: 0 15px 40px rgba(0,0,0,0.1); position: relative; }
-        #q-text { font-family: 'Amiri', serif; font-size: clamp(1.5rem, 5vh, 2.5rem); color: var(--moroccan-blue); margin-bottom: 30px; line-height: 1.4; }
-        #a-text { font-size: 2rem; color: #10b981; font-weight: 900; display: none; margin-top: 20px; padding: 15px; border: 3px dashed #10b981; border-radius: 15px; }
-        .controls { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
-        .btn { padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-family: 'Cairo'; font-weight: 900; font-size: 1.1rem; transition: 0.3s; }
-        .btn-reveal { background: var(--moroccan-gold); color: white; }
-        .btn-next { background: var(--moroccan-blue); color: white; }
-        .btn-home { background: var(--deep-red); color: white; position: fixed; top: 110px; right: 20px; padding: 10px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-        .footer { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: bold; }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: radial-gradient(circle at center, #1a2a6c, #000000);
+            color: white;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* رأس الصفحة */
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid var(--gold);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* منطقة المحتوى */
+        .main-stage {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card:hover {
+            transform: scale(1.05) translateY(-10px);
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+        }
+
+        .mode-card i { font-size: 3rem; margin-bottom: 20px; display: block; }
+        .mode-card h2 { margin: 0; font-size: 1.8rem; color: #fff; }
+        .mode-card p { font-size: 1rem; color: #ccc; margin-top: 10px; }
+
+        /* نافذة الأسئلة */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 800px;
+            background: #fff;
+            color: #333;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .question-text { font-size: 2.2rem; font-weight: 900; margin-bottom: 30px; line-height: 1.4; color: var(--primary); }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .option-btn {
+            padding: 20px;
+            font-size: 1.3rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            transition: 0.3s;
+        }
+        .option-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .btn-close {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 50px;
+            height: 50px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* التوقيع */
+        .footer-signature {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a2a6c;
+            padding: 12px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 1.1rem;
+            border-top: 4px solid var(--secondary);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .timer {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--secondary);
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <img src="logo.png" class="logo" alt="Logo">
-        <h1 style="color: var(--moroccan-blue); margin: 0; font-size: 1.5rem;">⚔️ جولة الحسم النهائي ⚔️</h1>
-        <img src="logo-cup.png" class="logo" alt="Cup Logo">
-    </header>
+    <div class="header">
+        <h1>النهائي الكبير: حسم الأبطال</h1>
+    </div>
 
-    <a href="index.html" class="btn-home" title="العودة للرئيسية">🏠</a>
-
-    <div class="container">
-        <div class="final-card">
-            <div id="q-counter" style="color: var(--moroccan-gold); font-weight: bold; margin-bottom: 10px;">السؤال 1 / 4</div>
-            <div id="q-text">جاري تحميل أسئلة الحسم...</div>
-            <div id="a-text"></div>
-            
-            <div class="controls">
-                <button class="btn btn-reveal" onclick="revealAnswer()">👁️ كشف الإجابة</button>
-                <button class="btn btn-next" onclick="nextQuestion()">السؤال التالي ➡️</button>
+    <div class="main-stage">
+        <div class="modes-grid">
+            <div class="mode-card" onclick="startMode('moajaha')">
+                <i>⚔️</i>
+                <h2>جولة المواجهة</h2>
+                <p>تحدي الرأس لراس - سرعة ودقة</p>
+            </div>
+            <div class="mode-card" onclick="startMode('mazad')">
+                <i>💰</i>
+                <h2>جولة المزاد</h2>
+                <p>راهن بنقاطك لتنتزع السؤال</p>
+            </div>
+            <div class="mode-card" onclick="startMode('tahadi')">
+                <i>🔥</i>
+                <h2>جولة التحدي</h2>
+                <p>أسئلة النخبة لرفع الرصيد</p>
+            </div>
+            <div class="mode-card" onclick="startMode('hasm')">
+                <i>🏆</i>
+                <h2>جولة الحسم</h2>
+                <p>السؤال الفاصل لتحديد البطل</p>
             </div>
         </div>
     </div>
 
-    <footer class="footer">
-        من إعداد وتصميم الأستاذ محمد أسرار -مدرسة ميمونة أم المؤمنين-مديرية مراكش-
-    </footer>
+    <div id="qModal" class="modal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal()">×</button>
+            <div id="qType" style="color: var(--secondary); font-weight: bold; margin-bottom: 10px;"></div>
+            <div id="qText" class="question-text"></div>
+            <div id="options" class="options-grid"></div>
+            <div id="timerDisplay" class="timer"></div>
+        </div>
+    </div>
 
-<script>
-    // 1. استرجاع البيانات المحدثة أو استخدام الافتراضية
-    const savedData = localStorage.getItem('moatark_questions');
-    const questionsData = savedData ? JSON.parse(savedData).phase4 : [
-        {q: "ما هو الوزن الصرفي الصحيح لكلمة 'صِـلَة'؟", a: "عِـلَة"},
-        {q: "حوّل الفعل 'رأى' إلى فعل أمر للمفرد المذكر.", a: "رَ"},
-        {q: "ما هو جمع كلمة 'دَلْو' على وزن 'أَفْعُل'؟", a: "أَدْلٍ"},
-        {q: "حوّل الجملة للمثنى المؤنث: (إنَّ التلميذةَ ذكيةٌ).", a: "إنَّ التلميذتَيْنِ ذكيةٌ"}
-    ];
+    <div class="footer-signature">
+        إعداد وتصميم الأستاذ: محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش
+    </div>
 
-    let currentIdx = 0;
+    <script>
+        // الأسئلة الافتراضية في حال عدم وجود أسئلة من الأدمن
+        let currentQuestions = {
+            moajaha: [{q: "ما هو الجمع الصحيح لكلمة 'امرأة'؟", a: ["نساء", "حريم", "نساءات", "مرايا"], c: 0}],
+            mazad: [{q: "كم عدد السور المدنية في القرآن الكريم؟", a: ["28", "86", "114", "30"], c: 0}],
+            tahadi: [{q: "أعرب كلمة 'مخلصاً' في جملة: 'عاش الجندي مخلصاً'", a: ["حال", "تمييز", "نعت", "مفعول به"], c: 0}],
+            hasm: [{q: "من هو واضع علم العروض؟", a: ["الخليل بن أحمد", "سيبويه", "أبو الأسود الدؤلي", "الفراهيدي"], c: 0}]
+        };
 
-    function init() {
-        if (!questionsData || questionsData.length === 0) {
-            document.getElementById('q-text').innerText = "لا توجد أسئلة حسم متوفرة.";
-            return;
-        }
-        showQuestion();
-    }
+        // دالة جلب الأسئلة من الذاكرة المحلية
+        function loadQuestions() {
+            const saved = localStorage.getItem('final_questions');
+            if (saved) {
+                const data = JSON.parse(saved);
+                // إعادة تقسيم الأسئلة الـ 17 حسب النوع
+                const formatted = { moajaha: [], mazad: [], tahadi: [], hasm: [] };
+                
+                data.forEach(item => {
+                    if (formatted[item.type]) {
+                        formatted[item.type].push(item);
+                    }
+                });
 
-    function showQuestion() {
-        const qObj = questionsData[currentIdx];
-        document.getElementById('q-counter').innerText = `السؤال ${currentIdx + 1} / ${questionsData.length}`;
-        document.getElementById('q-text').innerText = qObj.q;
-        document.getElementById('a-text').innerText = qObj.a;
-        document.getElementById('a-text').style.display = 'none';
-    }
-
-    function revealAnswer() {
-        document.getElementById('a-text').style.display = 'block';
-    }
-
-    function nextQuestion() {
-        currentIdx++;
-        if (currentIdx >= questionsData.length) {
-            if (confirm("انتهت أسئلة الحسم. هل تريد البدء من جديد؟")) {
-                currentIdx = 0;
-                showQuestion();
-            } else {
-                location.href = 'index.html';
+                // تحديث الأسئلة إذا كان هناك محتوى
+                if (formatted.moajaha.length > 0) currentQuestions = formatted;
+                console.log("تم تحميل أسئلة النهائي بنجاح");
             }
-        } else {
-            showQuestion();
         }
-    }
 
-    init();
-</script>
+        window.onload = loadQuestions;
+
+        function startMode(mode) {
+            const modal = document.getElementById('qModal');
+            const qText = document.getElementById('qText');
+            const options = document.getElementById('options');
+            const qType = document.getElementById('qType');
+            
+            const questions = currentQuestions[mode];
+            if (!questions || questions.length === 0) {
+                alert("لا توجد أسئلة متوفرة لهذا النمط حالياً");
+                return;
+            }
+
+            const randomQ = questions[Math.floor(Math.random() * questions.length)];
+            
+            modal.style.display = "flex";
+            qType.innerText = getModeName(mode);
+            qText.innerText = randomQ.q;
+            options.innerHTML = '';
+
+            randomQ.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, randomQ.c);
+                options.appendChild(btn);
+            });
+
+            startTimer(30);
+        }
+
+        function getModeName(mode) {
+            const names = { moajaha: "⚔️ جولة المواجهة", mazad: "💰 جولة المزاد", tahadi: "🔥 جولة التحدي", hasm: "🏆 جولة الحسم" };
+            return names[mode];
+        }
+
+        let timerInterval;
+        function startTimer(seconds) {
+            const display = document.getElementById('timerDisplay');
+            let timeLeft = seconds;
+            display.innerText = timeLeft;
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                display.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("انتهى الوقت!");
+                    closeModal();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selected, correct) {
+            clearInterval(timerInterval);
+            if (selected === correct) {
+                alert("إجابة صحيحة! أحسنت");
+            } else {
+                alert("إجابة خاطئة، حظاً أوفر");
+            }
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('qModal').style.display = "none";
+            clearInterval(timerInterval);
+        }
+    </script>
 </body>
 </html>
+

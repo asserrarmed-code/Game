@@ -6,44 +6,48 @@
     <title>لوحة التحكم الاحترافية | معترك الضاد</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; }
+        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; --final-teal: #0e7490; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; padding-bottom: 40px; }
         .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .header-logo { width: 60px; height: auto; }
         .main-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
         .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; position: relative; }
-        .ai-section { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
+        .ai-section  { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
+        .fin-section { background: linear-gradient(135deg, #ecfeff, #cffafe); border: 2px dashed var(--final-teal); }
         .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .input-box { display: flex; flex-direction: column; gap: 5px; text-align: right; }
-        .input-box label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; }
+        .input-box label { font-weight: bold; font-size: 0.85rem; }
+        .input-box.purple label { color: var(--ai-purple); }
+        .input-box.teal   label { color: var(--final-teal); }
         input, select, textarea { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; font-size: 1rem; }
-
         .levels-box { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .level-chip { display: flex; align-items: center; gap: 5px; }
         .level-chip input[type="checkbox"] { display: none; }
-        .level-chip label {
-            padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;
-            border: 2px solid var(--ai-purple); color: var(--ai-purple);
-            cursor: pointer; transition: 0.2s; user-select: none; background: white;
-        }
-        .level-chip input[type="checkbox"]:checked + label {
-            background: var(--ai-purple); color: white;
-        }
-        .levels-label { font-weight: bold; color: var(--ai-purple); font-size: 0.85rem; margin-bottom: 8px; display: block; }
+        .level-chip label { padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s; user-select: none; background: white; }
+        .level-chip.purple label { border: 2px solid var(--ai-purple); color: var(--ai-purple); }
+        .level-chip.teal   label { border: 2px solid var(--final-teal); color: var(--final-teal); }
+        .level-chip.purple input[type="checkbox"]:checked + label { background: var(--ai-purple); color: white; }
+        .level-chip.teal   input[type="checkbox"]:checked + label { background: var(--final-teal); color: white; }
+        .levels-label { font-weight: bold; font-size: 0.85rem; margin-bottom: 8px; display: block; }
+        .levels-label.purple { color: var(--ai-purple); }
+        .levels-label.teal   { color: var(--final-teal); }
         .levels-actions { display: flex; gap: 8px; margin-bottom: 8px; }
         .levels-actions button { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
         .levels-actions button:hover { background: #f1f5f9; }
-
         .json-editor { width: 100%; height: 250px; font-family: monospace; background: #1e293b; color: #10b981; direction: ltr; border: none; resize: vertical; margin-top: 10px; border-radius: 10px; padding: 12px; }
         .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
         .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; }
-        .btn-copy-ai  { background: var(--ai-purple); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
-        .btn-copy-ai2 { background: #6d28d9;          width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn:active { transform: scale(0.97); }
+        .btn-copy-ai  { background: var(--ai-purple);  width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
+        .btn-copy-ai2 { background: #6d28d9;           width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
+        .btn-copy-fin { background: var(--final-teal); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
         .btn-paste { background: #3b82f6; }
         .btn-save  { background: var(--primary); }
         .btn-clear { background: #ef4444; }
         .btn-reset { background: #f59e0b; color: #1e293b; }
         .btn-home  { background: #64748b; text-decoration: none; }
+        .btn-final { background: var(--final-teal); text-decoration: none; }
         .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-width: 90%; text-align: center; }
         .schema-hint { background: #0f172a; border-radius: 12px; padding: 15px 18px; font-family: monospace; font-size: 0.8rem; direction: ltr; line-height: 1.8; margin-top: 12px; border: 1px solid #334155; }
         .sh-key     { color: #f59e0b; }
@@ -51,19 +55,16 @@
         .sh-num     { color: #60a5fa; }
         .sh-comment { color: #64748b; }
         .sh-label   { display: inline-block; background: #1e293b; color: #94a3b8; border-radius: 6px; padding: 1px 8px; font-size: 0.72rem; margin-right: 8px; }
-
-        .footer-credit {
-            text-align: center;
-            font-size: 0.72rem;
-            color: #94a3b8;
-            font-weight: 400;
-            margin-top: 10px;
-            padding-bottom: 20px;
-            letter-spacing: 0.3px;
-        }
+        .sh-label.teal { color: #67e8f9; }
+        .section-divider { display: flex; align-items: center; gap: 12px; margin: 30px 0 20px; }
+        .section-divider span { font-weight: 900; font-size: 1rem; white-space: nowrap; color: var(--final-teal); }
+        .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--final-teal), transparent); }
+        .storage-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 50px; font-size: 0.78rem; font-weight: bold; margin-top: 8px; }
+        .badge-ok { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .footer-credit { text-align: center; font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 10px; padding-bottom: 20px; letter-spacing: 0.3px; }
     </style>
 </head>
-
 <body>
 
 <div id="status" class="status-toast"></div>
@@ -79,62 +80,89 @@
 <div class="main-container">
 
     <div class="admin-card ai-section">
-        <h3 style="margin-top: 0; color: var(--ai-purple);">✨ مولد البرومبت الذكي</h3>
-
+        <h3 style="margin-top: 0; color: var(--ai-purple);">✨ مولد البرومبت الذكي — المسابقة الرئيسية</h3>
         <div class="input-grid-2">
-            <div class="input-box">
-                <label>📚 عنوان الدرس</label>
-                <input type="text" id="lesson_title" placeholder="مثلاً: المفعول به">
-            </div>
-            <div class="input-box">
-                <label>🎯 الصعوبة</label>
-                <select id="lesson_difficulty">
-                    <option value="standard">عادي</option>
-                    <option value="easy">سهل</option>
-                    <option value="hard">صعب</option>
-                </select>
-            </div>
+            <div class="input-box purple"><label>📚 عنوان الدرس</label><input type="text" id="lesson_title" placeholder="مثلاً: المفعول به"></div>
+            <div class="input-box purple"><label>🎯 الصعوبة</label><select id="lesson_difficulty"><option value="standard">عادي</option><option value="easy">سهل</option><option value="hard">صعب</option></select></div>
         </div>
-
-        <span class="levels-label">📊 المستوى (يمكن اختيار أكثر من مستوى)</span>
-        <div class="levels-actions">
-            <button onclick="selectAllLevels()">تحديد الكل</button>
-            <button onclick="clearAllLevels()">إلغاء الكل</button>
+        <span class="levels-label purple">📊 المستوى (يمكن اختيار أكثر من مستوى)</span>
+        <div class="levels-actions"><button onclick="selectAllLevels('main')">تحديد الكل</button><button onclick="clearAllLevels('main')">إلغاء الكل</button></div>
+        <div class="levels-box" id="main-levels">
+            <div class="level-chip purple"><input type="checkbox" id="lvl1" value="المستوى الأول"><label for="lvl1">الأول</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl2" value="المستوى الثاني"><label for="lvl2">الثاني</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl3" value="المستوى الثالث"><label for="lvl3">الثالث</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl4" value="المستوى الرابع"><label for="lvl4">الرابع</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl5" value="المستوى الخامس" checked><label for="lvl5">الخامس</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl6" value="المستوى السادس" checked><label for="lvl6">السادس</label></div>
         </div>
-        <div class="levels-box">
-            <div class="level-chip"><input type="checkbox" id="lvl1" value="المستوى الأول"><label for="lvl1">الأول</label></div>
-            <div class="level-chip"><input type="checkbox" id="lvl2" value="المستوى الثاني"><label for="lvl2">الثاني</label></div>
-            <div class="level-chip"><input type="checkbox" id="lvl3" value="المستوى الثالث"><label for="lvl3">الثالث</label></div>
-            <div class="level-chip"><input type="checkbox" id="lvl4" value="المستوى الرابع"><label for="lvl4">الرابع</label></div>
-            <div class="level-chip"><input type="checkbox" id="lvl5" value="المستوى الخامس" checked><label for="lvl5">الخامس</label></div>
-            <div class="level-chip"><input type="checkbox" id="lvl6" value="المستوى السادس" checked><label for="lvl6">السادس</label></div>
+        <div class="schema-hint">
+            <span class="sh-label">phase1</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 6 أسئلة</span><br>
+            <span class="sh-label">phase2</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 12 أسئلة</span><br>
+            <span class="sh-label">phase4</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 أسئلة مفتوحة</span><br>
+            <span class="sh-label">stock</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 لكل صندوق</span>
         </div>
-
         <button class="btn btn-copy-ai"  onclick="generateAndCopy()">📋 نسخ البرومبت الأول لـ AI</button>
-        <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت المطور (معترك + نهائي)</button>
+        <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت الثاني لـ AI</button>
     </div>
 
     <div class="admin-card">
-        <h3 style="margin-top: 0; color: var(--primary);">📥 استيراد بيانات الدرس (JSON)</h3>
+        <h3 style="margin-top: 0; color: var(--primary);">📥 استيراد بيانات الدرس — المسابقة الرئيسية</h3>
+        <div id="main-storage-status"></div>
         <textarea id="json_input" class="json-editor" placeholder="الصق JSON هنا..."></textarea>
-
         <div class="btn-group">
-            <button class="btn btn-paste" onclick="pasteData()">📋 لصق</button>
+            <button class="btn btn-paste" onclick="pasteData('json_input')">📋 لصق</button>
             <button class="btn btn-save"  onclick="saveToGame()">💾 حفظ</button>
-            <button class="btn btn-clear" onclick="clearField()">🗑️ مسح</button>
+            <button class="btn btn-clear" onclick="clearField('json_input')">🗑️ مسح</button>
             <button class="btn btn-reset" onclick="resetToDefaults()">↩️ افتراضي</button>
-            <a href="index.html" class="btn btn-home">🏠 خروج</a>
+            <a href="index.html" class="btn btn-home">🏠 المسابقة</a>
+            <a href="final.html" class="btn btn-final">⚔️ النهائي</a>
         </div>
     </div>
 
-    <div class="footer-credit">
-        من إعداد وتصميم الأستاذ محمد أسرار &mdash; مدرسة ميمونة أم المؤمنين &mdash; مديرية مراكش
+    <div class="section-divider"><span>⚔️ قسم النهائي الكبير ⚔️</span></div>
+
+    <div class="admin-card fin-section">
+        <h3 style="margin-top: 0; color: var(--final-teal);">🏆 مولد البرومبت الذكي — النهائي الكبير</h3>
+        <div class="input-grid-2">
+            <div class="input-box teal"><label>📚 موضوع النهائي</label><input type="text" id="final_lesson_title" placeholder="مثلاً: مراجعة شاملة"></div>
+            <div class="input-box teal"><label>🎯 الصعوبة</label><select id="final_difficulty"><option value="متقدم">متقدم (نهائي)</option><option value="صعب جداً">صعب جداً</option><option value="صعب">صعب</option></select></div>
+        </div>
+        <span class="levels-label teal">📊 المستوى</span>
+        <div class="levels-actions"><button onclick="selectAllLevels('final')">تحديد الكل</button><button onclick="clearAllLevels('final')">إلغاء الكل</button></div>
+        <div class="levels-box" id="final-levels">
+            <div class="level-chip teal"><input type="checkbox" id="flvl1" value="المستوى الأول"><label for="flvl1">الأول</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl2" value="المستوى الثاني"><label for="flvl2">الثاني</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl3" value="المستوى الثالث"><label for="flvl3">الثالث</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl4" value="المستوى الرابع"><label for="flvl4">الرابع</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl5" value="المستوى الخامس" checked><label for="flvl5">الخامس</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl6" value="المستوى السادس" checked><label for="flvl6">السادس</label></div>
+        </div>
+        <div class="schema-hint">
+            <span class="sh-label teal">individual</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 3 أسئلة (تحدي فردي)</span><br>
+            <span class="sh-label teal">target</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة (مواجهة موجهة)</span><br>
+            <span class="sh-label teal">choice</span><span class="sh-key">"تراكيب"</span> / <span class="sh-key">"صرف"</span> / <span class="sh-key">"إملاء"</span>: [{q,a}]<span class="sh-comment"> ← 2 لكل تصنيف</span><br>
+            <span class="sh-label teal">speed</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة (جولة الحسم)</span>
+        </div>
+        <button class="btn btn-copy-fin" onclick="generateAndCopyFinal()">📋 نسخ برومبت النهائي لـ AI</button>
     </div>
 
+    <div class="admin-card">
+        <h3 style="margin-top: 0; color: var(--final-teal);">📥 استيراد بيانات النهائي الكبير</h3>
+        <div id="final-storage-status"></div>
+        <textarea id="final_json_input" class="json-editor" placeholder='{ "final": { "individual": [...], "target": [...], "choice": {...}, "speed": [...] } }'></textarea>
+        <div class="btn-group">
+            <button class="btn btn-paste" onclick="pasteData('final_json_input')">📋 لصق</button>
+            <button class="btn" style="background:var(--final-teal);" onclick="saveFinalToGame()">💾 حفظ النهائي</button>
+            <button class="btn btn-clear" onclick="clearField('final_json_input')">🗑️ مسح</button>
+            <button class="btn btn-reset" onclick="resetFinal()">↩️ حذف بيانات النهائي</button>
+            <a href="final.html" class="btn btn-final">⚔️ فتح النهائي</a>
+        </div>
+    </div>
+
+    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار &mdash; مدرسة ميمونة أم المؤمنين &mdash; مديرية مراكش</div>
 </div>
 
 <script>
-
 function notify(msg, type = 'success') {
     const s = document.getElementById('status');
     s.innerText = msg;
@@ -143,135 +171,245 @@ function notify(msg, type = 'success') {
     setTimeout(() => s.style.display = 'none', 4000);
 }
 
-function getSelectedLevels() {
-    const checked = [...document.querySelectorAll('.level-chip input[type="checkbox"]:checked')];
+function checkStorageStatus() {
+    try {
+        const raw = localStorage.getItem('moatark_questions');
+        const mainEl  = document.getElementById('main-storage-status');
+        const finalEl = document.getElementById('final-storage-status');
+        if (raw) {
+            const d = JSON.parse(raw);
+            mainEl.innerHTML  = d.phase1
+                ? `<span class="storage-badge badge-ok">✅ بيانات محفوظة — phase1: ${d.phase1.length} سؤال، phase2: ${(d.phase2||[]).length} سؤال</span>`
+                : `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للمسابقة الرئيسية</span>`;
+            finalEl.innerHTML = d.final
+                ? `<span class="storage-badge badge-ok">✅ بيانات النهائي محفوظة — individual: ${(d.final.individual||[]).length}، speed: ${(d.final.speed||[]).length}</span>`
+                : `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي — سيستخدم الأسئلة الافتراضية</span>`;
+        } else {
+            mainEl.innerHTML  = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات محفوظة</span>`;
+            finalEl.innerHTML = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>`;
+        }
+    } catch(e) {}
+}
+
+function getSelectedLevels(scope) {
+    const checked = [...document.querySelectorAll(`#${scope === 'final' ? 'final' : 'main'}-levels input[type="checkbox"]:checked`)];
     return checked.map(cb => cb.value).join(' + ') || 'غير محدد';
 }
+function selectAllLevels(scope) { document.querySelectorAll(`#${scope === 'final' ? 'final' : 'main'}-levels input[type="checkbox"]`).forEach(cb => cb.checked = true); }
+function clearAllLevels(scope)  { document.querySelectorAll(`#${scope === 'final' ? 'final' : 'main'}-levels input[type="checkbox"]`).forEach(cb => cb.checked = false); }
 
-function selectAllLevels() {
-    document.querySelectorAll('.level-chip input[type="checkbox"]').forEach(cb => cb.checked = true);
-}
-
-function clearAllLevels() {
-    document.querySelectorAll('.level-chip input[type="checkbox"]').forEach(cb => cb.checked = false);
-}
-
-/* التحقق القوي (Validator) كما في الكود الأصلي */
 function isValidStructure(data) {
     try {
-        if (!Array.isArray(data.phase1) || !Array.isArray(data.phase2) || !data.stock) return 'البنية غير مكتملة';
+        const isMCQ  = q => q && typeof q.q === 'string' && q.q.trim() && Array.isArray(q.o) && q.o.length === 4 && Number.isInteger(q.a) && q.a >= 0 && q.a <= 3;
+        const isOpen = q => q && typeof q.q === 'string' && q.q.trim() && typeof q.a === 'string' && q.a.trim();
+        if (!Array.isArray(data.phase1) || !data.phase1.length) return 'phase1 مفقودة أو فارغة';
+        if (!Array.isArray(data.phase2) || !data.phase2.length) return 'phase2 مفقودة أو فارغة';
+        if (!Array.isArray(data.phase4) || !data.phase4.length) return 'phase4 مفقودة أو فارغة';
+        if (!data.stock) return 'stock مفقود';
+        if (!Array.isArray(data.stock['المدرسة']) || !data.stock['المدرسة'].length) return 'stock → المدرسة مفقود';
+        if (!Array.isArray(data.stock['المحفظة']) || !data.stock['المحفظة'].length) return 'stock → المحفظة مفقود';
+        if (!Array.isArray(data.stock['الكتاب'])  || !data.stock['الكتاب'].length)  return 'stock → الكتاب مفقود';
+        if (!data.phase1.every(isMCQ))  return 'phase1: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if (!data.phase2.every(isMCQ))  return 'phase2: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if (!data.phase4.every(isOpen)) return 'phase4: "a" يجب أن يكون نصاً';
+        if (!data.stock['المدرسة'].every(isOpen)) return 'stock.المدرسة: كل سؤال يحتاج (q, a نص)';
+        if (!data.stock['المحفظة'].every(isOpen)) return 'stock.المحفظة: كل سؤال يحتاج (q, a نص)';
+        if (!data.stock['الكتاب'].every(isOpen))  return 'stock.الكتاب: كل سؤال يحتاج (q, a نص)';
         return true;
     } catch { return 'خطأ في تحليل البنية'; }
 }
 
+function isValidFinalStructure(data) {
+    try {
+        const isOpen = q => q && typeof q.q === 'string' && q.q.trim() && typeof q.a === 'string' && q.a.trim();
+        if (!data.final) return 'مفتاح "final" مفقود من JSON';
+        const f = data.final;
+        if (!Array.isArray(f.individual) || !f.individual.length) return 'final.individual مفقودة أو فارغة';
+        if (!Array.isArray(f.target)     || !f.target.length)     return 'final.target مفقودة أو فارغة';
+        if (!f.choice)                                             return 'final.choice مفقود';
+        if (!Array.isArray(f.choice['تراكيب']) || !f.choice['تراكيب'].length) return 'final.choice.تراكيب مفقودة';
+        if (!Array.isArray(f.choice['صرف'])     || !f.choice['صرف'].length)   return 'final.choice.صرف مفقود';
+        if (!Array.isArray(f.choice['إملاء'])   || !f.choice['إملاء'].length) return 'final.choice.إملاء مفقود';
+        if (!Array.isArray(f.speed)      || !f.speed.length)      return 'final.speed مفقودة أو فارغة';
+        if (!f.individual.every(isOpen))          return 'final.individual: (q, a نص)';
+        if (!f.target.every(isOpen))              return 'final.target: (q, a نص)';
+        if (!f.choice['تراكيب'].every(isOpen))   return 'final.choice.تراكيب: (q, a نص)';
+        if (!f.choice['صرف'].every(isOpen))       return 'final.choice.صرف: (q, a نص)';
+        if (!f.choice['إملاء'].every(isOpen))    return 'final.choice.إملاء: (q, a نص)';
+        if (!f.speed.every(isOpen))               return 'final.speed: (q, a نص)';
+        return true;
+    } catch { return 'خطأ في تحليل بنية النهائي'; }
+}
+
 function buildPrompt(lesson, level) {
-    return `أنت مولد أسئلة لغة عربية محترف. أعد JSON فقط. الموضوع: ${lesson} | المستوى: ${level}
+    return `أنت مولد أسئلة لغة عربية محترف.
+أعد JSON فقط. بدون أي نص إضافي. بدون markdown. بدون شرح.
+
+الموضوع: ${lesson}
+المستوى: ${level}
+
+البنية المطلوبة:
 {
-  "phase1": [], "phase2": [], "phase4": [],
-  "stock": { "المدرسة": [], "المحفظة": [], "الكتاب": [] }
-}`;
+  "phase1": [...],
+  "phase2": [...],
+  "phase4": [...],
+  "stock": { "المدرسة": [...], "المحفظة": [...], "الكتاب": [...] }
+}
+
+phase1 و phase2: {"q": "نص السؤال", "o": ["خيار1", "خيار2", "خيار3", "خيار4"], "a": 2}
+"a" رقم صحيح 0-3 يشير لموضع الإجابة الصحيحة في "o"
+
+phase4 وstock: {"q": "نص السؤال", "a": "نص الإجابة النموذجية"}
+
+الأعداد:
+- phase1  → 6 أسئلة اختيار من متعدد
+- phase2  → 12 أسئلة اختيار من متعدد
+- phase4  → 4 أسئلة مفتوحة
+- stock.المدرسة → 4 أسئلة مفتوحة
+- stock.المحفظة → 4 أسئلة مفتوحة
+- stock.الكتاب  → 4 أسئلة مفتوحة`;
 }
 
 function buildStrictPrompt2(lesson, level, difficulty) {
     return `أنت مولد بيانات JSON فقط للعبة تعليمية اسمها "معترك الضاد".
-ممنوع أي شرح. ممنوع markdown. أخرج JSON صالحاً فقط.
+ممنوع أي شرح. ممنوع markdown. ممنوع أي نص خارج JSON.
 
-البنية إلزامية حرفياً:
+البنية إلزامية:
 {
-  "moatrak_match": {
-    "phase1": [], "phase2": [], "phase4": []
-  },
-  "final_grand": {
-    "phase1_individual": [],
-    "phase2_target": [],
-    "phase3_choice": { "مقلمة": [], "دفتر": [], "قلم": [] },
-    "phase4_speed": []
-  },
+  "phase1": [],
+  "phase2": [],
+  "phase4": [],
   "stock": { "المدرسة": [], "المحفظة": [], "الكتاب": [] }
 }
 
-القواعد:
-1. moatrak_match: phase1(6 MCQ), phase2(12 MCQ), phase4(4 Open).
-2. final_grand: individual(6 Open), target(8 Open), choice(مقلمة2, دفتر2, قلم2), speed(6 Open).
-3. stock: (المدرسة4, المحفظة4, الكتاب4).
-- MCQ: {"q":"","o":["","","",""],"a":0}
-- Open: {"q":"","a":""}
+1. phase1: 6 أسئلة — {"q":"...","o":["أ","ب","ج","د"],"a":0}
+2. phase2: 12 سؤال — نفس البنية
+3. phase4: 4 أسئلة — {"q":"...","a":"..."}
+4. stock: 4 أسئلة لكل صندوق
+5. تحقق: phase1=6 | phase2=12 | phase4=4 | كل صندوق=4
 
+الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}`;
+}
+
+function buildFinalPrompt(lesson, level, difficulty) {
+    return `أنت مولد بيانات JSON للنهائي الكبير في لعبة "معترك الضاد".
+ممنوع أي شرح. ممنوع markdown. أخرج JSON فقط.
+
+البنية الإلزامية:
+{
+  "final": {
+    "individual": [{"q": "...", "a": "..."}, ...],
+    "target":     [{"q": "...", "a": "..."}, ...],
+    "choice": {
+      "تراكيب": [{"q": "...", "a": "..."}, {"q": "...", "a": "..."}],
+      "صرف":    [{"q": "...", "a": "..."}, {"q": "...", "a": "..."}],
+      "إملاء":  [{"q": "...", "a": "..."}, {"q": "...", "a": "..."}]
+    },
+    "speed": [{"q": "...", "a": "..."}, ...]
+  }
+}
+
+الأعداد الإلزامية:
+- individual: 3 أسئلة
+- target:     4 أسئلة
+- تراكيب:     2 أسئلة
+- صرف:        2 أسئلة
+- إملاء:      2 أسئلة
+- speed:      4 أسئلة
+
+جميع الأسئلة مفتوحة — "a" دائماً نص عربي — بدون "o"
 الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}
-أخرج JSON فقط.`;
+تحقق: individual=3 | target=4 | كل تصنيف=2 | speed=4`;
 }
 
 async function generateAndCopy() {
     const lesson = document.getElementById('lesson_title').value;
-    const level  = getSelectedLevels();
+    const level  = getSelectedLevels('main');
     if (!lesson.trim()) return notify('أدخل عنوان الدرس أولاً', 'error');
-    try {
-        await navigator.clipboard.writeText(buildPrompt(lesson, level));
-        notify('✅ تم نسخ البرومبت الأول');
-    } catch { notify('❌ فشل النسخ', 'error'); }
+    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
+    try { await navigator.clipboard.writeText(buildPrompt(lesson, level)); notify('✅ تم نسخ البرومبت الأول'); }
+    catch { notify('❌ فشل النسخ — حاول مرة أخرى', 'error'); }
 }
 
 async function generateAndCopy2() {
     const lesson     = document.getElementById('lesson_title').value;
-    const level      = getSelectedLevels();
+    const level      = getSelectedLevels('main');
     const difficulty = document.getElementById('lesson_difficulty').value;
     if (!lesson.trim()) return notify('أدخل عنوان الدرس أولاً', 'error');
-    try {
-        await navigator.clipboard.writeText(buildStrictPrompt2(lesson, level, difficulty));
-        notify('✅ تم نسخ البرومبت المطور');
-    } catch { notify('❌ فشل النسخ', 'error'); }
+    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
+    try { await navigator.clipboard.writeText(buildStrictPrompt2(lesson, level, difficulty)); notify('✅ تم نسخ البرومبت الثاني'); }
+    catch { notify('❌ فشل النسخ — حاول مرة أخرى', 'error'); }
 }
 
-async function pasteData() {
-    try {
-        const text = await navigator.clipboard.readText();
-        document.getElementById('json_input').value = text;
-        notify('تم اللصق');
-    } catch { notify('❌ فشل اللصق', 'error'); }
+async function generateAndCopyFinal() {
+    const lesson     = document.getElementById('final_lesson_title').value;
+    const level      = getSelectedLevels('final');
+    const difficulty = document.getElementById('final_difficulty').value;
+    if (!lesson.trim()) return notify('أدخل موضوع النهائي أولاً', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
+    try { await navigator.clipboard.writeText(buildFinalPrompt(lesson, level, difficulty)); notify('✅ تم نسخ برومبت النهائي'); }
+    catch { notify('❌ فشل النسخ — حاول مرة أخرى', 'error'); }
+}
+
+async function pasteData(fieldId) {
+    try { const text = await navigator.clipboard.readText(); document.getElementById(fieldId).value = text; notify('تم اللصق'); }
+    catch { notify('❌ فشل اللصق — استخدم Ctrl+V', 'error'); }
 }
 
 function saveToGame() {
     let raw = document.getElementById('json_input').value.trim();
     if (!raw) return notify('الحقل فارغ', 'error');
     try {
-        const clean  = raw.replace(/```json/g, "").replace(/
-```/g, "").trim();
+        const clean  = raw.replace(/```json/g, '').replace(/```/g, '').trim();
         const parsed = JSON.parse(clean);
-
-        if (parsed.moatrak_match && parsed.final_grand) {
-            const moatrakData = {
-                phase1: parsed.moatrak_match.phase1,
-                phase2: parsed.moatrak_match.phase2,
-                phase4: parsed.moatrak_match.phase4,
-                stock: parsed.stock
-            };
-            localStorage.setItem('moatark_questions', JSON.stringify(moatrakData));
-            localStorage.setItem('final_questions', JSON.stringify(parsed.final_grand));
-            notify('✅ تم توزيع وحفظ بيانات المعترك والنهائي بنجاح');
-        } else {
-            const validResult = isValidStructure(parsed);
-            if (validResult !== true) return notify('❌ ' + validResult, 'error');
-            localStorage.setItem('moatark_questions', JSON.stringify(parsed));
-            notify('✅ تم حفظ بيانات المعترك بنجاح');
-        }
-    } catch (e) {
-        notify('❌ خطأ في التنسيق: ' + e.message, 'error');
-    }
+        const validResult = isValidStructure(parsed);
+        if (validResult !== true) return notify('❌ ' + validResult, 'error');
+        let existingFinal = null;
+        try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd = JSON.parse(ex); if (exd.final) existingFinal = exd.final; } } catch(e) {}
+        const finalData = { phase1: parsed.phase1, phase2: parsed.phase2, phase4: parsed.phase4, stock: { 'المدرسة': parsed.stock['المدرسة'], 'المحفظة': parsed.stock['المحفظة'], 'الكتاب': parsed.stock['الكتاب'] } };
+        if (existingFinal) finalData.final = existingFinal;
+        localStorage.setItem('moatark_questions', JSON.stringify(finalData));
+        notify('✅ تم الحفظ بنجاح — يمكنك العودة للعبة');
+        checkStorageStatus();
+    } catch { notify('❌ JSON غير صالح — تأكد من صحة التنسيق', 'error'); }
 }
 
-function clearField() {
-    document.getElementById('json_input').value = '';
-    notify('تم المسح');
+function saveFinalToGame() {
+    let raw = document.getElementById('final_json_input').value.trim();
+    if (!raw) return notify('حقل النهائي فارغ', 'error');
+    try {
+        const clean  = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(clean);
+        const validResult = isValidFinalStructure(parsed);
+        if (validResult !== true) return notify('❌ ' + validResult, 'error');
+        let existingData = {};
+        try { const ex = localStorage.getItem('moatark_questions'); if (ex) existingData = JSON.parse(ex); } catch(e) {}
+        existingData.final = parsed.final;
+        localStorage.setItem('moatark_questions', JSON.stringify(existingData));
+        notify('✅ تم حفظ بيانات النهائي بنجاح');
+        checkStorageStatus();
+    } catch { notify('❌ JSON غير صالح', 'error'); }
 }
+
+function clearField(fieldId) { document.getElementById(fieldId).value = ''; notify('تم المسح'); }
 
 function resetToDefaults() {
-    if (!confirm('سيتم حذف الأسئلة المحفوظة والعودة للأسئلة الافتراضية. متأكد؟')) return;
-    localStorage.removeItem('moatark_questions');
-    localStorage.removeItem('final_questions');
+    if (!confirm('سيتم حذف أسئلة المسابقة الرئيسية. بيانات النهائي ستبقى. متأكد؟')) return;
+    try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd = JSON.parse(ex); localStorage.setItem('moatark_questions', JSON.stringify(exd.final ? { final: exd.final } : {})); } else { localStorage.removeItem('moatark_questions'); } } catch(e) { localStorage.removeItem('moatark_questions'); }
     document.getElementById('json_input').value = '';
-    notify('✅ تمت إعادة الضبط بنجاح');
+    notify('✅ تمت إعادة الضبط');
+    checkStorageStatus();
 }
 
+function resetFinal() {
+    if (!confirm('سيتم حذف بيانات النهائي. المسابقة الرئيسية لن تتأثر. متأكد؟')) return;
+    try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd = JSON.parse(ex); delete exd.final; localStorage.setItem('moatark_questions', JSON.stringify(exd)); } } catch(e) {}
+    document.getElementById('final_json_input').value = '';
+    notify('✅ تم حذف بيانات النهائي');
+    checkStorageStatus();
+}
+
+checkStorageStatus();
 </script>
 </body>
 </html>

@@ -21,6 +21,9 @@
             transition: background 0.3s; overflow: hidden; position: relative;
         }
 
+        /* ============================================================
+           ✨ KEYFRAMES — مؤثرات الحركة
+        ============================================================ */
         @keyframes fadeSlideUp {
             from { opacity: 0; transform: translateY(28px) scale(0.97); }
             to   { opacity: 1; transform: translateY(0)    scale(1);    }
@@ -91,6 +94,9 @@
             100% { transform: scale(1);    box-shadow: 0 0 20px rgba(197,160,89,0.4); }
         }
 
+        /* ============================================================
+           هيكل الصفحة
+        ============================================================ */
         .header-top {
             display: flex; justify-content: space-between; align-items: center;
             padding: 5px 15px; flex-shrink: 0; width: 100%;
@@ -136,6 +142,9 @@
         .icon-btn:active { transform: scale(0.9); }
         .refresh-active { transform: rotate(360deg) !important; transition: transform 0.5s ease !important; }
 
+        /* ============================================================
+           مودال الدليل
+        ============================================================ */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8);
             display: none; align-items: center; justify-content: center;
@@ -166,6 +175,9 @@
         }
         .close-modal:hover { transform: scale(1.3) rotate(12deg); }
 
+        /* ============================================================
+           الحاوية والكروت
+        ============================================================ */
         .container {
             width: 95%; max-width: 900px; margin: 0 auto;
             flex: 1; display: flex; flex-direction: column;
@@ -181,6 +193,9 @@
         }
         .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.14); }
 
+        /* ============================================================
+           لوحة النقاط
+        ============================================================ */
         .scoreboard {
             display: grid; grid-template-columns: repeat(4,1fr);
             gap: 8px; margin-bottom: 8px; flex-shrink: 0;
@@ -212,6 +227,9 @@
         }
         .lifeline-icons span:hover { transform: scale(1.35); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
 
+        /* ============================================================
+           خيارات الإجابة
+        ============================================================ */
         .options-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin: 8px 0; }
 
         .opt, .component-btn {
@@ -232,7 +250,12 @@
         }
         .opt:active { transform: scale(0.96); }
 
-        .component-btn { animation: scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+        /* ============================================================
+           أزرار الصناديق
+        ============================================================ */
+        .component-btn {
+            animation: scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
         .component-btn:not(.depleted):hover {
             transform: translateY(-5px) scale(1.07);
             box-shadow: 0 10px 24px rgba(0,0,0,0.15);
@@ -241,6 +264,9 @@
         .component-btn:active:not(.depleted) { transform: scale(0.95); }
         .component-btn.depleted { opacity: 0.3; cursor: not-allowed; background: #e2e8f0; border-color: #cbd5e1; }
 
+        /* ============================================================
+           لوحة المدير
+        ============================================================ */
         .admin-panel {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: #1e293b; color: white;
@@ -257,14 +283,20 @@
             flex-shrink: 0; min-width: 125px; background: rgba(255,255,255,0.08);
             transition: transform 0.25s, background 0.25s;
         }
-        .admin-group:hover { transform: translateY(-3px); background: rgba(255,255,255,0.15) !important; }
+        .admin-group:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.15) !important;
+        }
 
         .btn-admin {
             padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer;
             font-family: 'Cairo'; font-weight: 900; font-size: 0.95rem;
             transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
         }
-        .btn-admin:hover { transform: translateY(-3px) scale(1.07); box-shadow: 0 5px 14px rgba(0,0,0,0.25); }
+        .btn-admin:hover {
+            transform: translateY(-3px) scale(1.07);
+            box-shadow: 0 5px 14px rgba(0,0,0,0.25);
+        }
         .btn-admin:active { transform: scale(0.94); }
 
         #timer {
@@ -274,14 +306,18 @@
             animation: timerBeat 1s ease-in-out infinite;
             transition: color 0.4s;
         }
-        #timer.urgent { animation: timerShake 0.45s ease-in-out infinite !important; }
+        #timer.urgent {
+            animation: timerShake 0.45s ease-in-out infinite !important;
+        }
 
         #q-text {
             font-size: clamp(1.1rem,3.5vh,1.5rem); line-height: 1.3;
             margin-bottom: 8px; font-family: 'Amiri'; font-weight: bold;
             transition: opacity 0.35s, transform 0.35s;
         }
-        #q-text.question-enter { animation: fadeSlideUp 0.4s ease both; }
+        #q-text.question-enter {
+            animation: fadeSlideUp 0.4s ease both;
+        }
 
         #phase-label {
             background: var(--moroccan-blue); color: white;
@@ -301,23 +337,30 @@
             transition: color 0.4s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
             display: inline-block;
         }
-        #manual-answer-display.revealed { animation: answerReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+        #manual-answer-display.revealed {
+            animation: answerReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
 
         #answer-input {
-            display: none;
             padding: 15px; width: 145px; font-size: 1.1rem;
             border-radius: 10px; border: 3px solid var(--moroccan-gold);
             text-align: center; font-weight: 900; background: #ffffff; color: #000;
             transition: transform 0.25s, box-shadow 0.25s;
         }
-        #answer-input:focus { outline: none; transform: scale(1.04); box-shadow: 0 0 18px rgba(197,160,89,0.45); }
+        #answer-input:focus {
+            outline: none; transform: scale(1.04);
+            box-shadow: 0 0 18px rgba(197,160,89,0.45);
+        }
 
         #team-count {
             padding: 10px; border-radius: 8px; margin-bottom: 15px;
             font-weight: bold; border: 2px solid var(--moroccan-gold);
             transition: box-shadow 0.25s, transform 0.25s;
         }
-        #team-count:focus { outline: none; transform: scale(1.03); box-shadow: 0 0 14px rgba(197,160,89,0.35); }
+        #team-count:focus {
+            outline: none; transform: scale(1.03);
+            box-shadow: 0 0 14px rgba(197,160,89,0.35);
+        }
 
         .final-gate {
             background: linear-gradient(45deg,#0f172a,#1e293b);
@@ -353,37 +396,8 @@
             .modal-content { max-width: 680px; padding: 36px; }
             .lifeline-icons span { width: 24px; height: 24px; font-size: 0.9rem; }
         }
-
-        @media (min-width: 1500px) {
-            .header-top { max-width: 1600px; padding: 8px 30px; }
-            .logo-box { width: 90px; height: 90px; }
-            .title-area img { max-height: 130px; }
-            .icon-btn { width: 48px; height: 48px; font-size: 1.4rem; border-radius: 12px; }
-            .top-controls { gap: 16px; margin-bottom: 10px; }
-            .container { max-width: 1400px; padding-bottom: 210px; }
-            .card { padding: 30px 40px; border-radius: 32px; border-top-width: 8px; }
-            .scoreboard { gap: 20px; margin-bottom: 18px; }
-            .team-box { padding: 14px; border-radius: 22px; }
-            .team-box span[id^="s-"] { font-size: 2rem !important; }
-            .team-box div { font-size: 1rem !important; }
-            .lifeline-icons span { width: 30px; height: 30px; font-size: 1.1rem; }
-            #phase-label { font-size: 1.05rem; padding: 5px 20px; margin-bottom: 10px; }
-            #target-announcer { font-size: 1.6rem; padding: 10px 25px; margin-bottom: 18px; }
-            #timer { font-size: 5rem !important; }
-            #q-text { font-size: 2.2rem !important; line-height: 1.5; margin-bottom: 20px; }
-            .options-grid { gap: 18px; margin: 16px 0; }
-            .opt { font-size: 1.3rem !important; padding: 20px 24px; border-radius: 16px; border-width: 3px; }
-            .component-btn { font-size: 1.4rem !important; padding: 20px 30px; border-radius: 16px; }
-            #manual-answer-display { font-size: 2.2rem; }
-            .admin-panel { min-height: 200px; gap: 30px; padding: 25px 30px; border-top-width: 7px; }
-            .admin-group { min-width: 190px; padding: 18px 16px; border-radius: 20px; border-width: 3px; }
-            .admin-group div[style*="0.8rem"] { font-size: 1.1rem !important; }
-            .btn-admin { font-size: 1.3rem !important; padding: 14px 26px; border-radius: 12px; }
-            .footer-credit { bottom: 205px; font-size: 1rem; }
-            .modal-content { max-width: 850px; padding: 45px; font-size: 1.15rem; }
-            .modal-content h2 { font-size: 1.8rem; }
-            .rule-box { font-size: 1.1rem; margin-bottom: 20px; padding-right: 20px; }
-            .final-gate { font-size: 2rem; padding: 28px 60px; }
+        #answer-input {
+    display: none;
         }
     </style>
 </head>
@@ -475,7 +489,7 @@
     });
     document.addEventListener('DOMContentLoaded', function() {
         const timerEl = document.getElementById('timer');
-        if (timerEl) observer.observe(timerEl, { childList: true, characterData: true, subtree: true });
+        if (timerEl) observer.observe(timerEl, { childList: true, characterCharacterData: true, characterData: true, subtree: true });
     });
 })();
 
@@ -485,7 +499,9 @@ let customData = null;
 try {
     const savedDataRaw = localStorage.getItem('moatark_questions');
     if (savedDataRaw) customData = JSON.parse(savedDataRaw);
-} catch (e) { customData = null; }
+} catch (e) {
+    customData = null;
+}
 
 const defaultPhases = [
     {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم","مهموز","مضعف","معتل"], a:2},
@@ -535,7 +551,7 @@ let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTur
 let votedOnThisQuestion = [], currentModelAnswer = "", currentQuestionText = "";
 let lifelinesState = [], rocketActive = -1;
 let stockCounts = {};
-let usedByBox = {};
+let usedByBox   = {};
 const STOCK_KEYS = ["المدرسة", "المحفظة", "الكتاب"];
 
 const phasesData = [
@@ -651,7 +667,7 @@ function prepareTurns() {
 function init() {
     votedOnThisQuestion = teamNames.map(() => false);
     const p = phasesData[currentPhase];
-    currentModelAnswer = ""; currentQuestionText = ""; rocketActive = -1;
+    currentModelAnswer  = ""; currentQuestionText = ""; rocketActive = -1;
     clearInterval(timer);
 
     document.getElementById('q-text').innerText = '';
@@ -673,13 +689,16 @@ function init() {
         document.getElementById('target-announcer').innerHTML = `🎯 الصندوق العجيب لـ: ${teamNames[tid]}`;
         document.getElementById(`t-card-${tid}`).classList.add('active-turn');
         showFreeSelection();
-        startTimer(p.time);
+        // 🛠️ تعديل النمط 3: يبدأ المؤقت بمجرد ظهور اسم الفريق
+        startTimer(p.time); 
+
     } else if (p.type === 'target') {
         const tid = phaseTurns[currentQ];
         document.getElementById('target-announcer').style.display = 'block';
         document.getElementById('target-announcer').innerHTML = `🎯 الدور: ${teamNames[tid]}`;
         document.getElementById(`t-card-${tid}`).classList.add('active-turn');
         displayQuestion(p.questions[currentQ]);
+
     } else if (p.type === 'speed') {
         const q = p.questions[currentQ];
         if (!q) return;
@@ -687,6 +706,7 @@ function init() {
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('manual-zone').style.display = 'block';
         startTimer(p.time, true);
+
     } else {
         displayQuestion(p.questions[currentQ]);
     }
@@ -734,6 +754,7 @@ function selectComponent(key) {
     document.getElementById('manual-zone').style.display = 'block';
     document.getElementById('q-text').innerText = `📦 ${key}: ${item.q}`;
     currentModelAnswer = item.a;
+    // 🛠️ تم إزالة استدعاء startTimer من هنا لكي لا يبدأ من جديد
 }
 
 function startTimer(s, isSpeed = false) {
@@ -758,7 +779,7 @@ function reveal() {
         dispEl.innerText = currentModelAnswer;
         dispEl.style.color = 'var(--success)';
         dispEl.classList.remove('revealed');
-        void dispEl.offsetWidth;
+        void dispEl.offsetWidth; 
         dispEl.classList.add('revealed');
         document.getElementById('manual-zone').style.display = 'block';
     } else if (p.questions && p.questions[currentQ] && p.questions[currentQ].o) {

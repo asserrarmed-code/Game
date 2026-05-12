@@ -64,57 +64,59 @@
         .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
         .footer-credit { text-align: center; font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 10px; padding-bottom: 20px; letter-spacing: 0.3px; }
 
-        .notice-banner {
+        .important-notice {
             background: linear-gradient(135deg, #fffbeb, #fef3c7);
             border: 2px solid #f59e0b;
+            border-right: 6px solid #d97706;
             border-radius: 16px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
+            padding: 18px 22px;
+            margin-bottom: 22px;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            box-shadow: 0 2px 8px rgba(245,158,11,0.15);
+            gap: 14px;
         }
-        .notice-banner .notice-icon {
-            font-size: 1.6rem;
+        .important-notice .notice-icon {
+            font-size: 2rem;
+            line-height: 1;
             flex-shrink: 0;
             margin-top: 2px;
         }
-        .notice-banner .notice-body { flex: 1; }
-        .notice-banner .notice-title {
+        .important-notice .notice-body {}
+        .important-notice .notice-title {
             font-weight: 900;
             font-size: 1rem;
             color: #92400e;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .notice-banner .notice-text {
+        .important-notice .notice-text {
             font-size: 0.88rem;
             color: #78350f;
-            line-height: 1.8;
+            line-height: 1.9;
         }
-        .notice-banner .notice-text span {
-            font-weight: 900;
+        .important-notice .notice-text strong {
+            color: #b45309;
             background: #fde68a;
             padding: 1px 6px;
-            border-radius: 6px;
+            border-radius: 5px;
         }
 
-        .prompt-guide {
-            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-            border: 1.5px solid #86efac;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 14px;
+        .prompt-choice-label {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 0.88rem;
-            color: #14532d;
-            font-weight: 700;
+            background: linear-gradient(90deg, #ede9fe, #f5f3ff);
+            border: 1.5px solid #c4b5fd;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 18px;
+            margin-bottom: 2px;
         }
-        .prompt-guide .pg-icon { font-size: 1.3rem; flex-shrink: 0; }
-        .prompt-guide .pg-steps { line-height: 2; }
-        .prompt-guide .pg-steps b { background: #bbf7d0; padding: 1px 7px; border-radius: 6px; margin: 0 2px; }
+        .prompt-choice-label .pcl-icon { font-size: 1.3rem; flex-shrink: 0; }
+        .prompt-choice-label .pcl-text { font-size: 0.88rem; font-weight: 700; color: #5b21b6; line-height: 1.7; }
+        .prompt-choice-label .pcl-text span { background: #ddd6fe; padding: 1px 7px; border-radius: 6px; color: #4c1d95; }
     </style>
 </head>
 <body>
@@ -131,14 +133,14 @@
 
 <div class="main-container">
 
-    <!-- ملاحظة هامة -->
-    <div class="notice-banner">
-        <div class="notice-icon">⚠️</div>
+    <div class="important-notice">
+        <div class="notice-icon">💡</div>
         <div class="notice-body">
-            <div class="notice-title">ملاحظة هامة — تخزين البيانات</div>
+            <div class="notice-title">⚠️ ملاحظة مهمة جداً — يُرجى القراءة قبل البدء</div>
             <div class="notice-text">
-                الأسئلة التي تُضاف وتُحفظ من هذه الصفحة <span>لا تظهر إلا في هذا المتصفح وعلى هذا الجهاز تحديداً</span>، لأن البيانات تُخزَّن محلياً في ذاكرة المتصفح فقط.<br>
-                إذا فتحت المسابقة من متصفح آخر أو جهاز مختلف، فلن تجد الأسئلة المحفوظة هنا — يجب إعادة الاستيراد في كل جهاز على حدة.
+                الأسئلة التي تُدخلها وتحفظها في هذه الصفحة <strong>لا تُخزَّن على الإنترنت</strong>، بل تُحفظ فقط داخل <strong>هذا المتصفح وعلى هذا الجهاز</strong> تحديداً.<br>
+                إذا فتحتَ المسابقة من متصفح آخر، أو جهاز مختلف، أو في وضع التصفح الخفي — <strong>لن تظهر الأسئلة</strong> وستعود اللعبة إلى أسئلتها الافتراضية.<br>
+                احرص على تشغيل المسابقة دائماً من <strong>نفس المتصفح ونفس الجهاز</strong> الذي حفظتَ فيه البيانات.
             </div>
         </div>
     </div>
@@ -166,11 +168,10 @@
             <span class="sh-label">stock</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 لكل صندوق</span>
         </div>
 
-        <!-- إرشاد البرومبت -->
-        <div class="prompt-guide">
-            <div class="pg-icon">💡</div>
-            <div class="pg-steps">
-                اختر <b>برومبتاً واحداً فقط</b> من الزرين أدناه — انسخه وأرسله للذكاء الاصطناعي — ثم <b>الصق الجواب</b> في الحقل الفارغ في القسم التالي مباشرة
+        <div class="prompt-choice-label">
+            <div class="pcl-icon">👇</div>
+            <div class="pcl-text">
+                انسخ <span>أحد البرومبتين</span> وأرسله إلى الذكاء الاصطناعي — ثم الصق الجواب الذي يُعطيك إياه في <span>المربع الفارغ أدناه</span> في قسم الاستيراد
             </div>
         </div>
 

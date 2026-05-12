@@ -63,6 +63,58 @@
         .badge-ok { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
         .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
         .footer-credit { text-align: center; font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 10px; padding-bottom: 20px; letter-spacing: 0.3px; }
+
+        .notice-banner {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(245,158,11,0.15);
+        }
+        .notice-banner .notice-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .notice-banner .notice-body { flex: 1; }
+        .notice-banner .notice-title {
+            font-weight: 900;
+            font-size: 1rem;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+        .notice-banner .notice-text {
+            font-size: 0.88rem;
+            color: #78350f;
+            line-height: 1.8;
+        }
+        .notice-banner .notice-text span {
+            font-weight: 900;
+            background: #fde68a;
+            padding: 1px 6px;
+            border-radius: 6px;
+        }
+
+        .prompt-guide {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1.5px solid #86efac;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: #14532d;
+            font-weight: 700;
+        }
+        .prompt-guide .pg-icon { font-size: 1.3rem; flex-shrink: 0; }
+        .prompt-guide .pg-steps { line-height: 2; }
+        .prompt-guide .pg-steps b { background: #bbf7d0; padding: 1px 7px; border-radius: 6px; margin: 0 2px; }
     </style>
 </head>
 <body>
@@ -78,6 +130,18 @@
 </header>
 
 <div class="main-container">
+
+    <!-- ملاحظة هامة -->
+    <div class="notice-banner">
+        <div class="notice-icon">⚠️</div>
+        <div class="notice-body">
+            <div class="notice-title">ملاحظة هامة — تخزين البيانات</div>
+            <div class="notice-text">
+                الأسئلة التي تُضاف وتُحفظ من هذه الصفحة <span>لا تظهر إلا في هذا المتصفح وعلى هذا الجهاز تحديداً</span>، لأن البيانات تُخزَّن محلياً في ذاكرة المتصفح فقط.<br>
+                إذا فتحت المسابقة من متصفح آخر أو جهاز مختلف، فلن تجد الأسئلة المحفوظة هنا — يجب إعادة الاستيراد في كل جهاز على حدة.
+            </div>
+        </div>
+    </div>
 
     <div class="admin-card ai-section">
         <h3 style="margin-top: 0; color: var(--ai-purple);">✨ مولد البرومبت الذكي — المسابقة الرئيسية</h3>
@@ -101,6 +165,15 @@
             <span class="sh-label">phase4</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 أسئلة مفتوحة</span><br>
             <span class="sh-label">stock</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 لكل صندوق</span>
         </div>
+
+        <!-- إرشاد البرومبت -->
+        <div class="prompt-guide">
+            <div class="pg-icon">💡</div>
+            <div class="pg-steps">
+                اختر <b>برومبتاً واحداً فقط</b> من الزرين أدناه — انسخه وأرسله للذكاء الاصطناعي — ثم <b>الصق الجواب</b> في الحقل الفارغ في القسم التالي مباشرة
+            </div>
+        </div>
+
         <button class="btn btn-copy-ai"  onclick="generateAndCopy()">📋 نسخ البرومبت الأول لـ AI</button>
         <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت الثاني لـ AI</button>
     </div>

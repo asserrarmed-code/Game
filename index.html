@@ -466,11 +466,16 @@
         </div>
     </div>
     <div class="admin-panel">
-        <div style="display: flex; gap: 12px; align-items: center; border-left: 3px solid #475569; padding-left: 15px; flex-shrink: 0;">
-            <input type="text" id="answer-input" placeholder="إجابة..." oninput="syncAnswer(this.value)">
-            <button class="btn-admin" style="background:var(--success); color:white; padding: 15px 25px;" onclick="reveal()">✅</button>
-            <button class="btn-admin" style="background:var(--moroccan-gold); color:black; padding: 15px 25px;" onclick="next()">➡️</button>
-        </div>
+    <!-- منطقة أزرار التحكم الأساسية -->
+    <div style="display: flex; gap: 10px; align-items: center; padding: 0 15px;">
+        <button class="btn-admin" style="background:var(--success); color:white; padding: 15px 30px; font-size: 1.5rem;" onclick="reveal()">✅</button>
+        <button class="btn-admin" style="background:var(--moroccan-gold); color:black; padding: 15px 30px; font-size: 1.5rem;" onclick="next()">➡️</button>
+    </div>
+    
+    <!-- منطقة نقاط الفرق -->
+    <div id="admin-score-controls" style="display:flex; gap:12px; flex-wrap:nowrap;"></div>
+</div>
+
         <div id="admin-score-controls" style="display:flex; gap:12px; flex-wrap:nowrap;"></div>
     </div>
 </div>

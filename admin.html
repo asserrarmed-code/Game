@@ -11,50 +11,92 @@
         .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .header-logo { width: 60px; height: auto; }
         .main-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
-        .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; position: relative; }
+        .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .ai-section  { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
         .fin-section { background: linear-gradient(135deg, #ecfeff, #cffafe); border: 2px dashed var(--final-teal); }
-        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .input-box { display: flex; flex-direction: column; gap: 5px; text-align: right; }
-        .input-box label { font-weight: bold; font-size: 0.85rem; }
-        .input-box.purple label { color: var(--ai-purple); }
-        .input-box.teal   label { color: var(--final-teal); }
         input, select, textarea { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; font-size: 1rem; }
+
+        /* ── مستوى المنهج ── */
+        .step-label { font-weight: 900; font-size: 0.88rem; margin-bottom: 10px; display: block; }
+        .step-label.purple { color: var(--ai-purple); }
+        .step-label.teal   { color: var(--final-teal); }
+        .curr-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+        .curr-chip { padding: 7px 20px; border-radius: 50px; font-size: 0.88rem; font-weight: 700; cursor: pointer; border: 2px solid; transition: 0.18s; user-select: none; }
+        .curr-chip.purple { border-color: var(--ai-purple); color: var(--ai-purple); background: white; }
+        .curr-chip.teal   { border-color: var(--final-teal); color: var(--final-teal); background: white; }
+        .curr-chip.purple.active { background: var(--ai-purple); color: white; }
+        .curr-chip.teal.active   { background: var(--final-teal); color: white; }
+
+        /* ── لوحة الدروس ── */
+        .lessons-panel { display: none; background: white; border-radius: 14px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 18px; }
+        .lessons-panel.visible { display: block; }
+        .lessons-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+        .lessons-panel-header span { font-weight: 900; font-size: 0.88rem; }
+        .lessons-panel-header span.purple { color: var(--ai-purple); }
+        .lessons-panel-header span.teal   { color: var(--final-teal); }
+        .lessons-panel-header .hdr-btns { display: flex; gap: 6px; }
+        .hdr-btns button { font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
+        .hdr-btns button:hover { background: #f1f5f9; }
+        .lessons-body { padding: 14px 16px; max-height: 340px; overflow-y: auto; }
+        .lesson-group-title { font-weight: 900; font-size: 0.78rem; padding: 3px 10px; border-radius: 6px; margin: 12px 0 8px; display: inline-block; }
+        .lesson-group-title.purple { background: #ede9fe; color: var(--ai-purple); }
+        .lesson-group-title.teal   { background: #cffafe; color: var(--final-teal); }
+        .lesson-group-title:first-child { margin-top: 0; }
+        .lesson-cb-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: pointer; transition: 0.15s; }
+        .lesson-cb-row:hover { background: #f8fafc; }
+        .lesson-cb-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--ai-purple); cursor: pointer; flex-shrink: 0; }
+        .lesson-cb-row.teal input[type="checkbox"] { accent-color: var(--final-teal); }
+        .lesson-cb-row label { font-size: 0.88rem; cursor: pointer; flex: 1; }
+        .lessons-footer { padding: 10px 16px; border-top: 1px solid #f1f5f9; display: flex; gap: 10px; align-items: center; }
+        .lessons-footer input { flex: 1; font-size: 0.88rem; padding: 8px 12px; }
+        .lessons-footer button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+        .lessons-footer button.purple { background: var(--ai-purple); color: white; }
+        .lessons-footer button.teal   { background: var(--final-teal); color: white; }
+        .selected-preview { font-size: 0.82rem; padding: 9px 14px; border-radius: 9px; margin-bottom: 18px; line-height: 1.8; min-height: 38px; }
+        .selected-preview.purple { background: #f5f3ff; color: #5b21b6; border: 1.5px dashed #c4b5fd; }
+        .selected-preview.teal   { background: #ecfeff; color: #0e7490; border: 1.5px dashed #67e8f9; }
+        .empty-msg { color: #94a3b8; font-size: 0.85rem; padding: 10px 0; }
+
+        /* ── صعوبة ومستوى الطلاب ── */
+        hr.soft { border: none; border-top: 1px solid #e2e8f0; margin: 18px 0; }
+        .difficulty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .difficulty-row label { font-weight: bold; font-size: 0.85rem; white-space: nowrap; }
+        .difficulty-row.purple label { color: var(--ai-purple); }
+        .difficulty-row.teal   label { color: var(--final-teal); }
+        .difficulty-row select { flex: 1; }
         .levels-box { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .level-chip { display: flex; align-items: center; gap: 5px; }
         .level-chip input[type="checkbox"] { display: none; }
-        .level-chip label { padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s; user-select: none; background: white; }
+        .level-chip label { padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s; user-select: none; background: white; display: block; }
         .level-chip.purple label { border: 2px solid var(--ai-purple); color: var(--ai-purple); }
         .level-chip.teal   label { border: 2px solid var(--final-teal); color: var(--final-teal); }
-        .level-chip.purple input[type="checkbox"]:checked + label { background: var(--ai-purple); color: white; }
-        .level-chip.teal   input[type="checkbox"]:checked + label { background: var(--final-teal); color: white; }
+        .level-chip.purple input:checked + label { background: var(--ai-purple); color: white; }
+        .level-chip.teal   input:checked + label { background: var(--final-teal); color: white; }
         .levels-label { font-weight: bold; font-size: 0.85rem; margin-bottom: 8px; display: block; }
         .levels-label.purple { color: var(--ai-purple); }
         .levels-label.teal   { color: var(--final-teal); }
-        .levels-actions { display: flex; gap: 8px; margin-bottom: 8px; }
-        .levels-actions button { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
-        .levels-actions button:hover { background: #f1f5f9; }
-        .json-editor { width: 100%; height: 250px; font-family: monospace; background: #1e293b; color: #10b981; direction: ltr; border: none; resize: vertical; margin-top: 10px; border-radius: 10px; padding: 12px; }
+        .std-btns { display: flex; gap: 8px; margin-bottom: 8px; }
+        .std-btns button { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
+        .std-btns button:hover { background: #f1f5f9; }
+
+        /* ── بقية العناصر ── */
+        .json-editor { width: 100%; height: 250px; font-family: monospace; background: #1e293b; color: #10b981; direction: ltr; border: none; resize: vertical; margin-top: 10px; border-radius: 10px; padding: 12px; box-sizing: border-box; }
         .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; }
+        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; text-decoration: none; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .btn:active { transform: scale(0.97); }
-        .btn-copy-ai  { background: var(--ai-purple);  width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
-        .btn-copy-ai2 { background: #6d28d9;           width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
+        .btn-copy-ai  { background: var(--ai-purple); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
+        .btn-copy-ai2 { background: #6d28d9;          width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
         .btn-copy-fin { background: var(--final-teal); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
         .btn-paste { background: #3b82f6; }
         .btn-save  { background: var(--primary); }
         .btn-clear { background: #ef4444; }
         .btn-reset { background: #f59e0b; color: #1e293b; }
-        .btn-home  { background: #64748b; text-decoration: none; }
-        .btn-final { background: var(--final-teal); text-decoration: none; }
+        .btn-home  { background: #64748b; }
+        .btn-final { background: var(--final-teal); }
         .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-width: 90%; text-align: center; }
         .schema-hint { background: #0f172a; border-radius: 12px; padding: 15px 18px; font-family: monospace; font-size: 0.8rem; direction: ltr; line-height: 1.8; margin-top: 12px; border: 1px solid #334155; }
-        .sh-key     { color: #f59e0b; }
-        .sh-str     { color: #10b981; }
-        .sh-num     { color: #60a5fa; }
-        .sh-comment { color: #64748b; }
-        .sh-label   { display: inline-block; background: #1e293b; color: #94a3b8; border-radius: 6px; padding: 1px 8px; font-size: 0.72rem; margin-right: 8px; }
+        .sh-key { color: #f59e0b; } .sh-str { color: #10b981; } .sh-num { color: #60a5fa; } .sh-comment { color: #64748b; }
+        .sh-label { display: inline-block; background: #1e293b; color: #94a3b8; border-radius: 6px; padding: 1px 8px; font-size: 0.72rem; margin-right: 8px; }
         .sh-label.teal { color: #67e8f9; }
         .section-divider { display: flex; align-items: center; gap: 12px; margin: 30px 0 20px; }
         .section-divider span { font-weight: 900; font-size: 1rem; white-space: nowrap; color: var(--final-teal); }
@@ -62,58 +104,13 @@
         .storage-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 50px; font-size: 0.78rem; font-weight: bold; margin-top: 8px; }
         .badge-ok { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
         .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-        .footer-credit { text-align: center; font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 10px; padding-bottom: 20px; letter-spacing: 0.3px; }
-
-        .important-notice {
-            background: linear-gradient(135deg, #fffbeb, #fef3c7);
-            border: 2px solid #f59e0b;
-            border-right: 6px solid #d97706;
-            border-radius: 16px;
-            padding: 18px 22px;
-            margin-bottom: 22px;
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-        }
-        .important-notice .notice-icon {
-            font-size: 2rem;
-            line-height: 1;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-        .important-notice .notice-body {}
-        .important-notice .notice-title {
-            font-weight: 900;
-            font-size: 1rem;
-            color: #92400e;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .important-notice .notice-text {
-            font-size: 0.88rem;
-            color: #78350f;
-            line-height: 1.9;
-        }
-        .important-notice .notice-text strong {
-            color: #b45309;
-            background: #fde68a;
-            padding: 1px 6px;
-            border-radius: 5px;
-        }
-
-        .prompt-choice-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(90deg, #ede9fe, #f5f3ff);
-            border: 1.5px solid #c4b5fd;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-top: 18px;
-            margin-bottom: 2px;
-        }
+        .footer-credit { text-align: center; font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 10px; padding-bottom: 20px; }
+        .important-notice { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #f59e0b; border-right: 6px solid #d97706; border-radius: 16px; padding: 18px 22px; margin-bottom: 22px; display: flex; align-items: flex-start; gap: 14px; }
+        .important-notice .notice-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+        .important-notice .notice-title { font-weight: 900; font-size: 1rem; color: #92400e; margin-bottom: 6px; }
+        .important-notice .notice-text { font-size: 0.88rem; color: #78350f; line-height: 1.9; }
+        .important-notice .notice-text strong { color: #b45309; background: #fde68a; padding: 1px 6px; border-radius: 5px; }
+        .prompt-choice-label { display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg, #ede9fe, #f5f3ff); border: 1.5px solid #c4b5fd; border-radius: 12px; padding: 12px 16px; margin-top: 18px; margin-bottom: 2px; }
         .prompt-choice-label .pcl-icon { font-size: 1.3rem; flex-shrink: 0; }
         .prompt-choice-label .pcl-text { font-size: 0.88rem; font-weight: 700; color: #5b21b6; line-height: 1.7; }
         .prompt-choice-label .pcl-text span { background: #ddd6fe; padding: 1px 7px; border-radius: 6px; color: #4c1d95; }
@@ -124,11 +121,11 @@
 <div id="status" class="status-toast"></div>
 
 <header class="admin-header">
-    <div style="display: flex; align-items: center; gap: 15px;">
+    <div style="display:flex;align-items:center;gap:15px;">
         <img src="logo.png" class="header-logo" alt="Logo">
-        <h2 style="margin:0; color: var(--primary);">معترك الضاد</h2>
+        <h2 style="margin:0;color:var(--primary);">معترك الضاد</h2>
     </div>
-    <div style="font-weight: 900; color: var(--gold);">إدارة المحتوى</div>
+    <div style="font-weight:900;color:var(--gold);">إدارة المحتوى</div>
 </header>
 
 <div class="main-container">
@@ -145,14 +142,53 @@
         </div>
     </div>
 
+    <!-- ════════════════════════════ المسابقة الرئيسية -->
     <div class="admin-card ai-section">
-        <h3 style="margin-top: 0; color: var(--ai-purple);">✨ مولد البرومبت الذكي — المسابقة الرئيسية</h3>
-        <div class="input-grid-2">
-            <div class="input-box purple"><label>📚 عنوان الدرس</label><input type="text" id="lesson_title" placeholder="مثلاً: المفعول به"></div>
-            <div class="input-box purple"><label>🎯 الصعوبة</label><select id="lesson_difficulty"><option value="standard">عادي</option><option value="easy">سهل</option><option value="hard">صعب</option></select></div>
+        <h3 style="margin-top:0;color:var(--ai-purple);">✨ مولد البرومبت الذكي — المسابقة الرئيسية</h3>
+
+        <span class="step-label purple">① اختر مستوى المنهج</span>
+        <div class="curr-chips" id="main-curr-chips">
+            <div class="curr-chip purple" onclick="selectCurriculum('main',6,this)">السادس</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',5,this)">الخامس</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',4,this)">الرابع</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',3,this)">الثالث</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',2,this)">الثاني</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',1,this)">الأول</div>
         </div>
-        <span class="levels-label purple">📊 المستوى (يمكن اختيار أكثر من مستوى)</span>
-        <div class="levels-actions"><button onclick="selectAllLevels('main')">تحديد الكل</button><button onclick="clearAllLevels('main')">إلغاء الكل</button></div>
+
+        <span class="step-label purple" id="main-step2-label" style="display:none;">② اختر الدرس أو الدروس</span>
+        <div class="lessons-panel" id="main-lessons-panel">
+            <div class="lessons-panel-header">
+                <span class="purple" id="main-panel-title">الدروس</span>
+                <div class="hdr-btns">
+                    <button onclick="selectAllLessons('main')">تحديد الكل</button>
+                    <button onclick="clearAllLessons('main')">إلغاء الكل</button>
+                </div>
+            </div>
+            <div class="lessons-body" id="main-lessons-body"></div>
+            <div class="lessons-footer">
+                <input type="text" id="main-custom-input" placeholder="أضف درساً غير موجود في القائمة...">
+                <button class="purple" onclick="addCustomLesson('main')">+ إضافة</button>
+            </div>
+        </div>
+        <div class="selected-preview purple" id="main-preview" style="display:none;"></div>
+
+        <hr class="soft">
+
+        <div class="difficulty-row purple">
+            <label>🎯 الصعوبة</label>
+            <select id="lesson_difficulty">
+                <option value="standard">عادي</option>
+                <option value="easy">سهل</option>
+                <option value="hard">صعب</option>
+            </select>
+        </div>
+
+        <span class="levels-label purple">📊 مستوى الطلاب (يمكن اختيار أكثر من مستوى)</span>
+        <div class="std-btns">
+            <button onclick="selectAllLevels('main')">تحديد الكل</button>
+            <button onclick="clearAllLevels('main')">إلغاء الكل</button>
+        </div>
         <div class="levels-box" id="main-levels">
             <div class="level-chip purple"><input type="checkbox" id="lvl1" value="المستوى الأول"><label for="lvl1">الأول</label></div>
             <div class="level-chip purple"><input type="checkbox" id="lvl2" value="المستوى الثاني"><label for="lvl2">الثاني</label></div>
@@ -161,26 +197,23 @@
             <div class="level-chip purple"><input type="checkbox" id="lvl5" value="المستوى الخامس" checked><label for="lvl5">الخامس</label></div>
             <div class="level-chip purple"><input type="checkbox" id="lvl6" value="المستوى السادس" checked><label for="lvl6">السادس</label></div>
         </div>
+
         <div class="schema-hint">
             <span class="sh-label">phase1</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 6 أسئلة</span><br>
             <span class="sh-label">phase2</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 12 أسئلة</span><br>
             <span class="sh-label">phase4</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 أسئلة مفتوحة</span><br>
             <span class="sh-label">stock</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 لكل صندوق</span>
         </div>
-
         <div class="prompt-choice-label">
             <div class="pcl-icon">👇</div>
-            <div class="pcl-text">
-                انسخ <span>أحد البرومبتين</span> وأرسله إلى الذكاء الاصطناعي — ثم الصق الجواب الذي يُعطيك إياه في <span>المربع الفارغ أدناه</span> في قسم الاستيراد
-            </div>
+            <div class="pcl-text">انسخ <span>أحد البرومبتين</span> وأرسله إلى الذكاء الاصطناعي — ثم الصق الجواب في <span>المربع أدناه</span></div>
         </div>
-
         <button class="btn btn-copy-ai"  onclick="generateAndCopy()">📋 نسخ البرومبت الأول لـ AI</button>
         <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت الثاني لـ AI</button>
     </div>
 
     <div class="admin-card">
-        <h3 style="margin-top: 0; color: var(--primary);">📥 استيراد بيانات الدرس — المسابقة الرئيسية</h3>
+        <h3 style="margin-top:0;color:var(--primary);">📥 استيراد بيانات الدرس — المسابقة الرئيسية</h3>
         <div id="main-storage-status"></div>
         <textarea id="json_input" class="json-editor" placeholder="الصق JSON هنا..."></textarea>
         <div class="btn-group">
@@ -195,14 +228,53 @@
 
     <div class="section-divider"><span>⚔️ قسم النهائي الكبير ⚔️</span></div>
 
+    <!-- ════════════════════════════ النهائي الكبير -->
     <div class="admin-card fin-section">
-        <h3 style="margin-top: 0; color: var(--final-teal);">🏆 مولد البرومبت الذكي — النهائي الكبير</h3>
-        <div class="input-grid-2">
-            <div class="input-box teal"><label>📚 موضوع النهائي</label><input type="text" id="final_lesson_title" placeholder="مثلاً: مراجعة شاملة"></div>
-            <div class="input-box teal"><label>🎯 الصعوبة</label><select id="final_difficulty"><option value="متقدم">متقدم (نهائي)</option><option value="صعب جداً">صعب جداً</option><option value="صعب">صعب</option></select></div>
+        <h3 style="margin-top:0;color:var(--final-teal);">🏆 مولد البرومبت الذكي — النهائي الكبير</h3>
+
+        <span class="step-label teal">① اختر مستوى المنهج</span>
+        <div class="curr-chips" id="final-curr-chips">
+            <div class="curr-chip teal" onclick="selectCurriculum('final',6,this)">السادس</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',5,this)">الخامس</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',4,this)">الرابع</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',3,this)">الثالث</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',2,this)">الثاني</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',1,this)">الأول</div>
         </div>
-        <span class="levels-label teal">📊 المستوى</span>
-        <div class="levels-actions"><button onclick="selectAllLevels('final')">تحديد الكل</button><button onclick="clearAllLevels('final')">إلغاء الكل</button></div>
+
+        <span class="step-label teal" id="final-step2-label" style="display:none;">② اختر الموضوع أو المواضيع</span>
+        <div class="lessons-panel" id="final-lessons-panel">
+            <div class="lessons-panel-header">
+                <span class="teal" id="final-panel-title">الدروس</span>
+                <div class="hdr-btns">
+                    <button onclick="selectAllLessons('final')">تحديد الكل</button>
+                    <button onclick="clearAllLessons('final')">إلغاء الكل</button>
+                </div>
+            </div>
+            <div class="lessons-body" id="final-lessons-body"></div>
+            <div class="lessons-footer">
+                <input type="text" id="final-custom-input" placeholder="أضف موضوعاً غير موجود في القائمة...">
+                <button class="teal" onclick="addCustomLesson('final')">+ إضافة</button>
+            </div>
+        </div>
+        <div class="selected-preview teal" id="final-preview" style="display:none;"></div>
+
+        <hr class="soft">
+
+        <div class="difficulty-row teal">
+            <label>🎯 الصعوبة</label>
+            <select id="final_difficulty">
+                <option value="متقدم">متقدم (نهائي)</option>
+                <option value="صعب جداً">صعب جداً</option>
+                <option value="صعب">صعب</option>
+            </select>
+        </div>
+
+        <span class="levels-label teal">📊 مستوى الطلاب</span>
+        <div class="std-btns">
+            <button onclick="selectAllLevels('final')">تحديد الكل</button>
+            <button onclick="clearAllLevels('final')">إلغاء الكل</button>
+        </div>
         <div class="levels-box" id="final-levels">
             <div class="level-chip teal"><input type="checkbox" id="flvl1" value="المستوى الأول"><label for="flvl1">الأول</label></div>
             <div class="level-chip teal"><input type="checkbox" id="flvl2" value="المستوى الثاني"><label for="flvl2">الثاني</label></div>
@@ -211,17 +283,18 @@
             <div class="level-chip teal"><input type="checkbox" id="flvl5" value="المستوى الخامس" checked><label for="flvl5">الخامس</label></div>
             <div class="level-chip teal"><input type="checkbox" id="flvl6" value="المستوى السادس" checked><label for="flvl6">السادس</label></div>
         </div>
+
         <div class="schema-hint">
-            <span class="sh-label teal">individual</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 3 أسئلة (تحدي فردي)</span><br>
-            <span class="sh-label teal">target</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة (مواجهة موجهة)</span><br>
-            <span class="sh-label teal">choice</span><span class="sh-key">"تراكيب"</span> / <span class="sh-key">"صرف"</span> / <span class="sh-key">"إملاء"</span>: [{q,a}]<span class="sh-comment"> ← 2 لكل تصنيف</span><br>
-            <span class="sh-label teal">speed</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة (جولة الحسم)</span>
+            <span class="sh-label teal">individual</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 3 أسئلة</span><br>
+            <span class="sh-label teal">target</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة</span><br>
+            <span class="sh-label teal">choice</span><span class="sh-key">"تراكيب"</span> / <span class="sh-key">"صرف"</span> / <span class="sh-key">"إملاء"</span>: [{q,a}]<span class="sh-comment"> ← 2 لكل</span><br>
+            <span class="sh-label teal">speed</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة</span>
         </div>
         <button class="btn btn-copy-fin" onclick="generateAndCopyFinal()">📋 نسخ برومبت النهائي لـ AI</button>
     </div>
 
     <div class="admin-card">
-        <h3 style="margin-top: 0; color: var(--final-teal);">📥 استيراد بيانات النهائي الكبير</h3>
+        <h3 style="margin-top:0;color:var(--final-teal);">📥 استيراد بيانات النهائي الكبير</h3>
         <div id="final-storage-status"></div>
         <textarea id="final_json_input" class="json-editor" placeholder='{ "final": { "individual": [...], "target": [...], "choice": {...}, "speed": [...] } }'></textarea>
         <div class="btn-group">
@@ -237,84 +310,286 @@
 </div>
 
 <script>
-function notify(msg, type = 'success') {
-    const s = document.getElementById('status');
-    s.innerText = msg;
-    s.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
-    s.style.display = 'block';
-    setTimeout(() => s.style.display = 'none', 4000);
+// ══════════════════════════════════════════════════════════════════
+//  قاعدة الدروس
+//  لإضافة مستوى جديد: أضف مفتاحه هنا بنفس البنية
+// ══════════════════════════════════════════════════════════════════
+const CURRICULUM = {
+    6: {
+        'التراكيب': [
+            'نصب المضارع والجملة المؤولة',
+            'جزم المضارع والجملة الشرطية',
+            'الأفعال الخمسة',
+            'الأسماء الخمسة',
+            'إعراب المثنى',
+            'إعراب جمع المذكر السالم',
+            'إعراب جمع المؤنث السالم',
+            'الحال والجملة الحالية',
+            'التمييز (الملفوظ والملحوظ)',
+        ],
+        'الصرف والتحويل': [
+            'تصريف الفعل الصحيح (السالم والمهموز والمضعف)',
+            'تصريف الفعل المعتل (المثال والأجوف والناقص)',
+            'الميزان الصرفي',
+            'اسم الفاعل واسم المفعول',
+            'اسما الزمان والمكان',
+            'اسم الآلة',
+            'اسم التفضيل',
+            'العدد والمعدود',
+            'جمع التكسير',
+        ],
+        'الإملاء': [
+            'همزتا الوصل والقطع وهمزة ابن',
+            'الألف اللينة (الممدودة والمقصورة)',
+            'الهمزة المتوسطة والهمزة المتطرفة',
+            'الكلمات التي يخالف نطقها رسمها',
+        ],
+    },
+    5: {
+        'التراكيب': [
+            'الجملة الاسمية: أنواع الخبر',
+            'كان وأخواتها',
+            'إن وأخواتها',
+            'اللازم والمتعدي',
+            'المفعول المطلق',
+            'المفعول لأجله',
+            'المفعول فيه',
+            'الحال مفردة',
+            'النعت الحقيقي',
+            'التوكيد',
+            'نائب الفاعل',
+        ],
+        'الصرف والتحويل': [
+            'المجرد والمزيد',
+            'الصحيح والمعتل',
+            'الصحيح في الأزمنة الثلاثة',
+            'المعتل في الأزمنة الثلاثة',
+            'المصادر',
+            'المثنى: صياغته',
+            'جمع المذكر السالم: صياغته',
+            'جمع المؤنث السالم: صياغته',
+            'اسم الفاعل: صياغته',
+            'اسم المفعول: صياغته',
+            'الماضي المبني للمجهول',
+        ],
+        'الإملاء': [
+            'التاء المربوطة والمبسوطة',
+            'همزتا الوصل والقطع',
+            'همزة ابن',
+            'الهمزة المتوسطة',
+            'الهمزة المتطرفة',
+            'كتابة "ما" الاستفهامية',
+            'الألف اللينة في الأفعال',
+            'الألف اللينة في الأسماء',
+            'كلمات يخالف نطقها رسمها',
+            'تنوين المقصور والمنقوص والممدود',
+        ],
+    },
+    4: {
+        'التراكيب': [
+            'الجملة المفيدة',
+            'عناصر الجملة الفعلية',
+            'عناصر الجملة الاسمية',
+            'الفعل اللازم والمتعدي',
+            'الفاعل: ظاهر وضمير',
+            'المفعول به: ظاهر وضمير',
+            'نصب المضارع الصحيح والجملة المؤولة',
+            'جزم المضارع الصحيح والجملة الشرطية',
+            'النواسخ الفعلية',
+            'النواسخ الحرفية',
+            'العطف بالواو والفاء وثم',
+        ],
+        'الصرف والتحويل': [
+            'أقسام الكلمة',
+            'الفعل وأزمنته',
+            'الاسم: الجنس والعدد',
+            'الفعل الصحيح: تعريفه وأنواعه',
+            'الفعل المعتل: تعريفه وأنواعه',
+            'أسماء الإشارة',
+            'الأسماء الموصولة',
+            'الضمائر المتصلة',
+            'الضمائر المنفصلة',
+            'النكرة والمعرفة بالاسم العلم، بالتعريف وبالإضافة',
+            'الإضافة إلى اسم ظاهر أو ضمير',
+        ],
+        'الإملاء': [
+            'علامات الترقيم',
+            'التاء المربوطة',
+            'التاء المبسوطة',
+            'همزتا الوصل والقطع',
+            'الهمزة المتوسطة على الألف',
+            'الهمزة المتوسطة على الواو',
+            'الهمزة المتوسطة على الياء',
+            'الهمزة المتطرفة',
+            'أسماء الإشارة',
+            'الأسماء الموصولة',
+        ],
+    },
+    3: {},
+    2: {},
+    1: {},
+};
+
+const LEVEL_NAMES = { 6:'السادس', 5:'الخامس', 4:'الرابع', 3:'الثالث', 2:'الثاني', 1:'الأول' };
+
+const selectedLessons = { main: new Set(), final: new Set() };
+
+// ── بناء لوحة الدروس ──────────────────────────────────────────
+function selectCurriculum(scope, level, el) {
+    document.querySelectorAll(`#${scope}-curr-chips .curr-chip`).forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+
+    const body   = document.getElementById(`${scope}-lessons-body`);
+    const panel  = document.getElementById(`${scope}-lessons-panel`);
+    const lbl    = document.getElementById(`${scope}-step2-label`);
+    const title  = document.getElementById(`${scope}-panel-title`);
+    const color  = scope === 'final' ? 'teal' : 'purple';
+    const data   = CURRICULUM[level] || {};
+    const cats   = Object.keys(data).filter(k => data[k] && data[k].length);
+
+    selectedLessons[scope].clear();
+    body.innerHTML = '';
+    document.getElementById(`${scope}-custom-group`) && (document.getElementById(`${scope}-custom-group`).remove());
+    updatePreview(scope);
+
+    title.textContent = `دروس المستوى ${LEVEL_NAMES[level]}`;
+    lbl.style.display = 'block';
+    panel.classList.add('visible');
+
+    if (!cats.length) {
+        body.innerHTML = `<p class="empty-msg">لا توجد دروس مضافة لهذا المستوى بعد — يمكنك إضافة درس يدوياً أدناه.</p>`;
+        return;
+    }
+
+    cats.forEach(cat => {
+        const groupTitle = document.createElement('div');
+        groupTitle.className = `lesson-group-title ${color}`;
+        groupTitle.textContent = cat;
+        body.appendChild(groupTitle);
+
+        data[cat].forEach((lesson, idx) => {
+            const id  = `cb-${scope}-${level}-${cat}-${idx}`;
+            const row = document.createElement('label');
+            row.className = `lesson-cb-row ${color}`;
+            row.innerHTML = `<input type="checkbox" id="${id}" value="${lesson}"><span style="font-size:0.88rem;flex:1;">${lesson}</span>`;
+            row.querySelector('input').addEventListener('change', function() {
+                if (this.checked) selectedLessons[scope].add(lesson);
+                else              selectedLessons[scope].delete(lesson);
+                updatePreview(scope);
+            });
+            body.appendChild(row);
+        });
+    });
 }
 
+function selectAllLessons(scope) {
+    document.querySelectorAll(`#${scope}-lessons-body input[type="checkbox"]`).forEach(cb => {
+        cb.checked = true;
+        selectedLessons[scope].add(cb.value);
+    });
+    updatePreview(scope);
+}
+
+function clearAllLessons(scope) {
+    document.querySelectorAll(`#${scope}-lessons-body input[type="checkbox"]`).forEach(cb => cb.checked = false);
+    // حافظ على الدروس المضافة يدوياً
+    const manual = [...selectedLessons[scope]].filter(l => {
+        const allInList = Object.values(CURRICULUM).flatMap(lv => Object.values(lv).flat());
+        return !allInList.includes(l);
+    });
+    selectedLessons[scope] = new Set(manual);
+    updatePreview(scope);
+}
+
+function addCustomLesson(scope) {
+    const input = document.getElementById(`${scope}-custom-input`);
+    const val   = input.value.trim();
+    if (!val) return;
+
+    const body  = document.getElementById(`${scope}-lessons-body`);
+    const color = scope === 'final' ? 'teal' : 'purple';
+
+    // إنشاء مجموعة الدروس اليدوية إن لم تكن موجودة
+    if (!document.getElementById(`${scope}-custom-group`)) {
+        const gt = document.createElement('div');
+        gt.className = `lesson-group-title ${color}`;
+        gt.textContent = 'مضافة يدوياً';
+        body.appendChild(gt);
+        const grp = document.createElement('div');
+        grp.id = `${scope}-custom-group`;
+        body.appendChild(grp);
+    }
+
+    const id  = `cb-custom-${scope}-${Date.now()}`;
+    const row = document.createElement('label');
+    row.className = `lesson-cb-row ${color}`;
+    row.innerHTML = `<input type="checkbox" id="${id}" value="${val}" checked><span style="font-size:0.88rem;flex:1;">${val}</span>`;
+    row.querySelector('input').addEventListener('change', function() {
+        if (this.checked) selectedLessons[scope].add(val);
+        else              selectedLessons[scope].delete(val);
+        updatePreview(scope);
+    });
+    document.getElementById(`${scope}-custom-group`).appendChild(row);
+    selectedLessons[scope].add(val);
+    input.value = '';
+    document.getElementById(`${scope}-lessons-panel`).classList.add('visible');
+    updatePreview(scope);
+}
+
+function updatePreview(scope) {
+    const el  = document.getElementById(`${scope}-preview`);
+    const arr = [...selectedLessons[scope]];
+    if (arr.length) {
+        el.style.display = 'block';
+        el.textContent   = '✅ ' + arr.join(' + ');
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+function getLessonTitle(scope) {
+    return [...selectedLessons[scope]].join(' + ');
+}
+
+// ── مستوى الطلاب ──────────────────────────────────────────────
+function getSelectedLevels(scope) {
+    const pfx = scope === 'final' ? 'final' : 'main';
+    return [...document.querySelectorAll(`#${pfx}-levels input:checked`)].map(c => c.value).join(' + ') || 'غير محدد';
+}
+function selectAllLevels(scope) { document.querySelectorAll(`#${scope==='final'?'final':'main'}-levels input`).forEach(c => c.checked=true); }
+function clearAllLevels(scope)  { document.querySelectorAll(`#${scope==='final'?'final':'main'}-levels input`).forEach(c => c.checked=false); }
+
+// ── إشعارات ───────────────────────────────────────────────────
+function notify(msg, type='success') {
+    const s = document.getElementById('status');
+    s.innerText = msg;
+    s.style.backgroundColor = type==='success' ? '#10b981' : '#ef4444';
+    s.style.display = 'block';
+    setTimeout(() => s.style.display='none', 4000);
+}
+
+// ── حالة التخزين ──────────────────────────────────────────────
 function checkStorageStatus() {
     try {
         const raw = localStorage.getItem('moatark_questions');
-        const mainEl  = document.getElementById('main-storage-status');
-        const finalEl = document.getElementById('final-storage-status');
+        const mEl = document.getElementById('main-storage-status');
+        const fEl = document.getElementById('final-storage-status');
         if (raw) {
             const d = JSON.parse(raw);
-            mainEl.innerHTML  = d.phase1
+            mEl.innerHTML = d.phase1
                 ? `<span class="storage-badge badge-ok">✅ بيانات محفوظة — phase1: ${d.phase1.length} سؤال، phase2: ${(d.phase2||[]).length} سؤال</span>`
                 : `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للمسابقة الرئيسية</span>`;
-            finalEl.innerHTML = d.final
+            fEl.innerHTML = d.final
                 ? `<span class="storage-badge badge-ok">✅ بيانات النهائي محفوظة — individual: ${(d.final.individual||[]).length}، speed: ${(d.final.speed||[]).length}</span>`
-                : `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي — سيستخدم الأسئلة الافتراضية</span>`;
+                : `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>`;
         } else {
-            mainEl.innerHTML  = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات محفوظة</span>`;
-            finalEl.innerHTML = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>`;
+            mEl.innerHTML = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات محفوظة</span>`;
+            fEl.innerHTML = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>`;
         }
     } catch(e) {}
 }
 
-function getSelectedLevels(scope) {
-    const checked = [...document.querySelectorAll(`#${scope === 'final' ? 'final' : 'main'}-levels input[type="checkbox"]:checked`)];
-    return checked.map(cb => cb.value).join(' + ') || 'غير محدد';
-}
-function selectAllLevels(scope) { document.querySelectorAll(`#${scope === 'final' ? 'final' : 'main'}-levels input[type="checkbox"]`).forEach(cb => cb.checked = true); }
-function clearAllLevels(scope)  { document.querySelectorAll(`#${scope === 'final' ? 'final' : 'main'}-levels input[type="checkbox"]`).forEach(cb => cb.checked = false); }
-
-function isValidStructure(data) {
-    try {
-        const isMCQ  = q => q && typeof q.q === 'string' && q.q.trim() && Array.isArray(q.o) && q.o.length === 4 && Number.isInteger(q.a) && q.a >= 0 && q.a <= 3;
-        const isOpen = q => q && typeof q.q === 'string' && q.q.trim() && typeof q.a === 'string' && q.a.trim();
-        if (!Array.isArray(data.phase1) || !data.phase1.length) return 'phase1 مفقودة أو فارغة';
-        if (!Array.isArray(data.phase2) || !data.phase2.length) return 'phase2 مفقودة أو فارغة';
-        if (!Array.isArray(data.phase4) || !data.phase4.length) return 'phase4 مفقودة أو فارغة';
-        if (!data.stock) return 'stock مفقود';
-        if (!Array.isArray(data.stock['المدرسة']) || !data.stock['المدرسة'].length) return 'stock → المدرسة مفقود';
-        if (!Array.isArray(data.stock['المحفظة']) || !data.stock['المحفظة'].length) return 'stock → المحفظة مفقود';
-        if (!Array.isArray(data.stock['الكتاب'])  || !data.stock['الكتاب'].length)  return 'stock → الكتاب مفقود';
-        if (!data.phase1.every(isMCQ))  return 'phase1: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
-        if (!data.phase2.every(isMCQ))  return 'phase2: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
-        if (!data.phase4.every(isOpen)) return 'phase4: "a" يجب أن يكون نصاً';
-        if (!data.stock['المدرسة'].every(isOpen)) return 'stock.المدرسة: كل سؤال يحتاج (q, a نص)';
-        if (!data.stock['المحفظة'].every(isOpen)) return 'stock.المحفظة: كل سؤال يحتاج (q, a نص)';
-        if (!data.stock['الكتاب'].every(isOpen))  return 'stock.الكتاب: كل سؤال يحتاج (q, a نص)';
-        return true;
-    } catch { return 'خطأ في تحليل البنية'; }
-}
-
-function isValidFinalStructure(data) {
-    try {
-        const isOpen = q => q && typeof q.q === 'string' && q.q.trim() && typeof q.a === 'string' && q.a.trim();
-        if (!data.final) return 'مفتاح "final" مفقود من JSON';
-        const f = data.final;
-        if (!Array.isArray(f.individual) || !f.individual.length) return 'final.individual مفقودة أو فارغة';
-        if (!Array.isArray(f.target)     || !f.target.length)     return 'final.target مفقودة أو فارغة';
-        if (!f.choice)                                             return 'final.choice مفقود';
-        if (!Array.isArray(f.choice['تراكيب']) || !f.choice['تراكيب'].length) return 'final.choice.تراكيب مفقودة';
-        if (!Array.isArray(f.choice['صرف'])     || !f.choice['صرف'].length)   return 'final.choice.صرف مفقود';
-        if (!Array.isArray(f.choice['إملاء'])   || !f.choice['إملاء'].length) return 'final.choice.إملاء مفقود';
-        if (!Array.isArray(f.speed)      || !f.speed.length)      return 'final.speed مفقودة أو فارغة';
-        if (!f.individual.every(isOpen))          return 'final.individual: (q, a نص)';
-        if (!f.target.every(isOpen))              return 'final.target: (q, a نص)';
-        if (!f.choice['تراكيب'].every(isOpen))   return 'final.choice.تراكيب: (q, a نص)';
-        if (!f.choice['صرف'].every(isOpen))       return 'final.choice.صرف: (q, a نص)';
-        if (!f.choice['إملاء'].every(isOpen))    return 'final.choice.إملاء: (q, a نص)';
-        if (!f.speed.every(isOpen))               return 'final.speed: (q, a نص)';
-        return true;
-    } catch { return 'خطأ في تحليل بنية النهائي'; }
-}
-
+// ── بناء البرومبتات ───────────────────────────────────────────
 function buildPrompt(lesson, level) {
     return `أنت مولد أسئلة لغة عربية محترف.
 أعد JSON فقط. بدون أي نص إضافي. بدون markdown. بدون شرح.
@@ -332,7 +607,6 @@ function buildPrompt(lesson, level) {
 
 phase1 و phase2: {"q": "نص السؤال", "o": ["خيار1", "خيار2", "خيار3", "خيار4"], "a": 2}
 "a" رقم صحيح 0-3 يشير لموضع الإجابة الصحيحة في "o"
-
 phase4 وstock: {"q": "نص السؤال", "a": "نص الإجابة النموذجية"}
 
 الأعداد:
@@ -372,113 +646,145 @@ function buildFinalPrompt(lesson, level, difficulty) {
 البنية الإلزامية:
 {
   "final": {
-    "individual": [{"q": "...", "a": "..."}, ...],
-    "target":     [{"q": "...", "a": "..."}, ...],
+    "individual": [{"q":"...","a":"..."},...],
+    "target":     [{"q":"...","a":"..."},...],
     "choice": {
-      "تراكيب": [{"q": "...", "a": "..."}, {"q": "...", "a": "..."}],
-      "صرف":    [{"q": "...", "a": "..."}, {"q": "...", "a": "..."}],
-      "إملاء":  [{"q": "...", "a": "..."}, {"q": "...", "a": "..."}]
+      "تراكيب": [{"q":"...","a":"..."},{"q":"...","a":"..."}],
+      "صرف":    [{"q":"...","a":"..."},{"q":"...","a":"..."}],
+      "إملاء":  [{"q":"...","a":"..."},{"q":"...","a":"..."}]
     },
-    "speed": [{"q": "...", "a": "..."}, ...]
+    "speed": [{"q":"...","a":"..."},...]
   }
 }
 
-الأعداد الإلزامية:
-- individual: 3 أسئلة
-- target:     4 أسئلة
-- تراكيب:     2 أسئلة
-- صرف:        2 أسئلة
-- إملاء:      2 أسئلة
-- speed:      4 أسئلة
-
-جميع الأسئلة مفتوحة — "a" دائماً نص عربي — بدون "o"
-الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}
-تحقق: individual=3 | target=4 | كل تصنيف=2 | speed=4`;
+الأعداد الإلزامية: individual=3 | target=4 | تراكيب=2 | صرف=2 | إملاء=2 | speed=4
+جميع الأسئلة مفتوحة — "a" دائماً نص — بدون "o"
+الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}`;
 }
 
+// ── أزرار النسخ ───────────────────────────────────────────────
 async function generateAndCopy() {
-    const lesson = document.getElementById('lesson_title').value;
-    const level  = getSelectedLevels('main');
-    if (!lesson.trim()) return notify('أدخل عنوان الدرس أولاً', 'error');
-    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
+    const lesson = getLessonTitle('main'), level = getSelectedLevels('main');
+    if (!lesson) return notify('اختر درساً واحداً على الأقل', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى طلاب واحداً على الأقل', 'error');
     try { await navigator.clipboard.writeText(buildPrompt(lesson, level)); notify('✅ تم نسخ البرومبت الأول'); }
-    catch { notify('❌ فشل النسخ — حاول مرة أخرى', 'error'); }
+    catch { notify('❌ فشل النسخ', 'error'); }
 }
 
 async function generateAndCopy2() {
-    const lesson     = document.getElementById('lesson_title').value;
-    const level      = getSelectedLevels('main');
+    const lesson = getLessonTitle('main'), level = getSelectedLevels('main');
     const difficulty = document.getElementById('lesson_difficulty').value;
-    if (!lesson.trim()) return notify('أدخل عنوان الدرس أولاً', 'error');
-    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
+    if (!lesson) return notify('اختر درساً واحداً على الأقل', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى طلاب واحداً على الأقل', 'error');
     try { await navigator.clipboard.writeText(buildStrictPrompt2(lesson, level, difficulty)); notify('✅ تم نسخ البرومبت الثاني'); }
-    catch { notify('❌ فشل النسخ — حاول مرة أخرى', 'error'); }
+    catch { notify('❌ فشل النسخ', 'error'); }
 }
 
 async function generateAndCopyFinal() {
-    const lesson     = document.getElementById('final_lesson_title').value;
-    const level      = getSelectedLevels('final');
+    const lesson = getLessonTitle('final'), level = getSelectedLevels('final');
     const difficulty = document.getElementById('final_difficulty').value;
-    if (!lesson.trim()) return notify('أدخل موضوع النهائي أولاً', 'error');
-    if (level === 'غير محدد') return notify('اختر مستوى واحداً على الأقل', 'error');
+    if (!lesson) return notify('اختر موضوعاً واحداً على الأقل', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى طلاب واحداً على الأقل', 'error');
     try { await navigator.clipboard.writeText(buildFinalPrompt(lesson, level, difficulty)); notify('✅ تم نسخ برومبت النهائي'); }
-    catch { notify('❌ فشل النسخ — حاول مرة أخرى', 'error'); }
+    catch { notify('❌ فشل النسخ', 'error'); }
 }
 
+// ── اللصق والحفظ ──────────────────────────────────────────────
 async function pasteData(fieldId) {
-    try { const text = await navigator.clipboard.readText(); document.getElementById(fieldId).value = text; notify('تم اللصق'); }
+    try { document.getElementById(fieldId).value = await navigator.clipboard.readText(); notify('تم اللصق'); }
     catch { notify('❌ فشل اللصق — استخدم Ctrl+V', 'error'); }
+}
+
+function isValidStructure(data) {
+    try {
+        const isMCQ  = q => q && typeof q.q==='string' && q.q.trim() && Array.isArray(q.o) && q.o.length===4 && Number.isInteger(q.a) && q.a>=0 && q.a<=3;
+        const isOpen = q => q && typeof q.q==='string' && q.q.trim() && typeof q.a==='string' && q.a.trim();
+        if (!Array.isArray(data.phase1)||!data.phase1.length) return 'phase1 مفقودة أو فارغة';
+        if (!Array.isArray(data.phase2)||!data.phase2.length) return 'phase2 مفقودة أو فارغة';
+        if (!Array.isArray(data.phase4)||!data.phase4.length) return 'phase4 مفقودة أو فارغة';
+        if (!data.stock) return 'stock مفقود';
+        if (!Array.isArray(data.stock['المدرسة'])||!data.stock['المدرسة'].length) return 'stock → المدرسة مفقود';
+        if (!Array.isArray(data.stock['المحفظة'])||!data.stock['المحفظة'].length) return 'stock → المحفظة مفقود';
+        if (!Array.isArray(data.stock['الكتاب']) ||!data.stock['الكتاب'].length)  return 'stock → الكتاب مفقود';
+        if (!data.phase1.every(isMCQ))  return 'phase1: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if (!data.phase2.every(isMCQ))  return 'phase2: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if (!data.phase4.every(isOpen)) return 'phase4: "a" يجب أن يكون نصاً';
+        if (!data.stock['المدرسة'].every(isOpen)) return 'stock.المدرسة خطأ';
+        if (!data.stock['المحفظة'].every(isOpen)) return 'stock.المحفظة خطأ';
+        if (!data.stock['الكتاب'].every(isOpen))  return 'stock.الكتاب خطأ';
+        return true;
+    } catch { return 'خطأ في تحليل البنية'; }
+}
+
+function isValidFinalStructure(data) {
+    try {
+        const isOpen = q => q && typeof q.q==='string' && q.q.trim() && typeof q.a==='string' && q.a.trim();
+        if (!data.final) return 'مفتاح "final" مفقود';
+        const f = data.final;
+        if (!Array.isArray(f.individual)||!f.individual.length) return 'final.individual مفقودة';
+        if (!Array.isArray(f.target)||!f.target.length)         return 'final.target مفقودة';
+        if (!f.choice)                                           return 'final.choice مفقود';
+        if (!Array.isArray(f.choice['تراكيب'])||!f.choice['تراكيب'].length) return 'final.choice.تراكيب مفقودة';
+        if (!Array.isArray(f.choice['صرف'])||!f.choice['صرف'].length)       return 'final.choice.صرف مفقود';
+        if (!Array.isArray(f.choice['إملاء'])||!f.choice['إملاء'].length)   return 'final.choice.إملاء مفقود';
+        if (!Array.isArray(f.speed)||!f.speed.length)           return 'final.speed مفقودة';
+        if (!f.individual.every(isOpen))        return 'final.individual: خطأ';
+        if (!f.target.every(isOpen))            return 'final.target: خطأ';
+        if (!f.choice['تراكيب'].every(isOpen)) return 'final.choice.تراكيب: خطأ';
+        if (!f.choice['صرف'].every(isOpen))     return 'final.choice.صرف: خطأ';
+        if (!f.choice['إملاء'].every(isOpen))  return 'final.choice.إملاء: خطأ';
+        if (!f.speed.every(isOpen))             return 'final.speed: خطأ';
+        return true;
+    } catch { return 'خطأ في تحليل بنية النهائي'; }
 }
 
 function saveToGame() {
     let raw = document.getElementById('json_input').value.trim();
     if (!raw) return notify('الحقل فارغ', 'error');
     try {
-        const clean  = raw.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(clean);
-        const validResult = isValidStructure(parsed);
-        if (validResult !== true) return notify('❌ ' + validResult, 'error');
-        let existingFinal = null;
-        try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd = JSON.parse(ex); if (exd.final) existingFinal = exd.final; } } catch(e) {}
-        const finalData = { phase1: parsed.phase1, phase2: parsed.phase2, phase4: parsed.phase4, stock: { 'المدرسة': parsed.stock['المدرسة'], 'المحفظة': parsed.stock['المحفظة'], 'الكتاب': parsed.stock['الكتاب'] } };
-        if (existingFinal) finalData.final = existingFinal;
-        localStorage.setItem('moatark_questions', JSON.stringify(finalData));
-        notify('✅ تم الحفظ بنجاح — يمكنك العودة للعبة');
+        const parsed = JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
+        const v = isValidStructure(parsed);
+        if (v !== true) return notify('❌ ' + v, 'error');
+        let ef = null;
+        try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd=JSON.parse(ex); if(exd.final) ef=exd.final; } } catch(e){}
+        const fd = { phase1:parsed.phase1, phase2:parsed.phase2, phase4:parsed.phase4, stock:{'المدرسة':parsed.stock['المدرسة'],'المحفظة':parsed.stock['المحفظة'],'الكتاب':parsed.stock['الكتاب']} };
+        if (ef) fd.final = ef;
+        localStorage.setItem('moatark_questions', JSON.stringify(fd));
+        notify('✅ تم الحفظ بنجاح');
         checkStorageStatus();
-    } catch { notify('❌ JSON غير صالح — تأكد من صحة التنسيق', 'error'); }
+    } catch { notify('❌ JSON غير صالح', 'error'); }
 }
 
 function saveFinalToGame() {
     let raw = document.getElementById('final_json_input').value.trim();
     if (!raw) return notify('حقل النهائي فارغ', 'error');
     try {
-        const clean  = raw.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(clean);
-        const validResult = isValidFinalStructure(parsed);
-        if (validResult !== true) return notify('❌ ' + validResult, 'error');
-        let existingData = {};
-        try { const ex = localStorage.getItem('moatark_questions'); if (ex) existingData = JSON.parse(ex); } catch(e) {}
-        existingData.final = parsed.final;
-        localStorage.setItem('moatark_questions', JSON.stringify(existingData));
+        const parsed = JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
+        const v = isValidFinalStructure(parsed);
+        if (v !== true) return notify('❌ ' + v, 'error');
+        let ed = {};
+        try { const ex = localStorage.getItem('moatark_questions'); if(ex) ed=JSON.parse(ex); } catch(e){}
+        ed.final = parsed.final;
+        localStorage.setItem('moatark_questions', JSON.stringify(ed));
         notify('✅ تم حفظ بيانات النهائي بنجاح');
         checkStorageStatus();
     } catch { notify('❌ JSON غير صالح', 'error'); }
 }
 
-function clearField(fieldId) { document.getElementById(fieldId).value = ''; notify('تم المسح'); }
+function clearField(id) { document.getElementById(id).value=''; notify('تم المسح'); }
 
 function resetToDefaults() {
     if (!confirm('سيتم حذف أسئلة المسابقة الرئيسية. بيانات النهائي ستبقى. متأكد؟')) return;
-    try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd = JSON.parse(ex); localStorage.setItem('moatark_questions', JSON.stringify(exd.final ? { final: exd.final } : {})); } else { localStorage.removeItem('moatark_questions'); } } catch(e) { localStorage.removeItem('moatark_questions'); }
-    document.getElementById('json_input').value = '';
+    try { const ex=localStorage.getItem('moatark_questions'); if(ex){const exd=JSON.parse(ex); localStorage.setItem('moatark_questions',JSON.stringify(exd.final?{final:exd.final}:{}));} else {localStorage.removeItem('moatark_questions');} } catch(e){localStorage.removeItem('moatark_questions');}
+    document.getElementById('json_input').value='';
     notify('✅ تمت إعادة الضبط');
     checkStorageStatus();
 }
 
 function resetFinal() {
     if (!confirm('سيتم حذف بيانات النهائي. المسابقة الرئيسية لن تتأثر. متأكد؟')) return;
-    try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd = JSON.parse(ex); delete exd.final; localStorage.setItem('moatark_questions', JSON.stringify(exd)); } } catch(e) {}
-    document.getElementById('final_json_input').value = '';
+    try { const ex=localStorage.getItem('moatark_questions'); if(ex){const exd=JSON.parse(ex); delete exd.final; localStorage.setItem('moatark_questions',JSON.stringify(exd));} } catch(e){}
+    document.getElementById('final_json_input').value='';
     notify('✅ تم حذف بيانات النهائي');
     checkStorageStatus();
 }

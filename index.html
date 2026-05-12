@@ -2,794 +2,814 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الاحترافية | معترك الضاد</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مُعترك الضاد: مَلحمة الظواهر اللغوية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; --final-teal: #0e7490; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; padding-bottom: 40px; }
-        .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .header-logo { width: 60px; height: auto; }
-        .main-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
-        .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .ai-section  { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
-        .fin-section { background: linear-gradient(135deg, #ecfeff, #cffafe); border: 2px dashed var(--final-teal); }
-        input, select, textarea { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; font-size: 1rem; }
+        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+        :root {
+            --moroccan-blue: #006847; --moroccan-gold: #c5a059; --deep-red: #8b0000;
+            --bg-light: #f4f1ea; --card: #ffffff; --text: #333;
+            --success: #10b981; --danger: #ef4444;
+        }
+        body.dark-mode { --bg-light: #0f172a; --card: #1e293b; --text: #f1f5f9; --moroccan-gold: #fbbf24; --moroccan-blue: #00a873; }
+        body {
+            background-color: var(--bg-light);
+            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            color: var(--text); font-family: 'Cairo', sans-serif; margin: 0; padding: 0;
+            height: 100vh; display: flex; flex-direction: column;
+            transition: background 0.3s; overflow: hidden; position: relative;
+        }
 
-        /* ── مستوى المنهج ── */
-        .step-label { font-weight: 900; font-size: 0.88rem; margin-bottom: 10px; display: block; }
-        .step-label.purple { color: var(--ai-purple); }
-        .step-label.teal   { color: var(--final-teal); }
-        .curr-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-        .curr-chip { padding: 7px 20px; border-radius: 50px; font-size: 0.88rem; font-weight: 700; cursor: pointer; border: 2px solid; transition: 0.18s; user-select: none; }
-        .curr-chip.purple { border-color: var(--ai-purple); color: var(--ai-purple); background: white; }
-        .curr-chip.teal   { border-color: var(--final-teal); color: var(--final-teal); background: white; }
-        .curr-chip.purple.active { background: var(--ai-purple); color: white; }
-        .curr-chip.teal.active   { background: var(--final-teal); color: white; }
+        /* ============================================================
+           ✨ KEYFRAMES — مؤثرات الحركة
+        ============================================================ */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(28px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.82); }
+            to   { opacity: 1; transform: scale(1);    }
+        }
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-22px); }
+            to   { opacity: 1; transform: translateY(0);     }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(35px); }
+            to   { opacity: 1; transform: translateX(0);    }
+        }
+        @keyframes slideUpPanel {
+            from { transform: translateY(100%); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.78) translateY(24px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);    }
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0);   }
+            50%       { transform: translateY(-5px); }
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(239,68,68,0.35); }
+            50%       { box-shadow: 0 0 32px rgba(239,68,68,0.75), 0 0 55px rgba(239,68,68,0.2); }
+        }
+        @keyframes timerBeat {
+            0%, 100% { transform: scale(1);    }
+            50%       { transform: scale(1.07); }
+        }
+        @keyframes timerShake {
+            0%, 100% { transform: translateX(0);    }
+            18%       { transform: translateX(-6px); }
+            36%       { transform: translateX(6px);  }
+            54%       { transform: translateX(-5px); }
+            72%       { transform: translateX(5px);  }
+        }
+        @keyframes optIn {
+            from { opacity: 0; transform: translateY(14px) scale(0.93); }
+            to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        @keyframes phaseTag {
+            from { opacity: 0; transform: translateY(-10px) scale(0.88); }
+            to   { opacity: 1; transform: translateY(0)     scale(1);    }
+        }
+        @keyframes announcerIn {
+            from { opacity: 0; transform: translateX(28px); }
+            to   { opacity: 1; transform: translateX(0);    }
+        }
+        @keyframes answerReveal {
+            0%   { transform: scale(1);    }
+            45%  { transform: scale(1.18); }
+            100% { transform: scale(1);    }
+        }
+        @keyframes royalPulse {
+            0%   { transform: scale(1);    box-shadow: 0 0 20px rgba(197,160,89,0.4); }
+            50%  { transform: scale(1.05); box-shadow: 0 0 40px rgba(197,160,89,0.7); }
+            100% { transform: scale(1);    box-shadow: 0 0 20px rgba(197,160,89,0.4); }
+        }
 
-        /* ── لوحة الدروس ── */
-        .lessons-panel { display: none; background: white; border-radius: 14px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 18px; }
-        .lessons-panel.visible { display: block; }
-        .lessons-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
-        .lessons-panel-header span { font-weight: 900; font-size: 0.88rem; }
-        .lessons-panel-header span.purple { color: var(--ai-purple); }
-        .lessons-panel-header span.teal   { color: var(--final-teal); }
-        .lessons-panel-header .hdr-btns { display: flex; gap: 6px; }
-        .hdr-btns button { font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
-        .hdr-btns button:hover { background: #f1f5f9; }
-        .lessons-body { padding: 14px 16px; max-height: 340px; overflow-y: auto; }
-        .lesson-group-title { font-weight: 900; font-size: 0.78rem; padding: 3px 10px; border-radius: 6px; margin: 12px 0 8px; display: inline-block; }
-        .lesson-group-title.purple { background: #ede9fe; color: var(--ai-purple); }
-        .lesson-group-title.teal   { background: #cffafe; color: var(--final-teal); }
-        .lesson-group-title:first-child { margin-top: 0; }
-        .lesson-cb-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: pointer; transition: 0.15s; }
-        .lesson-cb-row:hover { background: #f8fafc; }
-        .lesson-cb-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--ai-purple); cursor: pointer; flex-shrink: 0; }
-        .lesson-cb-row.teal input[type="checkbox"] { accent-color: var(--final-teal); }
-        .lesson-cb-row label { font-size: 0.88rem; cursor: pointer; flex: 1; }
-        .lessons-footer { padding: 10px 16px; border-top: 1px solid #f1f5f9; display: flex; gap: 10px; align-items: center; }
-        .lessons-footer input { flex: 1; font-size: 0.88rem; padding: 8px 12px; }
-        .lessons-footer button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
-        .lessons-footer button.purple { background: var(--ai-purple); color: white; }
-        .lessons-footer button.teal   { background: var(--final-teal); color: white; }
-        .selected-preview { font-size: 0.82rem; padding: 9px 14px; border-radius: 9px; margin-bottom: 18px; line-height: 1.8; min-height: 38px; }
-        .selected-preview.purple { background: #f5f3ff; color: #5b21b6; border: 1.5px dashed #c4b5fd; }
-        .selected-preview.teal   { background: #ecfeff; color: #0e7490; border: 1.5px dashed #67e8f9; }
-        .empty-msg { color: #94a3b8; font-size: 0.85rem; padding: 10px 0; }
+        /* ============================================================
+           هيكل الصفحة
+        ============================================================ */
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 5px 15px; flex-shrink: 0; width: 100%;
+            max-width: 1000px; margin: 0 auto;
+            animation: slideInDown 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        .logo-box {
+            width: clamp(40px,7vh,65px); height: clamp(40px,7vh,65px);
+            background: white; border-radius: 50%;
+            border: 2px solid var(--moroccan-gold);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            animation: logoFloat 3.5s ease-in-out infinite;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .logo-box:hover { box-shadow: 0 4px 18px rgba(197,160,89,0.35); }
+        .logo-box:last-child { animation-delay: 1.7s; }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ── صعوبة ومستوى الطلاب ── */
-        hr.soft { border: none; border-top: 1px solid #e2e8f0; margin: 18px 0; }
-        .difficulty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-        .difficulty-row label { font-weight: bold; font-size: 0.85rem; white-space: nowrap; }
-        .difficulty-row.purple label { color: var(--ai-purple); }
-        .difficulty-row.teal   label { color: var(--final-teal); }
-        .difficulty-row select { flex: 1; }
-        .levels-box { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .level-chip input[type="checkbox"] { display: none; }
-        .level-chip label { padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s; user-select: none; background: white; display: block; }
-        .level-chip.purple label { border: 2px solid var(--ai-purple); color: var(--ai-purple); }
-        .level-chip.teal   label { border: 2px solid var(--final-teal); color: var(--final-teal); }
-        .level-chip.purple input:checked + label { background: var(--ai-purple); color: white; }
-        .level-chip.teal   input:checked + label { background: var(--final-teal); color: white; }
-        .levels-label { font-weight: bold; font-size: 0.85rem; margin-bottom: 8px; display: block; }
-        .levels-label.purple { color: var(--ai-purple); }
-        .levels-label.teal   { color: var(--final-teal); }
-        .std-btns { display: flex; gap: 8px; margin-bottom: 8px; }
-        .std-btns button { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
-        .std-btns button:hover { background: #f1f5f9; }
+        .title-area {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            overflow: hidden; padding: 0 10px;
+            animation: fadeIn 0.7s ease 0.2s both;
+        }
+        .title-area img { width: 100%; max-height: clamp(50px,10vh,100px); object-fit: contain; }
 
-        /* ── بقية العناصر ── */
-        .json-editor { width: 100%; height: 250px; font-family: monospace; background: #1e293b; color: #10b981; direction: ltr; border: none; resize: vertical; margin-top: 10px; border-radius: 10px; padding: 12px; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .btn:active { transform: scale(0.97); }
-        .btn-copy-ai  { background: var(--ai-purple); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
-        .btn-copy-ai2 { background: #6d28d9;          width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
-        .btn-copy-fin { background: var(--final-teal); width: 100%; justify-content: center; font-size: 1.1rem; margin-top: 10px; }
-        .btn-paste { background: #3b82f6; }
-        .btn-save  { background: var(--primary); }
-        .btn-clear { background: #ef4444; }
-        .btn-reset { background: #f59e0b; color: #1e293b; }
-        .btn-home  { background: #64748b; }
-        .btn-final { background: var(--final-teal); }
-        .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-width: 90%; text-align: center; }
-        .schema-hint { background: #0f172a; border-radius: 12px; padding: 15px 18px; font-family: monospace; font-size: 0.8rem; direction: ltr; line-height: 1.8; margin-top: 12px; border: 1px solid #334155; }
-        .sh-key { color: #f59e0b; } .sh-str { color: #10b981; } .sh-num { color: #60a5fa; } .sh-comment { color: #64748b; }
-        .sh-label { display: inline-block; background: #1e293b; color: #94a3b8; border-radius: 6px; padding: 1px 8px; font-size: 0.72rem; margin-right: 8px; }
-        .sh-label.teal { color: #67e8f9; }
-        .section-divider { display: flex; align-items: center; gap: 12px; margin: 30px 0 20px; }
-        .section-divider span { font-weight: 900; font-size: 1rem; white-space: nowrap; color: var(--final-teal); }
-        .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--final-teal), transparent); }
-        .storage-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 50px; font-size: 0.78rem; font-weight: bold; margin-top: 8px; }
-        .badge-ok { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
-        .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-        .footer-credit { text-align: center; font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 10px; padding-bottom: 20px; }
-        .important-notice { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #f59e0b; border-right: 6px solid #d97706; border-radius: 16px; padding: 18px 22px; margin-bottom: 22px; display: flex; align-items: flex-start; gap: 14px; }
-        .important-notice .notice-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
-        .important-notice .notice-title { font-weight: 900; font-size: 1rem; color: #92400e; margin-bottom: 6px; }
-        .important-notice .notice-text { font-size: 0.88rem; color: #78350f; line-height: 1.9; }
-        .important-notice .notice-text strong { color: #b45309; background: #fde68a; padding: 1px 6px; border-radius: 5px; }
-        .prompt-choice-label { display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg, #ede9fe, #f5f3ff); border: 1.5px solid #c4b5fd; border-radius: 12px; padding: 12px 16px; margin-top: 18px; margin-bottom: 2px; }
-        .prompt-choice-label .pcl-icon { font-size: 1.3rem; flex-shrink: 0; }
-        .prompt-choice-label .pcl-text { font-size: 0.88rem; font-weight: 700; color: #5b21b6; line-height: 1.7; }
-        .prompt-choice-label .pcl-text span { background: #ddd6fe; padding: 1px 7px; border-radius: 6px; color: #4c1d95; }
+        .top-controls {
+            display: flex; justify-content: center; gap: 10px;
+            margin-bottom: 5px; flex-shrink: 0;
+            animation: fadeIn 0.6s ease 0.35s both;
+        }
+
+        .icon-btn {
+            background: var(--moroccan-gold); border: none;
+            width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 1rem;
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+        }
+        .icon-btn:hover {
+            transform: scale(1.18) translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.28);
+        }
+        .icon-btn:active { transform: scale(0.9); }
+        .refresh-active { transform: rotate(360deg) !important; transition: transform 0.5s ease !important; }
+
+        /* ============================================================
+           مودال الدليل
+        ============================================================ */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center;
+            z-index: 20000; backdrop-filter: blur(5px);
+            animation: fadeIn 0.25s ease both;
+        }
+        .modal-content {
+            background: var(--card); border: 3px solid var(--moroccan-gold);
+            width: 90%; max-width: 500px; padding: 25px; border-radius: 20px;
+            text-align: right; position: relative; color: var(--text); line-height: 1.6;
+            animation: modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        .modal-content h2 { color: var(--moroccan-blue); border-bottom: 2px solid var(--moroccan-gold); padding-bottom: 10px; margin-top: 0; }
+        .rule-box {
+            margin-bottom: 15px; border-right: 4px solid var(--moroccan-gold); padding-right: 15px;
+            transition: transform 0.2s, border-right-width 0.2s;
+            animation: slideInRight 0.4s ease both;
+        }
+        .rule-box:nth-child(1) { animation-delay: 0.05s; }
+        .rule-box:nth-child(2) { animation-delay: 0.13s; }
+        .rule-box:nth-child(3) { animation-delay: 0.21s; }
+        .rule-box:nth-child(4) { animation-delay: 0.29s; }
+        .rule-box:hover { transform: translateX(-5px); border-right-width: 6px; }
+        .close-modal {
+            position: absolute; top: 10px; left: 15px; font-size: 1.5rem;
+            cursor: pointer; color: var(--danger); font-weight: bold;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .close-modal:hover { transform: scale(1.3) rotate(12deg); }
+
+        /* ============================================================
+           الحاوية والكروت
+        ============================================================ */
+        .container {
+            width: 95%; max-width: 900px; margin: 0 auto;
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: center; padding-bottom: 160px;
+            overflow-y: auto; z-index: 2;
+        }
+        .card {
+            background: var(--card); padding: clamp(10px,2.5vh,20px);
+            border-radius: 20px; border-top: 6px solid var(--moroccan-blue);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center; width: 100%;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.34,1.2,0.64,1) both;
+            transition: box-shadow 0.3s;
+        }
+        .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.14); }
+
+        /* ============================================================
+           لوحة النقاط
+        ============================================================ */
+        .scoreboard {
+            display: grid; grid-template-columns: repeat(4,1fr);
+            gap: 8px; margin-bottom: 8px; flex-shrink: 0;
+        }
+        @media (max-width: 600px) { .scoreboard { grid-template-columns: repeat(2,1fr); } }
+
+        .team-box {
+            background: var(--card); padding: 5px; border-radius: 12px;
+            border: 2px solid #ddd; position: relative;
+            transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            animation: scaleIn 0.45s ease both;
+        }
+        .team-box:nth-child(1) { animation-delay: 0.04s; }
+        .team-box:nth-child(2) { animation-delay: 0.1s;  }
+        .team-box:nth-child(3) { animation-delay: 0.16s; }
+        .team-box:nth-child(4) { animation-delay: 0.22s; }
+        .team-box.active-turn {
+            border-color: var(--danger); border-width: 4px;
+            transform: scale(1.06);
+            animation: glowPulse 1.6s ease-in-out infinite;
+        }
+
+        .lifeline-icons { position: absolute; top: -8px; right: 2px; display: flex; gap: 2px; }
+        .lifeline-icons span {
+            background: white; border-radius: 50%; width: 18px; height: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: pointer;
+        }
+        .lifeline-icons span:hover { transform: scale(1.35); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
+
+        /* ============================================================
+           خيارات الإجابة
+        ============================================================ */
+        .options-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin: 8px 0; }
+
+        .opt, .component-btn {
+            background: #f8fafc; border: 2px solid #e2e8f0; padding: 10px;
+            border-radius: 10px; cursor: pointer; font-family: 'Cairo';
+            font-weight: bold; font-size: clamp(0.8rem,2vh,1rem);
+            transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .opt:nth-child(1) { animation: optIn 0.35s ease 0.06s both; }
+        .opt:nth-child(2) { animation: optIn 0.35s ease 0.14s both; }
+        .opt:nth-child(3) { animation: optIn 0.35s ease 0.22s both; }
+        .opt:nth-child(4) { animation: optIn 0.35s ease 0.30s both; }
+
+        .opt:hover {
+            transform: translateY(-4px) scale(1.04);
+            border-color: var(--moroccan-gold);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.13);
+        }
+        .opt:active { transform: scale(0.96); }
+
+        /* ============================================================
+           أزرار الصناديق
+        ============================================================ */
+        .component-btn {
+            animation: scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        .component-btn:not(.depleted):hover {
+            transform: translateY(-5px) scale(1.07);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+            border-color: var(--moroccan-gold);
+        }
+        .component-btn:active:not(.depleted) { transform: scale(0.95); }
+        .component-btn.depleted { opacity: 0.3; cursor: not-allowed; background: #e2e8f0; border-color: #cbd5e1; }
+
+        /* ============================================================
+           لوحة المدير
+        ============================================================ */
+        .admin-panel {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #1e293b; color: white;
+            padding: 15px 10px; border-top: 5px solid var(--moroccan-gold);
+            display: flex; flex-wrap: nowrap; overflow-x: auto;
+            justify-content: center; align-items: center;
+            gap: 15px; z-index: 10000; min-height: 140px;
+            padding-bottom: env(safe-area-inset-bottom, 15px);
+            animation: slideUpPanel 0.55s cubic-bezier(0.34,1.2,0.64,1) both;
+        }
+        .admin-group {
+            border: 2px solid #475569; padding: 10px 8px; border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            flex-shrink: 0; min-width: 125px; background: rgba(255,255,255,0.08);
+            transition: transform 0.25s, background 0.25s;
+        }
+        .admin-group:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.15) !important;
+        }
+
+        .btn-admin {
+            padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer;
+            font-family: 'Cairo'; font-weight: 900; font-size: 0.95rem;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+        }
+        .btn-admin:hover {
+            transform: translateY(-3px) scale(1.07);
+            box-shadow: 0 5px 14px rgba(0,0,0,0.25);
+        }
+        .btn-admin:active { transform: scale(0.94); }
+
+        #timer {
+            font-size: clamp(1.5rem,6vh,2.8rem); line-height: 1;
+            margin: 2px 0; color: var(--danger); font-weight: 900;
+            display: inline-block;
+            animation: timerBeat 1s ease-in-out infinite;
+            transition: color 0.4s;
+        }
+        #timer.urgent {
+            animation: timerShake 0.45s ease-in-out infinite !important;
+        }
+
+        #q-text {
+            font-size: clamp(1.1rem,3.5vh,1.5rem); line-height: 1.3;
+            margin-bottom: 8px; font-family: 'Amiri'; font-weight: bold;
+            transition: opacity 0.35s, transform 0.35s;
+        }
+        #q-text.question-enter {
+            animation: fadeSlideUp 0.4s ease both;
+        }
+
+        #phase-label {
+            background: var(--moroccan-blue); color: white;
+            padding: 2px 12px; border-radius: 50px; font-size: 0.75rem;
+            display: inline-block; margin-bottom: 5px;
+            animation: phaseTag 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        #target-announcer {
+            background: var(--danger); color: white; padding: 5px 15px;
+            border-radius: 10px; font-size: 1.1rem; margin-bottom: 10px;
+            display: none; font-weight: 900;
+            animation: announcerIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        #manual-answer-display {
+            font-size: 1.4rem; color: var(--moroccan-blue); font-weight: 900;
+            transition: color 0.4s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            display: inline-block;
+        }
+        #manual-answer-display.revealed {
+            animation: answerReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        #answer-input {
+            padding: 15px; width: 145px; font-size: 1.1rem;
+            border-radius: 10px; border: 3px solid var(--moroccan-gold);
+            text-align: center; font-weight: 900; background: #ffffff; color: #000;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        #answer-input:focus {
+            outline: none; transform: scale(1.04);
+            box-shadow: 0 0 18px rgba(197,160,89,0.45);
+        }
+
+        #team-count {
+            padding: 10px; border-radius: 8px; margin-bottom: 15px;
+            font-weight: bold; border: 2px solid var(--moroccan-gold);
+            transition: box-shadow 0.25s, transform 0.25s;
+        }
+        #team-count:focus {
+            outline: none; transform: scale(1.03);
+            box-shadow: 0 0 14px rgba(197,160,89,0.35);
+        }
+
+        .final-gate {
+            background: linear-gradient(45deg,#0f172a,#1e293b);
+            border: 3px solid #c5a059; color: #c5a059;
+            padding: 20px 40px; font-size: 1.5rem; border-radius: 50px;
+            text-decoration: none; display: inline-block; margin-top: 25px;
+            font-weight: 900; box-shadow: 0 0 20px rgba(197,160,89,0.4);
+            animation: royalPulse 2s infinite; cursor: pointer;
+        }
+
+        .footer-credit {
+            position: fixed; bottom: 145px; left: 0; right: 0;
+            font-size: 0.75rem; color: rgba(0,0,0,0.3); font-weight: bold;
+            text-align: center; width: 100%; z-index: 1; pointer-events: none;
+        }
+        body.dark-mode .footer-credit { color: rgba(255,255,255,0.15); }
+
+        @media (min-width: 1200px) {
+            .container { max-width: 1100px; }
+            .card { padding: clamp(18px, 3vh, 34px); border-radius: 28px; }
+            #q-text { font-size: clamp(1.3rem, 2.8vh, 2rem); }
+            .opt { padding: 14px 18px; font-size: clamp(0.95rem, 1.8vh, 1.15rem); }
+            .options-grid { gap: 14px; }
+            .team-box { padding: 10px; border-radius: 18px; }
+            .scoreboard { gap: 14px; margin-bottom: 14px; }
+            #timer { font-size: clamp(2rem, 7vh, 3.8rem); }
+            .admin-panel { min-height: 160px; gap: 22px; padding: 20px; }
+            .admin-group { min-width: 150px; padding: 14px 12px; }
+            .btn-admin { font-size: 1.05rem; padding: 10px 18px; }
+            .component-btn { padding: 14px 20px; font-size: 1.05rem; }
+            #answer-input { width: 180px; font-size: 1.25rem; padding: 18px; }
+            .header-top { max-width: 1300px; }
+            .modal-content { max-width: 680px; padding: 36px; }
+            .lifeline-icons span { width: 24px; height: 24px; font-size: 0.9rem; }
+        }
+        #answer-input {
+    display: none;
+        }
     </style>
 </head>
+
 <body>
 
-<div id="status" class="status-toast"></div>
+<div class="header-top">
+    <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
+    <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
+    <div class="logo-box"><img src="logo.png" alt="Logo"></div>
+</div>
 
-<header class="admin-header">
-    <div style="display:flex;align-items:center;gap:15px;">
-        <img src="logo.png" class="header-logo" alt="Logo">
-        <h2 style="margin:0;color:var(--primary);">معترك الضاد</h2>
+<div class="top-controls">
+    <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+    <button class="icon-btn" onclick="openGuide()" title="الدليل الشامل">📖</button>
+    <button class="icon-btn" id="refresh-btn" onclick="refreshPage(this)" title="تحديث الصفحة">🔄</button>
+    <button class="icon-btn" id="admin-icon" onclick="location.href='admin.html'" title="لوحة التحكم">⚙️</button>
+    <button class="icon-btn" id="back-to-setup" onclick="goBack()" style="display:none; background:var(--deep-red); color:white;">🏠</button>
+</div>
+
+<div id="guideModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeGuide()">&times;</span>
+        <h2 style="text-align:center;">📖 ميثاق معترك الضاد</h2>
+        <div class="rule-box"><strong>1. الاستجابة الجماعية:</strong> 6 أسئلة تُحل كتابياً من طرف جميع الفرق (20 ثانية).</div>
+        <div class="rule-box"><strong>2. المواجهة الموجهة:</strong> لكل فريق 3 أسئلة خاصة تظهر عشوائياً (20 ثانية).</div>
+        <div class="rule-box"><strong>3. الصناديق العجيبة:</strong> يختار الفريق (المدرسة، المحفظة، أو الكتاب) لسحب سؤال مفاجئ (30 ثانية).</div>
+        <div class="rule-box"><strong>4. جولة السرعة:</strong> 4 أسئلة خاطفة — يختفي السؤال بعد 8 ثوانٍ، ويظهر السؤال والجواب معاً عند الكشف.</div>
+        <button class="btn-admin" style="width:100%; margin-top:10px; background:var(--moroccan-blue); color:white;" onclick="closeGuide()">فهمت القواعد 🛡️</button>
     </div>
-    <div style="font-weight:900;color:var(--gold);">إدارة المحتوى</div>
-</header>
+</div>
 
-<div class="main-container">
+<div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مدرسة ميمونة أم المؤمنين-مديرية مراكش-</div>
 
-    <div class="important-notice">
-        <div class="notice-icon">💡</div>
-        <div class="notice-body">
-            <div class="notice-title">⚠️ ملاحظة مهمة جداً — يُرجى القراءة قبل البدء</div>
-            <div class="notice-text">
-                الأسئلة التي تُدخلها وتحفظها في هذه الصفحة <strong>لا تُخزَّن على الإنترنت</strong>، بل تُحفظ فقط داخل <strong>هذا المتصفح وعلى هذا الجهاز</strong> تحديداً.<br>
-                إذا فتحتَ المسابقة من متصفح آخر، أو جهاز مختلف، أو في وضع التصفح الخفي — <strong>لن تظهر الأسئلة</strong> وستعود اللعبة إلى أسئلتها الافتراضية.<br>
-                احرص على تشغيل المسابقة دائماً من <strong>نفس المتصفح ونفس الجهاز</strong> الذي حفظتَ فيه البيانات.
-            </div>
-        </div>
+<div id="setup-screen" class="container">
+    <div class="card">
+        <h3 style="color: var(--moroccan-blue); margin:0 0 10px 0;">👥 إعداد الفِرَقِ المتنافسة</h3>
+        <select id="team-count" onchange="updateTeamInputs(this.value)" style="padding:10px; border-radius:8px; margin-bottom:15px; font-weight: bold; border: 2px solid var(--moroccan-gold);">
+            <option value="2">فريقان</option>
+            <option value="3">ثلاثة فِرَق</option>
+            <option value="4" selected>أربعة فِرَق</option>
+        </select>
+        <div id="team-names-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom:15px;"></div>
+        <button class="btn-admin" style="background:var(--moroccan-blue); color:white; padding:15px 50px; font-size:1.2rem; border-radius:50px;" onclick="startMarathon()">انْطَلِقْ 🚀</button>
     </div>
+</div>
 
-    <!-- ════════════════════════════ المسابقة الرئيسية -->
-    <div class="admin-card ai-section">
-        <h3 style="margin-top:0;color:var(--ai-purple);">✨ مولد البرومبت الذكي — المسابقة الرئيسية</h3>
-
-        <span class="step-label purple">① اختر مستوى المنهج</span>
-        <div class="curr-chips" id="main-curr-chips">
-            <div class="curr-chip purple" onclick="selectCurriculum('main',6,this)">السادس</div>
-            <div class="curr-chip purple" onclick="selectCurriculum('main',5,this)">الخامس</div>
-            <div class="curr-chip purple" onclick="selectCurriculum('main',4,this)">الرابع</div>
-            <div class="curr-chip purple" onclick="selectCurriculum('main',3,this)">الثالث</div>
-            <div class="curr-chip purple" onclick="selectCurriculum('main',2,this)">الثاني</div>
-            <div class="curr-chip purple" onclick="selectCurriculum('main',1,this)">الأول</div>
+<div id="quiz-screen" class="container" style="display:none;">
+    <div id="dynamic-scoreboard" class="scoreboard"></div>
+    <div class="card">
+        <div id="target-announcer" style="background: var(--danger); color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.1rem; margin-bottom: 10px; display: none; font-weight: 900;"></div>
+        <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:2px 12px; border-radius:50px; font-size:0.75rem; display:inline-block; margin-bottom:5px;"></div>
+        <div id="timer">15</div>
+        <div id="q-text"></div>
+        <div id="component-selection" style="display:none; gap:8px; flex-wrap:wrap; justify-content:center;">
+            <button class="component-btn" id="btn-المدرسة" onclick="selectComponent('المدرسة')">🏫 المدرسة <span id="count-المدرسة"></span></button>
+            <button class="component-btn" id="btn-المحفظة" onclick="selectComponent('المحفظة')">🎒 المحفظة <span id="count-المحفظة"></span></button>
+            <button class="component-btn" id="btn-الكتاب"  onclick="selectComponent('الكتاب')">📖 الكتاب <span id="count-الكتاب"></span></button>
         </div>
-
-        <span class="step-label purple" id="main-step2-label" style="display:none;">② اختر الدرس أو الدروس</span>
-        <div class="lessons-panel" id="main-lessons-panel">
-            <div class="lessons-panel-header">
-                <span class="purple" id="main-panel-title">الدروس</span>
-                <div class="hdr-btns">
-                    <button onclick="selectAllLessons('main')">تحديد الكل</button>
-                    <button onclick="clearAllLessons('main')">إلغاء الكل</button>
-                </div>
-            </div>
-            <div class="lessons-body" id="main-lessons-body"></div>
-            <div class="lessons-footer">
-                <input type="text" id="main-custom-input" placeholder="أضف درساً غير موجود في القائمة...">
-                <button class="purple" onclick="addCustomLesson('main')">+ إضافة</button>
-            </div>
+        <div class="options-grid" id="opt-container"></div>
+        <div id="manual-zone" style="display:none;">
+            <div id="manual-answer-display" style="font-size:1.4rem; color:var(--moroccan-blue); font-weight:900;">...</div>
         </div>
-        <div class="selected-preview purple" id="main-preview" style="display:none;"></div>
-
-        <hr class="soft">
-
-        <div class="difficulty-row purple">
-            <label>🎯 الصعوبة</label>
-            <select id="lesson_difficulty">
-                <option value="standard">عادي</option>
-                <option value="easy">سهل</option>
-                <option value="hard">صعب</option>
-            </select>
-        </div>
-
-        <span class="levels-label purple">📊 مستوى الطلاب (يمكن اختيار أكثر من مستوى)</span>
-        <div class="std-btns">
-            <button onclick="selectAllLevels('main')">تحديد الكل</button>
-            <button onclick="clearAllLevels('main')">إلغاء الكل</button>
-        </div>
-        <div class="levels-box" id="main-levels">
-            <div class="level-chip purple"><input type="checkbox" id="lvl1" value="المستوى الأول"><label for="lvl1">الأول</label></div>
-            <div class="level-chip purple"><input type="checkbox" id="lvl2" value="المستوى الثاني"><label for="lvl2">الثاني</label></div>
-            <div class="level-chip purple"><input type="checkbox" id="lvl3" value="المستوى الثالث"><label for="lvl3">الثالث</label></div>
-            <div class="level-chip purple"><input type="checkbox" id="lvl4" value="المستوى الرابع"><label for="lvl4">الرابع</label></div>
-            <div class="level-chip purple"><input type="checkbox" id="lvl5" value="المستوى الخامس" checked><label for="lvl5">الخامس</label></div>
-            <div class="level-chip purple"><input type="checkbox" id="lvl6" value="المستوى السادس" checked><label for="lvl6">السادس</label></div>
-        </div>
-
-        <div class="schema-hint">
-            <span class="sh-label">phase1</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 6 أسئلة</span><br>
-            <span class="sh-label">phase2</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 12 أسئلة</span><br>
-            <span class="sh-label">phase4</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 أسئلة مفتوحة</span><br>
-            <span class="sh-label">stock</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 لكل صندوق</span>
-        </div>
-        <div class="prompt-choice-label">
-            <div class="pcl-icon">👇</div>
-            <div class="pcl-text">انسخ <span>أحد البرومبتين</span> وأرسله إلى الذكاء الاصطناعي — ثم الصق الجواب في <span>المربع أدناه</span></div>
-        </div>
-        <button class="btn btn-copy-ai"  onclick="generateAndCopy()">📋 نسخ البرومبت الأول لـ AI</button>
-        <button class="btn btn-copy-ai2" onclick="generateAndCopy2()">📋 نسخ البرومبت الثاني لـ AI</button>
-    </div>
-
-    <div class="admin-card">
-        <h3 style="margin-top:0;color:var(--primary);">📥 استيراد بيانات الدرس — المسابقة الرئيسية</h3>
-        <div id="main-storage-status"></div>
-        <textarea id="json_input" class="json-editor" placeholder="الصق JSON هنا..."></textarea>
-        <div class="btn-group">
-            <button class="btn btn-paste" onclick="pasteData('json_input')">📋 لصق</button>
-            <button class="btn btn-save"  onclick="saveToGame()">💾 حفظ</button>
-            <button class="btn btn-clear" onclick="clearField('json_input')">🗑️ مسح</button>
-            <button class="btn btn-reset" onclick="resetToDefaults()">↩️ افتراضي</button>
-            <a href="index.html" class="btn btn-home">🏠 المسابقة</a>
-            <a href="final.html" class="btn btn-final">⚔️ النهائي</a>
+        <div id="finish-screen" style="display:none; margin-top:20px;">
+            <a href="final.html" class="final-gate">⚔️ الانتقال للنهائي الكبير ⚔️</a>
         </div>
     </div>
-
-    <div class="section-divider"><span>⚔️ قسم النهائي الكبير ⚔️</span></div>
-
-    <!-- ════════════════════════════ النهائي الكبير -->
-    <div class="admin-card fin-section">
-        <h3 style="margin-top:0;color:var(--final-teal);">🏆 مولد البرومبت الذكي — النهائي الكبير</h3>
-
-        <span class="step-label teal">① اختر مستوى المنهج</span>
-        <div class="curr-chips" id="final-curr-chips">
-            <div class="curr-chip teal" onclick="selectCurriculum('final',6,this)">السادس</div>
-            <div class="curr-chip teal" onclick="selectCurriculum('final',5,this)">الخامس</div>
-            <div class="curr-chip teal" onclick="selectCurriculum('final',4,this)">الرابع</div>
-            <div class="curr-chip teal" onclick="selectCurriculum('final',3,this)">الثالث</div>
-            <div class="curr-chip teal" onclick="selectCurriculum('final',2,this)">الثاني</div>
-            <div class="curr-chip teal" onclick="selectCurriculum('final',1,this)">الأول</div>
+    <div class="admin-panel">
+        <div style="display: flex; gap: 12px; align-items: center; border-left: 3px solid #475569; padding-left: 15px; flex-shrink: 0;">
+            <input type="text" id="answer-input" placeholder="إجابة..." oninput="syncAnswer(this.value)">
+            <button class="btn-admin" style="background:var(--success); color:white; padding: 15px 25px;" onclick="reveal()">✅</button>
+            <button class="btn-admin" style="background:var(--moroccan-gold); color:black; padding: 15px 25px;" onclick="next()">➡️</button>
         </div>
-
-        <span class="step-label teal" id="final-step2-label" style="display:none;">② اختر الموضوع أو المواضيع</span>
-        <div class="lessons-panel" id="final-lessons-panel">
-            <div class="lessons-panel-header">
-                <span class="teal" id="final-panel-title">الدروس</span>
-                <div class="hdr-btns">
-                    <button onclick="selectAllLessons('final')">تحديد الكل</button>
-                    <button onclick="clearAllLessons('final')">إلغاء الكل</button>
-                </div>
-            </div>
-            <div class="lessons-body" id="final-lessons-body"></div>
-            <div class="lessons-footer">
-                <input type="text" id="final-custom-input" placeholder="أضف موضوعاً غير موجود في القائمة...">
-                <button class="teal" onclick="addCustomLesson('final')">+ إضافة</button>
-            </div>
-        </div>
-        <div class="selected-preview teal" id="final-preview" style="display:none;"></div>
-
-        <hr class="soft">
-
-        <div class="difficulty-row teal">
-            <label>🎯 الصعوبة</label>
-            <select id="final_difficulty">
-                <option value="متقدم">متقدم (نهائي)</option>
-                <option value="صعب جداً">صعب جداً</option>
-                <option value="صعب">صعب</option>
-            </select>
-        </div>
-
-        <span class="levels-label teal">📊 مستوى الطلاب</span>
-        <div class="std-btns">
-            <button onclick="selectAllLevels('final')">تحديد الكل</button>
-            <button onclick="clearAllLevels('final')">إلغاء الكل</button>
-        </div>
-        <div class="levels-box" id="final-levels">
-            <div class="level-chip teal"><input type="checkbox" id="flvl1" value="المستوى الأول"><label for="flvl1">الأول</label></div>
-            <div class="level-chip teal"><input type="checkbox" id="flvl2" value="المستوى الثاني"><label for="flvl2">الثاني</label></div>
-            <div class="level-chip teal"><input type="checkbox" id="flvl3" value="المستوى الثالث"><label for="flvl3">الثالث</label></div>
-            <div class="level-chip teal"><input type="checkbox" id="flvl4" value="المستوى الرابع"><label for="flvl4">الرابع</label></div>
-            <div class="level-chip teal"><input type="checkbox" id="flvl5" value="المستوى الخامس" checked><label for="flvl5">الخامس</label></div>
-            <div class="level-chip teal"><input type="checkbox" id="flvl6" value="المستوى السادس" checked><label for="flvl6">السادس</label></div>
-        </div>
-
-        <div class="schema-hint">
-            <span class="sh-label teal">individual</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 3 أسئلة</span><br>
-            <span class="sh-label teal">target</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة</span><br>
-            <span class="sh-label teal">choice</span><span class="sh-key">"تراكيب"</span> / <span class="sh-key">"صرف"</span> / <span class="sh-key">"إملاء"</span>: [{q,a}]<span class="sh-comment"> ← 2 لكل</span><br>
-            <span class="sh-label teal">speed</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة</span>
-        </div>
-        <button class="btn btn-copy-fin" onclick="generateAndCopyFinal()">📋 نسخ برومبت النهائي لـ AI</button>
+        <div id="admin-score-controls" style="display:flex; gap:12px; flex-wrap:nowrap;"></div>
     </div>
-
-    <div class="admin-card">
-        <h3 style="margin-top:0;color:var(--final-teal);">📥 استيراد بيانات النهائي الكبير</h3>
-        <div id="final-storage-status"></div>
-        <textarea id="final_json_input" class="json-editor" placeholder='{ "final": { "individual": [...], "target": [...], "choice": {...}, "speed": [...] } }'></textarea>
-        <div class="btn-group">
-            <button class="btn btn-paste" onclick="pasteData('final_json_input')">📋 لصق</button>
-            <button class="btn" style="background:var(--final-teal);" onclick="saveFinalToGame()">💾 حفظ النهائي</button>
-            <button class="btn btn-clear" onclick="clearField('final_json_input')">🗑️ مسح</button>
-            <button class="btn btn-reset" onclick="resetFinal()">↩️ حذف بيانات النهائي</button>
-            <a href="final.html" class="btn btn-final">⚔️ فتح النهائي</a>
-        </div>
-    </div>
-
-    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار &mdash; مدرسة ميمونة أم المؤمنين &mdash; مديرية مراكش</div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════
-//  قاعدة الدروس
-//  لإضافة مستوى جديد: أضف مفتاحه هنا بنفس البنية
-// ══════════════════════════════════════════════════════════════════
-const CURRICULUM = {
-    6: {
-        'التراكيب': [
-            'نصب المضارع والجملة المؤولة',
-            'جزم المضارع والجملة الشرطية',
-            'الأفعال الخمسة',
-            'الأسماء الخمسة',
-            'إعراب المثنى',
-            'إعراب جمع المذكر السالم',
-            'إعراب جمع المؤنث السالم',
-            'الحال والجملة الحالية',
-            'التمييز (الملفوظ والملحوظ)',
-        ],
-        'الصرف والتحويل': [
-            'تصريف الفعل الصحيح (السالم والمهموز والمضعف)',
-            'تصريف الفعل المعتل (المثال والأجوف والناقص)',
-            'الميزان الصرفي',
-            'اسم الفاعل واسم المفعول',
-            'اسما الزمان والمكان',
-            'اسم الآلة',
-            'اسم التفضيل',
-            'العدد والمعدود',
-            'جمع التكسير',
-        ],
-        'الإملاء': [
-            'همزتا الوصل والقطع وهمزة ابن',
-            'الألف اللينة (الممدودة والمقصورة)',
-            'الهمزة المتوسطة والهمزة المتطرفة',
-            'الكلمات التي يخالف نطقها رسمها',
-        ],
-    },
-    5: {
-        'التراكيب': [
-            'الجملة الاسمية: أنواع الخبر',
-            'كان وأخواتها',
-            'إن وأخواتها',
-            'اللازم والمتعدي',
-            'المفعول المطلق',
-            'المفعول لأجله',
-            'المفعول فيه',
-            'الحال مفردة',
-            'النعت الحقيقي',
-            'التوكيد',
-            'نائب الفاعل',
-        ],
-        'الصرف والتحويل': [
-            'المجرد والمزيد',
-            'الصحيح والمعتل',
-            'الصحيح في الأزمنة الثلاثة',
-            'المعتل في الأزمنة الثلاثة',
-            'المصادر',
-            'المثنى: صياغته',
-            'جمع المذكر السالم: صياغته',
-            'جمع المؤنث السالم: صياغته',
-            'اسم الفاعل: صياغته',
-            'اسم المفعول: صياغته',
-            'الماضي المبني للمجهول',
-        ],
-        'الإملاء': [
-            'التاء المربوطة والمبسوطة',
-            'همزتا الوصل والقطع',
-            'همزة ابن',
-            'الهمزة المتوسطة',
-            'الهمزة المتطرفة',
-            'كتابة "ما" الاستفهامية',
-            'الألف اللينة في الأفعال',
-            'الألف اللينة في الأسماء',
-            'كلمات يخالف نطقها رسمها',
-            'تنوين المقصور والمنقوص والممدود',
-        ],
-    },
-    4: {
-        'التراكيب': [
-            'الجملة المفيدة',
-            'عناصر الجملة الفعلية',
-            'عناصر الجملة الاسمية',
-            'الفعل اللازم والمتعدي',
-            'الفاعل: ظاهر وضمير',
-            'المفعول به: ظاهر وضمير',
-            'نصب المضارع الصحيح والجملة المؤولة',
-            'جزم المضارع الصحيح والجملة الشرطية',
-            'النواسخ الفعلية',
-            'النواسخ الحرفية',
-            'العطف بالواو والفاء وثم',
-        ],
-        'الصرف والتحويل': [
-            'أقسام الكلمة',
-            'الفعل وأزمنته',
-            'الاسم: الجنس والعدد',
-            'الفعل الصحيح: تعريفه وأنواعه',
-            'الفعل المعتل: تعريفه وأنواعه',
-            'أسماء الإشارة',
-            'الأسماء الموصولة',
-            'الضمائر المتصلة',
-            'الضمائر المنفصلة',
-            'النكرة والمعرفة بالاسم العلم، بالتعريف وبالإضافة',
-            'الإضافة إلى اسم ظاهر أو ضمير',
-        ],
-        'الإملاء': [
-            'علامات الترقيم',
-            'التاء المربوطة',
-            'التاء المبسوطة',
-            'همزتا الوصل والقطع',
-            'الهمزة المتوسطة على الألف',
-            'الهمزة المتوسطة على الواو',
-            'الهمزة المتوسطة على الياء',
-            'الهمزة المتطرفة',
-            'أسماء الإشارة',
-            'الأسماء الموصولة',
-        ],
-    },
-    3: {},
-    2: {},
-    1: {},
+(function() {
+    const observer = new MutationObserver(function() {
+        const timerEl = document.getElementById('timer');
+        if (!timerEl) return;
+        const val = parseInt(timerEl.innerText);
+        if (!isNaN(val) && val <= 5 && val > 0) {
+            timerEl.classList.add('urgent');
+        } else {
+            timerEl.classList.remove('urgent');
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const timerEl = document.getElementById('timer');
+        if (timerEl) observer.observe(timerEl, { childList: true, characterCharacterData: true, characterData: true, subtree: true });
+    });
+})();
+
+function refreshPage(btn) { btn.classList.add('refresh-active'); setTimeout(() => location.reload(), 500); }
+
+let customData = null;
+try {
+    const savedDataRaw = localStorage.getItem('moatark_questions');
+    if (savedDataRaw) customData = JSON.parse(savedDataRaw);
+} catch (e) {
+    customData = null;
+}
+
+const defaultPhases = [
+    {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم","مهموز","مضعف","معتل"], a:2},
+    {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء","واو","ألف","نون"], a:1},
+    {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["فعل وفاعل","اسمين علمين","بداية السطر","حرفي جر"], a:1},
+    {q: "اسم الفاعل من فعل 'كَتَبَ' هو:", o:["مكتوب","كاتب","يُكتب","كتاب"], a:1},
+    {q: "الفعل المضارع 'يذهبُ' يصبح منصوباً إذا سبقه:", o:["لَمْ","لَنْ","لا الناهية","مِنْ"], a:1}
+];
+
+const defaultPhases2 = [
+    {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
+    {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1},
+    {q: "الوزن الصرفي لكلمة 'انطلق' هو:", o:["انفعل", "افتعل", "تفاعل", "فعلل"], a:0},
+    {q: "صغ اسم التفضيل من 'صَغُرَ':", o:["صغير", "أصغر", "صاغر", "تصغير"], a:1},
+    {q: "جمع 'نافذة' هو جمع تكسير صورته:", o:["نافذات", "أنفذة", "نوافذ", "نافذون"], a:2},
+    {q: "أعرب 'أباك' في (ساعد أباك):", o:["فاعل", "مفعول به منصوب بالألف", "اسم مجرور", "مبتدأ"], a:1},
+    {q: "ما هو اسم الآلة من 'بَرَدَ'؟", o:["بارد", "مبرد", "مبورد", "براد"], a:1},
+    {q: "إعراب 'تلميذاً' في (جاء عشرون تلميذاً):", o:["حال", "تمييز", "نعت", "مضاف إليه"], a:1},
+    {q: "الفعل المعتل 'سعى' نوعه:", o:["مثال", "أجوف", "ناقص", "لفيف مقرون"], a:2},
+    {q: "علامة جزم الأفعال الخمسة هي:", o:["السكون", "حذف النون", "ثبوت النون", "الفتحة"], a:1},
+    {q: "لماذا كتبت الهمزة على الواو في 'سُؤَال'؟", o:["مكسورة", "مفتوحة وقبلها ضم", "ساكنة", "مضمومة"], a:1},
+    {q: "الجملة المؤولة من (أن تجتهد) هي:", o:["مجتهد", "اجتهادك", "تجتهدون", "جهدك"], a:1}
+];
+
+const defaultStock = {
+    "المدرسة": [
+        {q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي"},
+        {q: "ما نوع المفعول به في: (أكلتُ أكلاً)؟", a: "مفعول مطلق"},
+        {q: "أعرب 'كُلَّ' في: (جاء كُلُّ الطلابِ).", a: "فاعل مرفوع"},
+        {q: "ما إعراب 'خيراً' في: (اصنع خيراً تجد خيراً)؟", a: "مفعول به منصوب"}
+    ],
+    "المحفظة": [
+        {q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"},
+        {q: "حوّل الفعل 'أكرم' إلى اسم مفعول.", a: "مُكْرَم"},
+        {q: "ما وزن كلمة 'مِفْتَاح'؟", a: "مِفْعَال"},
+        {q: "اجمع جمع تكسير: (كِتَاب).", a: "كُتُب"}
+    ],
+    "الكتاب": [
+        {q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"},
+        {q: "لماذا كُتبت الألف في 'عصا' قصيرة؟", a: "لأن أصلها واو"},
+        {q: "متى تُحذف همزة الوصل في الكتابة؟", a: "عند وصلها بما قبلها"},
+        {q: "علل كتابة التاء مربوطة في كلمة 'مدرسة'.", a: "لأنها اسم مؤنث"}
+    ]
 };
 
-const LEVEL_NAMES = { 6:'السادس', 5:'الخامس', 4:'الرابع', 3:'الثالث', 2:'الثاني', 1:'الأول' };
+let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
+let votedOnThisQuestion = [], currentModelAnswer = "", currentQuestionText = "";
+let lifelinesState = [], rocketActive = -1;
+let stockCounts = {};
+let usedByBox   = {};
+const STOCK_KEYS = ["المدرسة", "المحفظة", "الكتاب"];
 
-const selectedLessons = { main: new Set(), final: new Set() };
+const phasesData = [
+    { name: "النمط 1: الاستجابة الجماعية", type: "all", time: 20, questions: (customData && customData.phase1) ? customData.phase1 : defaultPhases },
+    { name: "النمط 2: المواجهة الموجهة", type: "target", time: 20, questions: (customData && customData.phase2) ? customData.phase2 : defaultPhases2 },
+    { name: "النمط 3: الصناديق العجيبة", type: "free", time: 30 },
+    { name: "النمط 4: جولة السرعة", type: "speed", time: 8, questions: (customData && customData.phase4) ? customData.phase4 : [
+        {q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"},
+        {q: "حدد نوع الجمع في كلمة 'قُضاة'.", a: "جمع تكسير"},
+        {q: "ما أصل الألف في فعل 'سعى'؟", a: "ياء (سعى يسعى)"},
+        {q: "أعرب كلمة 'مُسْرِعاً' في: 'جاءَ الولدُ مُسْرِعاً'.", a: "حال منصوب"}
+    ]}
+];
 
-// ── بناء لوحة الدروس ──────────────────────────────────────────
-function selectCurriculum(scope, level, el) {
-    document.querySelectorAll(`#${scope}-curr-chips .curr-chip`).forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-
-    const body   = document.getElementById(`${scope}-lessons-body`);
-    const panel  = document.getElementById(`${scope}-lessons-panel`);
-    const lbl    = document.getElementById(`${scope}-step2-label`);
-    const title  = document.getElementById(`${scope}-panel-title`);
-    const color  = scope === 'final' ? 'teal' : 'purple';
-    const data   = CURRICULUM[level] || {};
-    const cats   = Object.keys(data).filter(k => data[k] && data[k].length);
-
-    selectedLessons[scope].clear();
-    body.innerHTML = '';
-    document.getElementById(`${scope}-custom-group`) && (document.getElementById(`${scope}-custom-group`).remove());
-    updatePreview(scope);
-
-    title.textContent = `دروس المستوى ${LEVEL_NAMES[level]}`;
-    lbl.style.display = 'block';
-    panel.classList.add('visible');
-
-    if (!cats.length) {
-        body.innerHTML = `<p class="empty-msg">لا توجد دروس مضافة لهذا المستوى بعد — يمكنك إضافة درس يدوياً أدناه.</p>`;
-        return;
-    }
-
-    cats.forEach(cat => {
-        const groupTitle = document.createElement('div');
-        groupTitle.className = `lesson-group-title ${color}`;
-        groupTitle.textContent = cat;
-        body.appendChild(groupTitle);
-
-        data[cat].forEach((lesson, idx) => {
-            const id  = `cb-${scope}-${level}-${cat}-${idx}`;
-            const row = document.createElement('label');
-            row.className = `lesson-cb-row ${color}`;
-            row.innerHTML = `<input type="checkbox" id="${id}" value="${lesson}"><span style="font-size:0.88rem;flex:1;">${lesson}</span>`;
-            row.querySelector('input').addEventListener('change', function() {
-                if (this.checked) selectedLessons[scope].add(lesson);
-                else              selectedLessons[scope].delete(lesson);
-                updatePreview(scope);
-            });
-            body.appendChild(row);
-        });
-    });
+function getStockData() {
+    if (customData && customData.stock) return customData.stock;
+    return defaultStock;
 }
 
-function selectAllLessons(scope) {
-    document.querySelectorAll(`#${scope}-lessons-body input[type="checkbox"]`).forEach(cb => {
-        cb.checked = true;
-        selectedLessons[scope].add(cb.value);
-    });
-    updatePreview(scope);
+function initStockCounts() {
+    const n = teamNames.length;
+    stockCounts = {}; usedByBox = {};
+    STOCK_KEYS.forEach(key => { stockCounts[key] = n; usedByBox[key] = new Set(); });
 }
 
-function clearAllLessons(scope) {
-    document.querySelectorAll(`#${scope}-lessons-body input[type="checkbox"]`).forEach(cb => cb.checked = false);
-    // حافظ على الدروس المضافة يدوياً
-    const manual = [...selectedLessons[scope]].filter(l => {
-        const allInList = Object.values(CURRICULUM).flatMap(lv => Object.values(lv).flat());
-        return !allInList.includes(l);
-    });
-    selectedLessons[scope] = new Set(manual);
-    updatePreview(scope);
-}
-
-function addCustomLesson(scope) {
-    const input = document.getElementById(`${scope}-custom-input`);
-    const val   = input.value.trim();
-    if (!val) return;
-
-    const body  = document.getElementById(`${scope}-lessons-body`);
-    const color = scope === 'final' ? 'teal' : 'purple';
-
-    // إنشاء مجموعة الدروس اليدوية إن لم تكن موجودة
-    if (!document.getElementById(`${scope}-custom-group`)) {
-        const gt = document.createElement('div');
-        gt.className = `lesson-group-title ${color}`;
-        gt.textContent = 'مضافة يدوياً';
-        body.appendChild(gt);
-        const grp = document.createElement('div');
-        grp.id = `${scope}-custom-group`;
-        body.appendChild(grp);
-    }
-
-    const id  = `cb-custom-${scope}-${Date.now()}`;
-    const row = document.createElement('label');
-    row.className = `lesson-cb-row ${color}`;
-    row.innerHTML = `<input type="checkbox" id="${id}" value="${val}" checked><span style="font-size:0.88rem;flex:1;">${val}</span>`;
-    row.querySelector('input').addEventListener('change', function() {
-        if (this.checked) selectedLessons[scope].add(val);
-        else              selectedLessons[scope].delete(val);
-        updatePreview(scope);
-    });
-    document.getElementById(`${scope}-custom-group`).appendChild(row);
-    selectedLessons[scope].add(val);
-    input.value = '';
-    document.getElementById(`${scope}-lessons-panel`).classList.add('visible');
-    updatePreview(scope);
-}
-
-function updatePreview(scope) {
-    const el  = document.getElementById(`${scope}-preview`);
-    const arr = [...selectedLessons[scope]];
-    if (arr.length) {
-        el.style.display = 'block';
-        el.textContent   = '✅ ' + arr.join(' + ');
-    } else {
-        el.style.display = 'none';
+function updateTeamInputs(count) {
+    const container = document.getElementById('team-names-container');
+    container.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+        container.innerHTML += `<input type="text" id="tn-${i}" value="الفريق ${i+1}" style="padding:10px; width:110px; text-align:center; border-radius:8px; border:2px solid #e2e8f0; font-family:'Cairo'; font-weight:bold;">`;
     }
 }
 
-function getLessonTitle(scope) {
-    return [...selectedLessons[scope]].join(' + ');
+function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+function openGuide()   { document.getElementById('guideModal').style.display = 'flex'; }
+function closeGuide()  { document.getElementById('guideModal').style.display = 'none'; }
+function goBack()      { if (confirm("العودة للبداية؟")) location.reload(); }
+
+function startMarathon() {
+    const count = parseInt(document.getElementById('team-count').value);
+    teamNames = []; scores = []; lifelinesState = [];
+    for (let i = 0; i < count; i++) {
+        teamNames.push(document.getElementById(`tn-${i}`).value);
+        scores.push(0);
+        lifelinesState.push({ del: false, dou: false, stp: false });
+    }
+    initStockCounts();
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display  = 'flex';
+    document.getElementById('back-to-setup').style.display = 'flex';
+    renderInterface(); prepareTurns(); init();
 }
 
-// ── مستوى الطلاب ──────────────────────────────────────────────
-function getSelectedLevels(scope) {
-    const pfx = scope === 'final' ? 'final' : 'main';
-    return [...document.querySelectorAll(`#${pfx}-levels input:checked`)].map(c => c.value).join(' + ') || 'غير محدد';
+function renderInterface() {
+    const sb = document.getElementById('dynamic-scoreboard');
+    const adminCtrl = document.getElementById('admin-score-controls');
+    sb.innerHTML = ''; adminCtrl.innerHTML = '';
+    teamNames.forEach((name, i) => {
+        sb.innerHTML += `<div class="team-box" id="t-card-${i}">
+            <div class="lifeline-icons">
+                <span id="ico-${i}-del" onclick="useLifeline(${i}, 'del', this)">💡</span>
+                <span id="ico-${i}-dou" onclick="useLifeline(${i}, 'dou', this)">🚀</span>
+                <span id="ico-${i}-stp" onclick="useLifeline(${i}, 'stp', this)">⏱️</span>
+            </div>
+            <span id="s-${i}" style="font-size:1.4rem; font-weight:900;">0</span>
+            <div style="font-size:0.7rem">${name}</div>
+        </div>`;
+        adminCtrl.innerHTML += `<div class="admin-group">
+            <div style="font-size:0.8rem; color:var(--moroccan-gold); font-weight:900;">${name}</div>
+            <div style="display:flex; gap:6px">
+                <button class="btn-admin" style="background:var(--success); color:white" onclick="modifyScore(${i}, 10)">+10</button>
+                <button class="btn-admin" style="background:var(--danger);  color:white" onclick="modifyScore(${i}, -5)">-5</button>
+            </div>
+        </div>`;
+    });
 }
-function selectAllLevels(scope) { document.querySelectorAll(`#${scope==='final'?'final':'main'}-levels input`).forEach(c => c.checked=true); }
-function clearAllLevels(scope)  { document.querySelectorAll(`#${scope==='final'?'final':'main'}-levels input`).forEach(c => c.checked=false); }
 
-// ── إشعارات ───────────────────────────────────────────────────
-function notify(msg, type='success') {
-    const s = document.getElementById('status');
-    s.innerText = msg;
-    s.style.backgroundColor = type==='success' ? '#10b981' : '#ef4444';
-    s.style.display = 'block';
-    setTimeout(() => s.style.display='none', 4000);
+function modifyScore(i, v) {
+    if (votedOnThisQuestion[i]) return;
+    let val = (rocketActive === i) ? (v > 0 ? 20 : -10) : v;
+    scores[i] += val;
+    document.getElementById(`s-${i}`).innerText = scores[i];
+    votedOnThisQuestion[i] = true;
+    rocketActive = -1;
 }
 
-// ── حالة التخزين ──────────────────────────────────────────────
-function checkStorageStatus() {
-    try {
-        const raw = localStorage.getItem('moatark_questions');
-        const mEl = document.getElementById('main-storage-status');
-        const fEl = document.getElementById('final-storage-status');
-        if (raw) {
-            const d = JSON.parse(raw);
-            mEl.innerHTML = d.phase1
-                ? `<span class="storage-badge badge-ok">✅ بيانات محفوظة — phase1: ${d.phase1.length} سؤال، phase2: ${(d.phase2||[]).length} سؤال</span>`
-                : `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للمسابقة الرئيسية</span>`;
-            fEl.innerHTML = d.final
-                ? `<span class="storage-badge badge-ok">✅ بيانات النهائي محفوظة — individual: ${(d.final.individual||[]).length}، speed: ${(d.final.speed||[]).length}</span>`
-                : `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>`;
-        } else {
-            mEl.innerHTML = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات محفوظة</span>`;
-            fEl.innerHTML = `<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>`;
+function useLifeline(teamIdx, type, element) {
+    if (lifelinesState[teamIdx][type]) return;
+    if (type === 'del') {
+        const p = phasesData[currentPhase];
+        if (p && p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
+            const correct = parseInt(p.questions[currentQ].a);
+            const opts = Array.from(document.querySelectorAll('.opt'));
+            let wrong = opts.map((_, i) => i).filter(i => i !== correct);
+            wrong.sort(() => Math.random() - 0.5).slice(0, 2).forEach(idx => { opts[idx].style.visibility = 'hidden'; });
         }
-    } catch(e) {}
+    } else if (type === 'dou') { rocketActive = teamIdx; }
+    else if (type === 'stp') { clearInterval(timer); }
+    lifelinesState[teamIdx][type] = true;
+    element.style.opacity = "0.2";
 }
 
-// ── بناء البرومبتات ───────────────────────────────────────────
-function buildPrompt(lesson, level) {
-    return `أنت مولد أسئلة لغة عربية محترف.
-أعد JSON فقط. بدون أي نص إضافي. بدون markdown. بدون شرح.
-
-الموضوع: ${lesson}
-المستوى: ${level}
-
-البنية المطلوبة:
-{
-  "phase1": [...],
-  "phase2": [...],
-  "phase4": [...],
-  "stock": { "المدرسة": [...], "المحفظة": [...], "الكتاب": [...] }
+function prepareTurns() {
+    phaseTurns = [];
+    const count = teamNames.length;
+    const p = phasesData[currentPhase];
+    if (!p) return;
+    if (p.type === 'target') { for (let i = 0; i < count; i++) for (let j = 0; j < 3; j++) phaseTurns.push(i); }
+    else if (p.type === 'free') { for (let i = 0; i < count; i++) for (let j = 0; j < 2; j++) phaseTurns.push(i); }
+    phaseTurns.sort(() => Math.random() - 0.5);
 }
 
-phase1 و phase2: {"q": "نص السؤال", "o": ["خيار1", "خيار2", "خيار3", "خيار4"], "a": 2}
-"a" رقم صحيح 0-3 يشير لموضع الإجابة الصحيحة في "o"
-phase4 وstock: {"q": "نص السؤال", "a": "نص الإجابة النموذجية"}
+function init() {
+    votedOnThisQuestion = teamNames.map(() => false);
+    const p = phasesData[currentPhase];
+    currentModelAnswer  = ""; currentQuestionText = ""; rocketActive = -1;
+    clearInterval(timer);
 
-الأعداد:
-- phase1  → 6 أسئلة اختيار من متعدد
-- phase2  → 12 أسئلة اختيار من متعدد
-- phase4  → 4 أسئلة مفتوحة
-- stock.المدرسة → 4 أسئلة مفتوحة
-- stock.المحفظة → 4 أسئلة مفتوحة
-- stock.الكتاب  → 4 أسئلة مفتوحة`;
+    document.getElementById('q-text').innerText = '';
+    document.getElementById('opt-container').innerHTML = '';
+    document.getElementById('component-selection').style.display = 'none';
+    document.getElementById('manual-zone').style.display = 'none';
+    document.getElementById('target-announcer').style.display = 'none';
+    document.getElementById('answer-input').value = '';
+    document.getElementById('manual-answer-display').innerText = '...';
+    document.getElementById('manual-answer-display').classList.remove('revealed');
+    document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
+
+    if (!p) return;
+    document.getElementById('phase-label').innerText = p.name;
+
+    if (p.type === 'free') {
+        const tid = phaseTurns[currentQ];
+        document.getElementById('target-announcer').style.display = 'block';
+        document.getElementById('target-announcer').innerHTML = `🎯 الصندوق العجيب لـ: ${teamNames[tid]}`;
+        document.getElementById(`t-card-${tid}`).classList.add('active-turn');
+        showFreeSelection();
+        // 🛠️ تعديل النمط 3: يبدأ المؤقت بمجرد ظهور اسم الفريق
+        startTimer(p.time); 
+
+    } else if (p.type === 'target') {
+        const tid = phaseTurns[currentQ];
+        document.getElementById('target-announcer').style.display = 'block';
+        document.getElementById('target-announcer').innerHTML = `🎯 الدور: ${teamNames[tid]}`;
+        document.getElementById(`t-card-${tid}`).classList.add('active-turn');
+        displayQuestion(p.questions[currentQ]);
+
+    } else if (p.type === 'speed') {
+        const q = p.questions[currentQ];
+        if (!q) return;
+        currentQuestionText = q.q; currentModelAnswer = q.a;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('manual-zone').style.display = 'block';
+        startTimer(p.time, true);
+
+    } else {
+        displayQuestion(p.questions[currentQ]);
+    }
 }
 
-function buildStrictPrompt2(lesson, level, difficulty) {
-    return `أنت مولد بيانات JSON فقط للعبة تعليمية اسمها "معترك الضاد".
-ممنوع أي شرح. ممنوع markdown. ممنوع أي نص خارج JSON.
-
-البنية إلزامية:
-{
-  "phase1": [],
-  "phase2": [],
-  "phase4": [],
-  "stock": { "المدرسة": [], "المحفظة": [], "الكتاب": [] }
+function displayQuestion(q) {
+    if (!q) return;
+    document.getElementById('q-text').innerText = q.q;
+    if (q.o) { q.o.forEach(opt => { document.getElementById('opt-container').innerHTML += `<button class="opt">${opt}</button>`; }); }
+    startTimer(phasesData[currentPhase].time);
 }
 
-1. phase1: 6 أسئلة — {"q":"...","o":["أ","ب","ج","د"],"a":0}
-2. phase2: 12 سؤال — نفس البنية
-3. phase4: 4 أسئلة — {"q":"...","a":"..."}
-4. stock: 4 أسئلة لكل صندوق
-5. تحقق: phase1=6 | phase2=12 | phase4=4 | كل صندوق=4
-
-الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}`;
+function showFreeSelection() {
+    document.getElementById('component-selection').style.display = 'flex';
+    STOCK_KEYS.forEach(key => {
+        const remaining = stockCounts[key];
+        const countEl = document.getElementById(`count-${key}`);
+        const btnEl = document.getElementById(`btn-${key}`);
+        countEl.innerText = `(${remaining})`;
+        if (remaining <= 0) { btnEl.disabled = true; btnEl.classList.add('depleted'); btnEl.onclick = null; }
+        else { btnEl.disabled = false; btnEl.classList.remove('depleted'); btnEl.onclick = () => selectComponent(key); }
+    });
 }
 
-function buildFinalPrompt(lesson, level, difficulty) {
-    return `أنت مولد بيانات JSON للنهائي الكبير في لعبة "معترك الضاد".
-ممنوع أي شرح. ممنوع markdown. أخرج JSON فقط.
+function selectComponent(key) {
+    if (stockCounts[key] <= 0) return;
+    const stock = getStockData();
+    const questions = stock[key];
+    if (!questions || questions.length === 0) return;
 
-البنية الإلزامية:
-{
-  "final": {
-    "individual": [{"q":"...","a":"..."},...],
-    "target":     [{"q":"...","a":"..."},...],
-    "choice": {
-      "تراكيب": [{"q":"...","a":"..."},{"q":"...","a":"..."}],
-      "صرف":    [{"q":"...","a":"..."},{"q":"...","a":"..."}],
-      "إملاء":  [{"q":"...","a":"..."},{"q":"...","a":"..."}]
-    },
-    "speed": [{"q":"...","a":"..."},...]
-  }
+    let available = questions.filter(q => !usedByBox[key].has(q.q));
+    if (available.length === 0) { usedByBox[key].clear(); available = questions; }
+
+    const item = available[Math.floor(Math.random() * available.length)];
+    usedByBox[key].add(item.q);
+    stockCounts[key]--;
+
+    document.getElementById(`count-${key}`).innerText = `(${stockCounts[key]})`;
+    if (stockCounts[key] <= 0) {
+        const btnEl = document.getElementById(`btn-${key}`);
+        btnEl.disabled = true; btnEl.classList.add('depleted'); btnEl.onclick = null;
+    }
+
+    document.getElementById('component-selection').style.display = 'none';
+    document.getElementById('manual-zone').style.display = 'block';
+    document.getElementById('q-text').innerText = `📦 ${key}: ${item.q}`;
+    currentModelAnswer = item.a;
+    // 🛠️ تم إزالة استدعاء startTimer من هنا لكي لا يبدأ من جديد
 }
 
-الأعداد الإلزامية: individual=3 | target=4 | تراكيب=2 | صرف=2 | إملاء=2 | speed=4
-جميع الأسئلة مفتوحة — "a" دائماً نص — بدون "o"
-الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}`;
+function startTimer(s, isSpeed = false) {
+    let tl = s;
+    document.getElementById('timer').innerText = tl;
+    timer = setInterval(() => {
+        tl--;
+        document.getElementById('timer').innerText = tl;
+        if (tl <= 0) {
+            clearInterval(timer);
+            if (isSpeed) document.getElementById('q-text').innerText = '';
+        }
+    }, 1000);
 }
 
-// ── أزرار النسخ ───────────────────────────────────────────────
-async function generateAndCopy() {
-    const lesson = getLessonTitle('main'), level = getSelectedLevels('main');
-    if (!lesson) return notify('اختر درساً واحداً على الأقل', 'error');
-    if (level === 'غير محدد') return notify('اختر مستوى طلاب واحداً على الأقل', 'error');
-    try { await navigator.clipboard.writeText(buildPrompt(lesson, level)); notify('✅ تم نسخ البرومبت الأول'); }
-    catch { notify('❌ فشل النسخ', 'error'); }
+function reveal() {
+    clearInterval(timer);
+    const p = phasesData[currentPhase];
+    if (currentModelAnswer !== "") {
+        if (currentQuestionText) document.getElementById('q-text').innerText = currentQuestionText;
+        const dispEl = document.getElementById('manual-answer-display');
+        dispEl.innerText = currentModelAnswer;
+        dispEl.style.color = 'var(--success)';
+        dispEl.classList.remove('revealed');
+        void dispEl.offsetWidth; 
+        dispEl.classList.add('revealed');
+        document.getElementById('manual-zone').style.display = 'block';
+    } else if (p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
+        const d = p.questions[currentQ];
+        const opts = document.querySelectorAll('.opt');
+        const idx = parseInt(d.a);
+        if (opts[idx]) { opts[idx].style.background = 'var(--success)'; opts[idx].style.color = 'white'; }
+    }
 }
 
-async function generateAndCopy2() {
-    const lesson = getLessonTitle('main'), level = getSelectedLevels('main');
-    const difficulty = document.getElementById('lesson_difficulty').value;
-    if (!lesson) return notify('اختر درساً واحداً على الأقل', 'error');
-    if (level === 'غير محدد') return notify('اختر مستوى طلاب واحداً على الأقل', 'error');
-    try { await navigator.clipboard.writeText(buildStrictPrompt2(lesson, level, difficulty)); notify('✅ تم نسخ البرومبت الثاني'); }
-    catch { notify('❌ فشل النسخ', 'error'); }
+function next() {
+    const p = phasesData[currentPhase];
+    if (!p) return;
+    currentQ++;
+    const limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
+    if (currentQ >= limit) { currentQ = 0; currentPhase++; if (currentPhase < phasesData.length) prepareTurns(); }
+    if (currentPhase >= phasesData.length) {
+        clearInterval(timer);
+        document.getElementById('q-text').innerText = '';
+        document.getElementById('opt-container').innerHTML = '';
+        document.getElementById('manual-zone').style.display = 'none';
+        document.getElementById('component-selection').style.display = 'none';
+        document.getElementById('timer').innerText = "🏁";
+        document.getElementById('finish-screen').style.display = 'block';
+    } else { init(); }
 }
 
-async function generateAndCopyFinal() {
-    const lesson = getLessonTitle('final'), level = getSelectedLevels('final');
-    const difficulty = document.getElementById('final_difficulty').value;
-    if (!lesson) return notify('اختر موضوعاً واحداً على الأقل', 'error');
-    if (level === 'غير محدد') return notify('اختر مستوى طلاب واحداً على الأقل', 'error');
-    try { await navigator.clipboard.writeText(buildFinalPrompt(lesson, level, difficulty)); notify('✅ تم نسخ برومبت النهائي'); }
-    catch { notify('❌ فشل النسخ', 'error'); }
-}
+function syncAnswer(v) { document.getElementById('manual-answer-display').innerText = v || '...'; }
 
-// ── اللصق والحفظ ──────────────────────────────────────────────
-async function pasteData(fieldId) {
-    try { document.getElementById(fieldId).value = await navigator.clipboard.readText(); notify('تم اللصق'); }
-    catch { notify('❌ فشل اللصق — استخدم Ctrl+V', 'error'); }
-}
-
-function isValidStructure(data) {
-    try {
-        const isMCQ  = q => q && typeof q.q==='string' && q.q.trim() && Array.isArray(q.o) && q.o.length===4 && Number.isInteger(q.a) && q.a>=0 && q.a<=3;
-        const isOpen = q => q && typeof q.q==='string' && q.q.trim() && typeof q.a==='string' && q.a.trim();
-        if (!Array.isArray(data.phase1)||!data.phase1.length) return 'phase1 مفقودة أو فارغة';
-        if (!Array.isArray(data.phase2)||!data.phase2.length) return 'phase2 مفقودة أو فارغة';
-        if (!Array.isArray(data.phase4)||!data.phase4.length) return 'phase4 مفقودة أو فارغة';
-        if (!data.stock) return 'stock مفقود';
-        if (!Array.isArray(data.stock['المدرسة'])||!data.stock['المدرسة'].length) return 'stock → المدرسة مفقود';
-        if (!Array.isArray(data.stock['المحفظة'])||!data.stock['المحفظة'].length) return 'stock → المحفظة مفقود';
-        if (!Array.isArray(data.stock['الكتاب']) ||!data.stock['الكتاب'].length)  return 'stock → الكتاب مفقود';
-        if (!data.phase1.every(isMCQ))  return 'phase1: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
-        if (!data.phase2.every(isMCQ))  return 'phase2: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
-        if (!data.phase4.every(isOpen)) return 'phase4: "a" يجب أن يكون نصاً';
-        if (!data.stock['المدرسة'].every(isOpen)) return 'stock.المدرسة خطأ';
-        if (!data.stock['المحفظة'].every(isOpen)) return 'stock.المحفظة خطأ';
-        if (!data.stock['الكتاب'].every(isOpen))  return 'stock.الكتاب خطأ';
-        return true;
-    } catch { return 'خطأ في تحليل البنية'; }
-}
-
-function isValidFinalStructure(data) {
-    try {
-        const isOpen = q => q && typeof q.q==='string' && q.q.trim() && typeof q.a==='string' && q.a.trim();
-        if (!data.final) return 'مفتاح "final" مفقود';
-        const f = data.final;
-        if (!Array.isArray(f.individual)||!f.individual.length) return 'final.individual مفقودة';
-        if (!Array.isArray(f.target)||!f.target.length)         return 'final.target مفقودة';
-        if (!f.choice)                                           return 'final.choice مفقود';
-        if (!Array.isArray(f.choice['تراكيب'])||!f.choice['تراكيب'].length) return 'final.choice.تراكيب مفقودة';
-        if (!Array.isArray(f.choice['صرف'])||!f.choice['صرف'].length)       return 'final.choice.صرف مفقود';
-        if (!Array.isArray(f.choice['إملاء'])||!f.choice['إملاء'].length)   return 'final.choice.إملاء مفقود';
-        if (!Array.isArray(f.speed)||!f.speed.length)           return 'final.speed مفقودة';
-        if (!f.individual.every(isOpen))        return 'final.individual: خطأ';
-        if (!f.target.every(isOpen))            return 'final.target: خطأ';
-        if (!f.choice['تراكيب'].every(isOpen)) return 'final.choice.تراكيب: خطأ';
-        if (!f.choice['صرف'].every(isOpen))     return 'final.choice.صرف: خطأ';
-        if (!f.choice['إملاء'].every(isOpen))  return 'final.choice.إملاء: خطأ';
-        if (!f.speed.every(isOpen))             return 'final.speed: خطأ';
-        return true;
-    } catch { return 'خطأ في تحليل بنية النهائي'; }
-}
-
-function saveToGame() {
-    let raw = document.getElementById('json_input').value.trim();
-    if (!raw) return notify('الحقل فارغ', 'error');
-    try {
-        const parsed = JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
-        const v = isValidStructure(parsed);
-        if (v !== true) return notify('❌ ' + v, 'error');
-        let ef = null;
-        try { const ex = localStorage.getItem('moatark_questions'); if (ex) { const exd=JSON.parse(ex); if(exd.final) ef=exd.final; } } catch(e){}
-        const fd = { phase1:parsed.phase1, phase2:parsed.phase2, phase4:parsed.phase4, stock:{'المدرسة':parsed.stock['المدرسة'],'المحفظة':parsed.stock['المحفظة'],'الكتاب':parsed.stock['الكتاب']} };
-        if (ef) fd.final = ef;
-        localStorage.setItem('moatark_questions', JSON.stringify(fd));
-        notify('✅ تم الحفظ بنجاح');
-        checkStorageStatus();
-    } catch { notify('❌ JSON غير صالح', 'error'); }
-}
-
-function saveFinalToGame() {
-    let raw = document.getElementById('final_json_input').value.trim();
-    if (!raw) return notify('حقل النهائي فارغ', 'error');
-    try {
-        const parsed = JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
-        const v = isValidFinalStructure(parsed);
-        if (v !== true) return notify('❌ ' + v, 'error');
-        let ed = {};
-        try { const ex = localStorage.getItem('moatark_questions'); if(ex) ed=JSON.parse(ex); } catch(e){}
-        ed.final = parsed.final;
-        localStorage.setItem('moatark_questions', JSON.stringify(ed));
-        notify('✅ تم حفظ بيانات النهائي بنجاح');
-        checkStorageStatus();
-    } catch { notify('❌ JSON غير صالح', 'error'); }
-}
-
-function clearField(id) { document.getElementById(id).value=''; notify('تم المسح'); }
-
-function resetToDefaults() {
-    if (!confirm('سيتم حذف أسئلة المسابقة الرئيسية. بيانات النهائي ستبقى. متأكد؟')) return;
-    try { const ex=localStorage.getItem('moatark_questions'); if(ex){const exd=JSON.parse(ex); localStorage.setItem('moatark_questions',JSON.stringify(exd.final?{final:exd.final}:{}));} else {localStorage.removeItem('moatark_questions');} } catch(e){localStorage.removeItem('moatark_questions');}
-    document.getElementById('json_input').value='';
-    notify('✅ تمت إعادة الضبط');
-    checkStorageStatus();
-}
-
-function resetFinal() {
-    if (!confirm('سيتم حذف بيانات النهائي. المسابقة الرئيسية لن تتأثر. متأكد؟')) return;
-    try { const ex=localStorage.getItem('moatark_questions'); if(ex){const exd=JSON.parse(ex); delete exd.final; localStorage.setItem('moatark_questions',JSON.stringify(exd));} } catch(e){}
-    document.getElementById('final_json_input').value='';
-    notify('✅ تم حذف بيانات النهائي');
-    checkStorageStatus();
-}
-
-checkStorageStatus();
+updateTeamInputs(4);
 </script>
 </body>
 </html>

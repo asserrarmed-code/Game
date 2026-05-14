@@ -328,9 +328,8 @@
 
 <script>
 // ══ ضع مفتاح Gemini هنا مقسّماً على 3 أجزاء ══
-  
-const _g = (function(){ const p=['AIzaSyBwARRNUBIYkTW-','giy3UzSymc','GEn10Ny1o']; return p.join(''); })();
-const _u = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
+const _g = (function(){ const p=['AIzaSyCih_','29RI28Ksk4x','b0_kt3z8cF-YIa_qeQ']; return p.join(''); })();
+const _u = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=';
 
 const CURRICULUM = {
     6: {
@@ -383,7 +382,7 @@ async function generateDirect(scope) {
         document.getElementById(targetField).value = text.replace(/```json/g,'').replace(/```/g,'').trim();
         notify('✅ تم التوليد — راجع الأسئلة ثم اضغط حفظ');
     } catch(err) {
-        notify('❌ فشل التوليد — استخدم الطريقة اليدوية أدناه', 'error');
+        notify('❌ ' + err.message, 'error');
         document.getElementById('backup-' + scope).classList.add('visible');
     } finally {
         btn.disabled = false; btn.innerHTML = origLabel;

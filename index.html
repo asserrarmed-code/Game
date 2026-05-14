@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة الأستاذ: مُعترك الضاد</title>
+    <title>مُعترك الضاد: مَلحمة الظواهر اللغوية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
@@ -414,10 +414,7 @@
     <button class="icon-btn" onclick="toggleTheme()">🌙</button>
     <button class="icon-btn" onclick="openGuide()" title="الدليل الشامل">📖</button>
     <button class="icon-btn" id="refresh-btn" onclick="refreshPage(this)" title="تحديث الصفحة">🔄</button>
-    <button class="icon-btn" id="admin-icon" onclick="location.href='admin.html'" title="مولد الأسئلة">⚙️</button>
-    <button class="icon-btn" onclick="window.open('screen.html','_blank')" title="شاشة العرض">🖥️</button>
-    <button class="icon-btn" onclick="openCodesModal()" title="روابط الفرق">🔗</button>
-    <button class="icon-btn" onclick="location.href='final.html'" title="النهائي">🏆</button>
+    <button class="icon-btn" id="admin-icon" onclick="location.href='admin.html'" title="لوحة التحكم">⚙️</button>
     <button class="icon-btn" id="back-to-setup" onclick="goBack()" style="display:none; background:var(--deep-red); color:white;">🏠</button>
 </div>
 
@@ -814,11 +811,5 @@ function syncAnswer(v) { document.getElementById('manual-answer-display').innerT
 
 updateTeamInputs(4);
 </script>
-
-<!-- Firebase multi-device layer -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="host-firebase.js"></script>
 </body>
 </html>

@@ -1,165 +1,23 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>شاشة العرض - معترك الضاد</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body { overflow-x: hidden; }
-    .container { max-width: 1250px; }
-    .card { min-height: 56vh; display: flex; flex-direction: column; justify-content: center; }
-    .question-text { font-size: clamp(2rem, 5.8vw, 4.3rem); }
-    .opt { font-size: clamp(1.3rem, 3.2vw, 2rem); padding: 22px; }
-    .screen-only-note { font-size: clamp(1.1rem, 2.3vw, 1.6rem); font-weight: 900; color: var(--muted); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>شاشة العرض: معترك الضاد</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;max-width:100%}:root{--moroccan-blue:#006847;--moroccan-gold:#c5a059;--deep-red:#8b0000;--bg-light:#f4f1ea;--card:#fff;--text:#333;--success:#10b981;--danger:#ef4444}body{background-color:var(--bg-light);background-image:url('https://www.transparenttextures.com/patterns/az-subtle.png');color:var(--text);font-family:'Cairo',sans-serif;margin:0;height:100vh;overflow:hidden;display:flex;flex-direction:column}.header-top{display:flex;justify-content:space-between;align-items:center;padding:5px 15px;flex-shrink:0;width:100%;max-width:1200px;margin:0 auto}.logo-box{width:clamp(48px,7vh,72px);height:clamp(48px,7vh,72px);background:white;border-radius:50%;border:2px solid var(--moroccan-gold);display:flex;align-items:center;justify-content:center;overflow:hidden}.logo-box img{width:100%;height:100%;object-fit:cover}.title-area{flex:1;display:flex;justify-content:center;align-items:center;overflow:hidden;padding:0 10px}.title-area img{width:100%;max-height:clamp(58px,11vh,115px);object-fit:contain}.container{width:95%;max-width:1100px;margin:0 auto;flex:1;display:flex;flex-direction:column;justify-content:center;z-index:2}.scoreboard{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}.team-box{background:var(--card);padding:8px;border-radius:14px;border:2px solid #ddd;text-align:center}.team-box.active-turn{border-color:var(--danger);border-width:4px;box-shadow:0 0 25px rgba(239,68,68,.45)}.team-box.answered{border-color:var(--success)}.card{background:var(--card);padding:clamp(18px,3vh,34px);border-radius:26px;border-top:6px solid var(--moroccan-blue);box-shadow:0 5px 20px rgba(0,0,0,.1);text-align:center;width:100%;min-height:48vh;display:flex;flex-direction:column;justify-content:center}#phase-label{background:var(--moroccan-blue);color:white;padding:5px 18px;border-radius:50px;font-size:1rem;display:inline-block;margin:0 auto 10px}#target-announcer{background:var(--danger);color:white;padding:8px 18px;border-radius:12px;font-size:1.35rem;margin:0 auto 10px;display:none;font-weight:900}#timer{font-size:clamp(2.2rem,8vh,5rem);line-height:1;color:var(--danger);font-weight:900;margin:5px 0}#q-text{font-size:clamp(2rem,5.5vw,4.2rem);line-height:1.35;margin:12px 0;font-family:'Amiri';font-weight:bold}.options-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:10px 0}.opt{background:#f8fafc;border:2px solid #e2e8f0;padding:18px;border-radius:14px;font-family:'Cairo';font-weight:900;font-size:clamp(1.15rem,3vw,2rem)}.opt.correct{background:var(--success);color:white}.manual-answer{font-size:clamp(1.8rem,4vw,3rem);color:var(--success);font-weight:900}.footer-credit{font-size:.75rem;color:rgba(0,0,0,.3);font-weight:bold;text-align:center;width:100%;padding:6px}@media(max-width:700px){.scoreboard{grid-template-columns:repeat(2,1fr)}.options-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-
-<div class="header-top">
-  <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
-  <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
-  <div class="logo-box"><img src="logo.png" alt="Logo"></div>
-</div>
-
-<div class="container">
-  <div id="scoreboard" class="scoreboard"></div>
-
-  <div class="card">
-    <div id="target" class="target-announcer" style="display:none;"></div>
-    <div id="phase" class="badge">في انتظار بدء المسابقة</div>
-    <div id="timer" class="timer">⏳</div>
-    <div id="question" class="question-text">افتحي لوحة الأستاذ ثم اضغطي: انطلق 🚀</div>
-    <div id="options" class="options-grid"></div>
-    <div id="answer" style="display:none; font-size:clamp(1.8rem,4vw,3rem); color:var(--success); font-weight:900;"></div>
-    <div id="note" class="screen-only-note"></div>
-  </div>
-</div>
-
-<div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import { firebaseConfig, ROOM_ID } from "./firebase-config.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const roomRef = ref(db, `rooms/${ROOM_ID}`);
-
-let currentQuestion = null;
-let revealed = false;
-let timerInterval = null;
-
-const $ = (id) => document.getElementById(id);
-
-function renderScoreboard(teams = {}, scores = {}, answers = {}) {
-  const sb = $("scoreboard");
-  sb.innerHTML = "";
-  Object.entries(teams).forEach(([id, team]) => {
-    const answered = answers && answers[id];
-    const active = currentQuestion && (currentQuestion.targetTeam === id || currentQuestion.targetTeam === "all");
-    sb.innerHTML += `
-      <div class="team-box ${active && currentQuestion.targetTeam !== "all" ? "active-turn" : ""} ${answered ? "answered" : ""}">
-        <div class="team-score">${scores[id] ?? 0}</div>
-        <div class="team-name">${team.name}</div>
-        <div class="small-text">${answered ? "أجاب ✅" : "في الانتظار"}</div>
-      </div>
-    `;
-  });
-}
-
-function renderQuestion(q, isRevealed) {
-  currentQuestion = q;
-  revealed = !!isRevealed;
-  $("options").innerHTML = "";
-  $("answer").style.display = "none";
-  $("note").textContent = "";
-
-  if (!q) {
-    $("phase").textContent = "في انتظار المسابقة";
-    $("timer").textContent = "⏳";
-    $("question").textContent = "افتحي لوحة الأستاذ ثم اضغطي: انطلق 🚀";
-    $("target").style.display = "none";
-    clearInterval(timerInterval);
-    return;
-  }
-
-  $("phase").textContent = q.phaseName || "";
-  $("question").textContent = q.text || "";
-  $("target").style.display = q.targetTeam !== "all" ? "inline-block" : "none";
-  $("target").textContent = q.targetTeam !== "all" ? `🎯 الدور: ${q.targetTeamName}` : "";
-
-  if (q.boxMode) {
-    $("note").textContent = "الفريق المعني يختار الصندوق من شاشة الأستاذ.";
-  }
-
-  if (q.options) {
-    q.options.forEach((opt, idx) => {
-      const b = document.createElement("button");
-      b.className = "opt";
-      b.textContent = opt;
-      if (revealed && Number(idx) === Number(q.correctIndex)) b.classList.add("correct");
-      $("options").appendChild(b);
-    });
-  }
-
-  if (revealed && q.modelAnswer) {
-    $("answer").style.display = "block";
-    $("answer").textContent = `الجواب: ${q.modelAnswer}`;
-    $("question").textContent = q.text;
-  }
-
-  if (revealed && q.options && q.correctIndex !== null) {
-    $("note").textContent = `الجواب الصحيح: ${q.options[q.correctIndex]}`;
-  }
-
-  startTimer(q.time, q.startedAt, q.phaseType === "speed", revealed);
-}
-
-function startTimer(seconds, startedAt, isSpeed, isRevealed) {
-  clearInterval(timerInterval);
-
-  function tick() {
-    const elapsed = Math.floor((Date.now() - startedAt) / 1000);
-    const left = Math.max(0, seconds - elapsed);
-    $("timer").textContent = left;
-    if (left <= 5 && left > 0) $("timer").classList.add("urgent");
-    else $("timer").classList.remove("urgent");
-
-    if (left <= 0) {
-      clearInterval(timerInterval);
-      if (isSpeed && !isRevealed) $("question").textContent = "";
-    }
-  }
-
-  tick();
-  timerInterval = setInterval(tick, 1000);
-}
-
-onValue(roomRef, (snapshot) => {
-  const data = snapshot.val();
-  if (!data) {
-    renderQuestion(null, false);
-    renderScoreboard();
-    return;
-  }
-
-  if (data.final) {
-    clearInterval(timerInterval);
-    $("phase").textContent = "النهاية";
-    $("timer").textContent = "🏆";
-    $("question").textContent = "انتهت المسابقة، شكرًا للمشاركة!";
-    $("options").innerHTML = "";
-    $("answer").style.display = "none";
-    renderScoreboard(data.teams || {}, data.scores || {}, data.answers || {});
-    return;
-  }
-
-  renderQuestion(data.currentQuestion, data.revealed);
-  renderScoreboard(data.teams || {}, data.scores || {}, data.answers || {});
-});
-</script>
-</body>
-</html>
+<div class="header-top"><div class="logo-box"><img src="logo-cup.png" alt="Logo"></div><div class="title-area"><img src="banner-cup.png" alt="Banner"></div><div class="logo-box"><img src="logo.png" alt="Logo"></div></div>
+<div class="container"><div id="scoreboard" class="scoreboard"></div><div class="card"><div id="target-announcer"></div><div id="phase-label">في انتظار الأستاذ</div><div id="timer">⏳</div><div id="q-text">افتح صفحة الأستاذ واضغط انطلق</div><div class="options-grid" id="opt-container"></div><div id="manual-answer-display" class="manual-answer" style="display:none"></div></div></div>
+<div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار -مدرسة ميمونة أم المؤمنين-مديرية مراكش-</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="firebase-config.js"></script>
+<script>
+(function(){let timer=null;function init(){if(!window.firebaseConfig||String(window.firebaseConfig.apiKey||'').includes('PUT_YOUR')){document.getElementById('q-text').innerText='ضعي معلومات Firebase في firebase-config.js';return;}firebase.initializeApp(window.firebaseConfig);firebase.database().ref('rooms/'+(window.ROOM_ID||'moatark-main-room')).on('value',s=>render(s.val()||{}));}
+function render(data){const q=data.currentQuestion;renderScore(data.teams||{},data.scores||{},data.answers||{},q);if(data.final){document.getElementById('phase-label').innerText='النهاية';document.getElementById('timer').innerText='🏆';document.getElementById('q-text').innerText='انتهت المسابقة';return;}if(!q){document.getElementById('phase-label').innerText='في انتظار الأستاذ';return;}document.getElementById('phase-label').innerText=q.phaseName||'';document.getElementById('q-text').innerText=q.text||'';document.getElementById('target-announcer').style.display=q.targetTeam&&q.targetTeam!=='all'?'inline-block':'none';document.getElementById('target-announcer').innerText=q.targetTeam&&q.targetTeam!=='all'?'🎯 الدور: '+q.targetTeamName:'';const cont=document.getElementById('opt-container');cont.innerHTML='';(q.options||[]).forEach((o,i)=>{const b=document.createElement('div');b.className='opt'+((data.revealed||q.revealed)&&Number(i)===Number(q.correctIndex)?' correct':'');b.innerText=o;cont.appendChild(b)});const ans=document.getElementById('manual-answer-display');if((data.revealed||q.revealed)&&q.modelAnswer){ans.style.display='block';ans.innerText='الجواب: '+q.modelAnswer}else ans.style.display='none';startTimer(q.time||20,q.startedAt||Date.now(),q.phaseType==='speed',data.revealed||q.revealed);}
+function renderScore(teams,scores,answers,q){const sb=document.getElementById('scoreboard');sb.innerHTML='';Object.keys(teams).forEach(id=>{const t=teams[id];const active=q&&(q.targetTeam===id||q.targetTeam==='all');const answered=answers&&answers[id];const div=document.createElement('div');div.className='team-box '+(active&&q.targetTeam!=='all'?'active-turn ':'')+(answered?'answered':'');div.innerHTML='<div style="font-size:1.6rem;font-weight:900;color:var(--moroccan-blue)">'+(scores[id]||t.score||0)+'</div><div style="font-size:.85rem;font-weight:900">'+t.name+'</div><div style="font-size:.75rem">'+(answered?'أجاب ✅':'في الانتظار')+'</div>';sb.appendChild(div);});}
+function startTimer(seconds,startedAt,isSpeed,revealed){clearInterval(timer);function tick(){const left=Math.max(0,seconds-Math.floor((Date.now()-startedAt)/1000));document.getElementById('timer').innerText=left;if(left<=0){clearInterval(timer);if(isSpeed&&!revealed)document.getElementById('q-text').innerText='';}}tick();timer=setInterval(tick,1000)}
+window.addEventListener('load',init);})();
+</script></body></html>

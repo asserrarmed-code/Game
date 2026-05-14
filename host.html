@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>لوحة الأستاذ - معترك الضاد</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="header-top">
+  <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
+  <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
+  <div class="logo-box"><img src="logo.png" alt="Logo"></div>
+</div>
+
+<div class="top-controls">
+  <button class="icon-btn" id="themeBtn">🌙</button>
+  <button class="icon-btn" id="resetBtn" title="إعادة ضبط">🔄</button>
+  <button class="icon-btn" onclick="window.open('screen.html','_blank')" title="فتح شاشة العرض">🖥️</button>
+  <button class="icon-btn" onclick="window.open('player.html?team=team1','_blank')" title="فريق 1">1️⃣</button>
+  <button class="icon-btn" onclick="window.open('player.html?team=team2','_blank')" title="فريق 2">2️⃣</button>
+  <button class="icon-btn" onclick="window.open('player.html?team=team3','_blank')" title="فريق 3">3️⃣</button>
+  <button class="icon-btn" onclick="window.open('player.html?team=team4','_blank')" title="فريق 4">4️⃣</button>
+</div>
+
+<div id="setup-screen" class="container">
+  <div class="card">
+    <h2 style="color:var(--moroccan-blue); margin-top:0;">👥 إعداد الفِرَق المتنافسة</h2>
+    <p class="small-text">هذه الصفحة خاصة بالأستاذ فقط. افتحي <b>screen.html</b> في الشاشة الكبيرة، و <b>player.html?team=team1</b> إلى <b>team4</b> في أجهزة الفرق.</p>
+
+    <select id="team-count" class="select">
+      <option value="2">فريقان</option>
+      <option value="3">ثلاثة فِرَق</option>
+      <option value="4" selected>أربعة فِرَق</option>
+    </select>
+
+    <div id="team-names-container" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:18px 0;"></div>
+
+    <div class="link-row" style="margin:16px 0;">
+      <button class="btn btn-dark" onclick="window.open('screen.html','_blank')">فتح شاشة العرض 🖥️</button>
+      <button class="btn btn-muted" onclick="copyLinks()">نسخ روابط الفرق 📋</button>
+    </div>
+
+    <button class="btn btn-primary" style="padding:16px 54px; font-size:1.2rem; border-radius:999px;" id="startBtn">انْطَلِقْ 🚀</button>
+  </div>
+</div>
+
+<div id="host-screen" class="container" style="display:none;">
+  <div id="dynamic-scoreboard" class="scoreboard"></div>
+
+  <div class="card">
+    <div id="target-announcer" class="target-announcer" style="display:none;"></div>
+    <div id="phase-label" class="badge"></div>
+    <div id="timer" class="timer">0</div>
+    <div id="q-text" class="question-text"></div>
+
+    <div id="component-selection" style="display:none; gap:10px; flex-wrap:wrap; justify-content:center;">
+      <button class="btn btn-gold" id="btn-المدرسة">🏫 المدرسة <span id="count-المدرسة"></span></button>
+      <button class="btn btn-gold" id="btn-المحفظة">🎒 المحفظة <span id="count-المحفظة"></span></button>
+      <button class="btn btn-gold" id="btn-الكتاب">📖 الكتاب <span id="count-الكتاب"></span></button>
+    </div>
+
+    <div class="options-grid" id="opt-container"></div>
+
+    <div id="manual-zone" style="display:none;">
+      <div id="manual-answer-display" style="font-size:1.6rem; color:var(--moroccan-blue); font-weight:900;">...</div>
+    </div>
+
+    <h3 style="margin-bottom:8px;">📩 إجابات الفرق</h3>
+    <div id="answers-panel" class="answers-panel"></div>
+
+    <div id="finish-screen" style="display:none; margin-top:20px;">
+      <button class="btn btn-gold" style="font-size:1.25rem;" onclick="finishGame()">⚔️ إعلان نهاية المسابقة ⚔️</button>
+    </div>
+  </div>
+
+  <div class="admin-panel">
+    <div class="link-row" style="margin-bottom:12px;">
+      <button class="btn btn-success" id="revealBtn">✅ كشف الجواب</button>
+      <button class="btn btn-gold" id="nextBtn">➡️ السؤال التالي</button>
+      <button class="btn btn-danger" id="endBtn">🏁 إنهاء</button>
+    </div>
+    <div id="admin-score-controls" class="admin-grid"></div>
+  </div>
+</div>
+
+<div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار - مدرسة ميمونة أم المؤمنين - مديرية مراكش</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, update, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { firebaseConfig, ROOM_ID } from "./firebase-config.js";
+import { defaultPhases, defaultPhases2, defaultStock, defaultSpeed, STOCK_KEYS } from "./data.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const roomRef = ref(db, `rooms/${ROOM_ID}`);
+
+let teamNames = [];
+let scores = {};
+let currentPhase = 0;
+let currentQ = 0;
+let timerInterval = null;
+let phaseTurns = [];
+let stockCounts = {};
+let usedByBox = {};
+let currentQuestion = null;
+let answers = {};
+let localTimeLeft = 0;
+
+const phasesData = [
+  { name: "النمط 1: الاستجابة الجماعية", type: "all", time: 20, questions: defaultPhases },
+  { name: "النمط 2: المواجهة الموجهة", type: "target", time: 20, questions: defaultPhases2 },
+  { name: "النمط 3: الصناديق العجيبة", type: "free", time: 30 },
+  { name: "النمط 4: جولة السرعة", type: "speed", time: 8, questions: defaultSpeed }
+];
+
+const $ = (id) => document.getElementById(id);
+
+$("themeBtn").onclick = () => document.body.classList.toggle("dark-mode");
+$("team-count").onchange = () => updateTeamInputs(Number($("team-count").value));
+$("startBtn").onclick = startGame;
+$("nextBtn").onclick = nextQuestion;
+$("revealBtn").onclick = revealAnswer;
+$("endBtn").onclick = finishGame;
+$("resetBtn").onclick = resetGame;
+
+function updateTeamInputs(count) {
+  const container = $("team-names-container");
+  container.innerHTML = "";
+  for (let i = 0; i < count; i++) {
+    container.innerHTML += `<input class="input" type="text" id="tn-${i}" value="الفريق ${i + 1}" style="width:140px;">`;
+  }
+}
+updateTeamInputs(4);
+
+function makeTeams() {
+  const count = Number($("team-count").value);
+  teamNames = [];
+  scores = {};
+  for (let i = 0; i < count; i++) {
+    const id = `team${i + 1}`;
+    const name = $(`tn-${i}`).value.trim() || `الفريق ${i + 1}`;
+    teamNames.push({ id, name });
+    scores[id] = 0;
+  }
+}
+
+function initStockCounts() {
+  stockCounts = {};
+  usedByBox = {};
+  STOCK_KEYS.forEach(key => {
+    stockCounts[key] = teamNames.length;
+    usedByBox[key] = [];
+  });
+}
+
+function prepareTurns() {
+  phaseTurns = [];
+  const p = phasesData[currentPhase];
+  if (!p) return;
+
+  if (p.type === "target") {
+    for (const t of teamNames) {
+      for (let j = 0; j < 3; j++) phaseTurns.push(t.id);
+    }
+  } else if (p.type === "free") {
+    for (const t of teamNames) {
+      for (let j = 0; j < 2; j++) phaseTurns.push(t.id);
+    }
+  }
+  phaseTurns.sort(() => Math.random() - 0.5);
+}
+
+function renderScoreboard() {
+  const sb = $("dynamic-scoreboard");
+  const adminCtrl = $("admin-score-controls");
+  sb.innerHTML = "";
+  adminCtrl.innerHTML = "";
+
+  for (const team of teamNames) {
+    const answered = answers && answers[team.id];
+    const active = currentQuestion && (currentQuestion.targetTeam === team.id || currentQuestion.targetTeam === "all");
+    sb.innerHTML += `
+      <div class="team-box ${active && currentQuestion.targetTeam !== "all" ? "active-turn" : ""} ${answered ? "answered" : ""}" id="card-${team.id}">
+        <div class="team-score" id="score-${team.id}">${scores[team.id] ?? 0}</div>
+        <div class="team-name">${team.name}</div>
+        <div class="small-text">${answered ? "أجاب ✅" : "لم يجب بعد"}</div>
+      </div>
+    `;
+
+    adminCtrl.innerHTML += `
+      <div class="admin-group">
+        <div style="font-size:0.95rem; color:var(--moroccan-gold); font-weight:900;">${team.name}</div>
+        <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
+          <button class="btn btn-success" data-score="${team.id}" data-value="10">+10</button>
+          <button class="btn btn-danger" data-score="${team.id}" data-value="-5">-5</button>
+        </div>
+      </div>
+    `;
+  }
+
+  document.querySelectorAll("[data-score]").forEach(btn => {
+    btn.onclick = () => modifyScore(btn.dataset.score, Number(btn.dataset.value));
+  });
+}
+
+async function startGame() {
+  makeTeams();
+  currentPhase = 0;
+  currentQ = 0;
+  initStockCounts();
+  prepareTurns();
+
+  await set(roomRef, {
+    status: "started",
+    teams: Object.fromEntries(teamNames.map(t => [t.id, { name: t.name }])),
+    scores,
+    answers: {},
+    hostState: {
+      currentPhase,
+      currentQ,
+      phaseTurns,
+      stockCounts,
+      usedByBox
+    },
+    currentQuestion: null,
+    revealed: false,
+    final: false,
+    createdAt: Date.now()
+  });
+
+  $("setup-screen").style.display = "none";
+  $("host-screen").style.display = "block";
+  await publishCurrentQuestion();
+}
+
+async function publishCurrentQuestion() {
+  clearInterval(timerInterval);
+
+  const p = phasesData[currentPhase];
+  if (!p) return finishGame();
+
+  let qPayload = null;
+  const base = {
+    phaseName: p.name,
+    phaseType: p.type,
+    phaseIndex: currentPhase,
+    questionIndex: currentQ,
+    time: p.time,
+    startedAt: Date.now(),
+    targetTeam: "all",
+    targetTeamName: "",
+    text: "",
+    options: null,
+    correctIndex: null,
+    modelAnswer: "",
+    boxMode: false
+  };
+
+  if (p.type === "target") {
+    const targetTeam = phaseTurns[currentQ];
+    const item = p.questions[currentQ % p.questions.length];
+    qPayload = {
+      ...base,
+      targetTeam,
+      targetTeamName: teamNames.find(t => t.id === targetTeam)?.name || targetTeam,
+      text: item.q,
+      options: item.o,
+      correctIndex: item.a
+    };
+  } else if (p.type === "free") {
+    const targetTeam = phaseTurns[currentQ];
+    qPayload = {
+      ...base,
+      targetTeam,
+      targetTeamName: teamNames.find(t => t.id === targetTeam)?.name || targetTeam,
+      text: "اختَر الصندوق العجيب",
+      boxMode: true
+    };
+  } else if (p.type === "speed") {
+    const item = p.questions[currentQ % p.questions.length];
+    qPayload = {
+      ...base,
+      targetTeam: "all",
+      text: item.q,
+      modelAnswer: item.a
+    };
+  } else {
+    const item = p.questions[currentQ % p.questions.length];
+    qPayload = {
+      ...base,
+      targetTeam: "all",
+      text: item.q,
+      options: item.o,
+      correctIndex: item.a
+    };
+  }
+
+  currentQuestion = qPayload;
+  answers = {};
+
+  await update(roomRef, {
+    currentQuestion: qPayload,
+    answers: {},
+    revealed: false,
+    final: false,
+    "hostState/currentPhase": currentPhase,
+    "hostState/currentQ": currentQ,
+    "hostState/phaseTurns": phaseTurns,
+    "hostState/stockCounts": stockCounts,
+    "hostState/usedByBox": usedByBox
+  });
+
+  renderQuestion();
+  startLocalTimer(qPayload.time, qPayload.phaseType === "speed");
+}
+
+function renderQuestion() {
+  if (!currentQuestion) return;
+
+  $("phase-label").textContent = currentQuestion.phaseName;
+  $("q-text").textContent = currentQuestion.text || "";
+  $("target-announcer").style.display = currentQuestion.targetTeam !== "all" ? "inline-block" : "none";
+  $("target-announcer").textContent = currentQuestion.targetTeam !== "all" ? `🎯 الدور: ${currentQuestion.targetTeamName}` : "";
+  $("component-selection").style.display = "none";
+  $("manual-zone").style.display = "none";
+  $("manual-answer-display").textContent = "...";
+  $("finish-screen").style.display = "none";
+
+  const optContainer = $("opt-container");
+  optContainer.innerHTML = "";
+
+  if (currentQuestion.boxMode) {
+    showFreeSelection();
+  } else if (currentQuestion.options) {
+    currentQuestion.options.forEach((opt, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "opt";
+      btn.textContent = opt;
+      btn.dataset.index = idx;
+      optContainer.appendChild(btn);
+    });
+  } else {
+    $("manual-zone").style.display = "block";
+  }
+
+  renderScoreboard();
+  renderAnswers();
+}
+
+function showFreeSelection() {
+  $("component-selection").style.display = "flex";
+  STOCK_KEYS.forEach(key => {
+    const btn = $(`btn-${key}`);
+    const count = stockCounts[key] ?? 0;
+    $(`count-${key}`).textContent = `(${count})`;
+    btn.disabled = count <= 0;
+    btn.className = count <= 0 ? "btn btn-muted" : "btn btn-gold";
+    btn.onclick = () => selectComponent(key);
+  });
+}
+
+async function selectComponent(key) {
+  if (!currentQuestion || !currentQuestion.boxMode) return;
+  if ((stockCounts[key] ?? 0) <= 0) return;
+
+  let available = defaultStock[key].filter(q => !usedByBox[key].includes(q.q));
+  if (available.length === 0) {
+    usedByBox[key] = [];
+    available = defaultStock[key];
+  }
+
+  const item = available[Math.floor(Math.random() * available.length)];
+  usedByBox[key].push(item.q);
+  stockCounts[key]--;
+
+  currentQuestion = {
+    ...currentQuestion,
+    text: `📦 ${key}: ${item.q}`,
+    modelAnswer: item.a,
+    boxMode: false,
+    selectedBox: key,
+    startedAt: Date.now()
+  };
+
+  await update(roomRef, {
+    currentQuestion,
+    answers: {},
+    revealed: false,
+    "hostState/stockCounts": stockCounts,
+    "hostState/usedByBox": usedByBox
+  });
+
+  answers = {};
+  renderQuestion();
+  startLocalTimer(currentQuestion.time, false);
+}
+
+function startLocalTimer(seconds, isSpeed = false) {
+  clearInterval(timerInterval);
+  localTimeLeft = seconds;
+  $("timer").textContent = localTimeLeft;
+  $("timer").classList.remove("urgent");
+
+  timerInterval = setInterval(() => {
+    localTimeLeft--;
+    $("timer").textContent = localTimeLeft;
+
+    if (localTimeLeft <= 5 && localTimeLeft > 0) $("timer").classList.add("urgent");
+    else $("timer").classList.remove("urgent");
+
+    if (localTimeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (isSpeed && currentQuestion && !document.body.dataset.revealed) {
+        $("q-text").textContent = "";
+      }
+    }
+  }, 1000);
+}
+
+async function revealAnswer() {
+  if (!currentQuestion) return;
+  clearInterval(timerInterval);
+  document.body.dataset.revealed = "1";
+
+  if (currentQuestion.options && currentQuestion.correctIndex !== null) {
+    document.querySelectorAll(".opt").forEach(btn => {
+      if (Number(btn.dataset.index) === Number(currentQuestion.correctIndex)) {
+        btn.classList.add("correct");
+      }
+    });
+  }
+
+  if (currentQuestion.modelAnswer) {
+    $("q-text").textContent = currentQuestion.text;
+    $("manual-zone").style.display = "block";
+    $("manual-answer-display").textContent = currentQuestion.modelAnswer;
+    $("manual-answer-display").style.color = "var(--success)";
+  }
+
+  await update(roomRef, { revealed: true });
+}
+
+async function nextQuestion() {
+  document.body.dataset.revealed = "";
+  const p = phasesData[currentPhase];
+  currentQ++;
+
+  const limit = (p.type === "target" || p.type === "free") ? phaseTurns.length : p.questions.length;
+
+  if (currentQ >= limit) {
+    currentQ = 0;
+    currentPhase++;
+    if (currentPhase < phasesData.length) prepareTurns();
+  }
+
+  if (currentPhase >= phasesData.length) {
+    await finishGame();
+    return;
+  }
+
+  await publishCurrentQuestion();
+}
+
+async function modifyScore(teamId, value) {
+  scores[teamId] = (scores[teamId] ?? 0) + value;
+  await update(roomRef, {
+    [`scores/${teamId}`]: scores[teamId]
+  });
+}
+
+function renderAnswers() {
+  const panel = $("answers-panel");
+  panel.innerHTML = "";
+
+  if (!teamNames.length) return;
+
+  for (const team of teamNames) {
+    const ans = answers?.[team.id];
+    let answerText = "لم يُرسل جوابًا بعد";
+    let status = "";
+
+    if (ans) {
+      if (ans.answerText !== undefined && ans.answerText !== null) answerText = ans.answerText;
+      else if (ans.freeText) answerText = ans.freeText;
+      status = "answered";
+    }
+
+    panel.innerHTML += `
+      <div class="answer-card ${status}">
+        <strong>${team.name}</strong>
+        <div>${answerText}</div>
+        ${ans ? `<div class="small-text">وقت الإرسال: ${new Date(ans.sentAt).toLocaleTimeString("ar-MA")}</div>` : ""}
+      </div>
+    `;
+  }
+}
+
+onValue(roomRef, (snapshot) => {
+  const data = snapshot.val();
+  if (!data) return;
+
+  if (data.teams) {
+    teamNames = Object.entries(data.teams).map(([id, t]) => ({ id, name: t.name }));
+  }
+  scores = data.scores || scores || {};
+  currentQuestion = data.currentQuestion || currentQuestion;
+  answers = data.answers || {};
+
+  if (data.hostState) {
+    currentPhase = data.hostState.currentPhase ?? currentPhase;
+    currentQ = data.hostState.currentQ ?? currentQ;
+    phaseTurns = data.hostState.phaseTurns || phaseTurns;
+    stockCounts = data.hostState.stockCounts || stockCounts;
+    usedByBox = data.hostState.usedByBox || usedByBox;
+  }
+
+  if (data.status === "started") {
+    $("setup-screen").style.display = "none";
+    $("host-screen").style.display = "block";
+  }
+
+  renderQuestionFromFirebase(data);
+});
+
+function renderQuestionFromFirebase(data) {
+  if (!currentQuestion) return;
+  $("phase-label").textContent = currentQuestion.phaseName || "";
+  $("q-text").textContent = currentQuestion.text || "";
+  $("target-announcer").style.display = currentQuestion.targetTeam !== "all" ? "inline-block" : "none";
+  $("target-announcer").textContent = currentQuestion.targetTeam !== "all" ? `🎯 الدور: ${currentQuestion.targetTeamName}` : "";
+
+  renderScoreboard();
+  renderAnswers();
+}
+
+async function finishGame() {
+  clearInterval(timerInterval);
+  await update(roomRef, { final: true, status: "finished", currentQuestion: null });
+  $("q-text").textContent = "🏁 انتهت المسابقة";
+  $("timer").textContent = "🏆";
+  $("opt-container").innerHTML = "";
+  $("component-selection").style.display = "none";
+  $("manual-zone").style.display = "none";
+  $("finish-screen").style.display = "block";
+}
+
+async function resetGame() {
+  if (!confirm("هل تريدين إعادة ضبط المسابقة؟ سيتم مسح الإجابات والنقط الحالية.")) return;
+  clearInterval(timerInterval);
+  await remove(roomRef);
+  location.reload();
+}
+
+function copyLinks() {
+  const base = location.href.replace(/host\.html.*/, "");
+  const links = [
+    `${base}screen.html`,
+    `${base}player.html?team=team1`,
+    `${base}player.html?team=team2`,
+    `${base}player.html?team=team3`,
+    `${base}player.html?team=team4`
+  ].join("\n");
+  navigator.clipboard.writeText(links).then(() => alert("تم نسخ الروابط ✅"));
+}
+</script>
+</body>
+</html>

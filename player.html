@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>صفحة الفريق - معترك الضاد</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .player-card { min-height: 74vh; display:flex; flex-direction:column; justify-content:center; }
+    .player-title { color: var(--moroccan-blue); font-size: clamp(1.4rem,5vw,2.2rem); margin-top:0; }
+    .question-text { font-size: clamp(1.4rem,6vw,2.4rem); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card player-card">
+    <h2 id="team-title" class="player-title">صفحة الفريق</h2>
+
+    <div id="join-zone">
+      <p>اختاري رقم الفريق لهذا الجهاز:</p>
+      <select id="team-select" class="select" style="width:100%; margin-bottom:12px;">
+        <option value="team1">الفريق 1</option>
+        <option value="team2">الفريق 2</option>
+        <option value="team3">الفريق 3</option>
+        <option value="team4">الفريق 4</option>
+      </select>
+      <button class="btn btn-primary" id="joinBtn" style="width:100%;">دخول ✅</button>
+    </div>
+
+    <div id="play-zone" style="display:none;">
+      <div id="phase" class="badge">في الانتظار</div>
+      <div id="timer" class="timer">⏳</div>
+      <div id="status" class="big-status"></div>
+      <div id="question" class="question-text"></div>
+      <div id="options"></div>
+      <div id="free-answer-zone" style="display:none;">
+        <input id="free-answer" class="input" type="text" placeholder="اكتب الجواب هنا" style="width:100%; font-size:1.1rem;">
+        <button class="btn btn-success" id="sendFreeBtn" style="width:100%; margin-top:12px;">إرسال الجواب ✅</button>
+      </div>
+      <div id="sent-message" style="display:none; margin-top:18px; font-size:1.4rem; color:var(--success); font-weight:900;">تم إرسال جوابكم ✅</div>
+      <div id="reveal-answer" style="display:none; margin-top:18px; font-size:1.3rem; color:var(--success); font-weight:900;"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { firebaseConfig, ROOM_ID } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const roomRef = ref(db, `rooms/${ROOM_ID}`);
+
+const $ = (id) => document.getElementById(id);
+const urlParams = new URLSearchParams(location.search);
+let myTeamId = urlParams.get("team") || localStorage.getItem("moatark_team_id") || "team1";
+let myTeamName = "فريقي";
+let currentQuestion = null;
+let myAnswer = null;
+let revealed = false;
+let timerInterval = null;
+
+$("team-select").value = myTeamId;
+$("joinBtn").onclick = joinTeam;
+$("sendFreeBtn").onclick = () => sendAnswer(null, $("free-answer").value.trim());
+
+function joinTeam() {
+  myTeamId = $("team-select").value;
+  localStorage.setItem("moatark_team_id", myTeamId);
+  $("join-zone").style.display = "none";
+  $("play-zone").style.display = "block";
+  $("team-title").textContent = "جارٍ الاتصال...";
+}
+
+joinTeam();
+
+function canPlay(q) {
+  if (!q) return false;
+  return q.targetTeam === "all" || q.targetTeam === myTeamId;
+}
+
+function render(data) {
+  if (!data) {
+    $("team-title").textContent = "في انتظار الأستاذ";
+    $("status").textContent = "المسابقة لم تبدأ بعد";
+    $("question").textContent = "";
+    $("options").innerHTML = "";
+    clearInterval(timerInterval);
+    return;
+  }
+
+  myTeamName = data.teams?.[myTeamId]?.name || myTeamId;
+  $("team-title").textContent = myTeamName;
+
+  if (data.final) {
+    $("phase").textContent = "النهاية";
+    $("timer").textContent = "🏆";
+    $("status").textContent = "انتهت المسابقة";
+    $("question").textContent = "شكرًا على المشاركة!";
+    $("options").innerHTML = "";
+    $("free-answer-zone").style.display = "none";
+    return;
+  }
+
+  currentQuestion = data.currentQuestion;
+  myAnswer = data.answers?.[myTeamId] || null;
+  revealed = !!data.revealed;
+
+  $("options").innerHTML = "";
+  $("sent-message").style.display = myAnswer ? "block" : "none";
+  $("free-answer-zone").style.display = "none";
+  $("reveal-answer").style.display = "none";
+  $("free-answer").value = "";
+
+  if (!currentQuestion) {
+    $("phase").textContent = "في الانتظار";
+    $("timer").textContent = "⏳";
+    $("status").textContent = "انتظروا السؤال التالي";
+    $("question").textContent = "";
+    clearInterval(timerInterval);
+    return;
+  }
+
+  $("phase").textContent = currentQuestion.phaseName || "";
+
+  if (!canPlay(currentQuestion)) {
+    $("status").textContent = "ليس دوركم الآن ⏳";
+    $("question").textContent = `الدور الآن لـ: ${currentQuestion.targetTeamName}`;
+    $("options").innerHTML = "";
+    clearInterval(timerInterval);
+    $("timer").textContent = "—";
+    return;
+  }
+
+  $("status").textContent = currentQuestion.targetTeam === "all" ? "أجيبوا الآن" : "دوركم الآن 🎯";
+  $("question").textContent = currentQuestion.text || "";
+
+  if (currentQuestion.boxMode) {
+    $("status").textContent = "انتظروا اختيار الصندوق من الأستاذ";
+    $("question").textContent = "الصناديق العجيبة 📦";
+  } else if (currentQuestion.options) {
+    currentQuestion.options.forEach((opt, idx) => {
+      const b = document.createElement("button");
+      b.className = "player-choice";
+      b.textContent = opt;
+      b.disabled = !!myAnswer || revealed;
+      b.onclick = () => sendAnswer(idx, opt);
+      if (revealed && Number(idx) === Number(currentQuestion.correctIndex)) {
+        b.style.background = "var(--success)";
+        b.style.color = "white";
+      }
+      $("options").appendChild(b);
+    });
+  } else {
+    $("free-answer-zone").style.display = myAnswer || revealed ? "none" : "block";
+  }
+
+  if (revealed) {
+    $("reveal-answer").style.display = "block";
+    if (currentQuestion.options && currentQuestion.correctIndex !== null) {
+      $("reveal-answer").textContent = `الجواب الصحيح: ${currentQuestion.options[currentQuestion.correctIndex]}`;
+    } else if (currentQuestion.modelAnswer) {
+      $("reveal-answer").textContent = `الجواب: ${currentQuestion.modelAnswer}`;
+    }
+  }
+
+  startTimer(currentQuestion.time, currentQuestion.startedAt, currentQuestion.phaseType === "speed", revealed);
+}
+
+function startTimer(seconds, startedAt, isSpeed, isRevealed) {
+  clearInterval(timerInterval);
+
+  function tick() {
+    const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+    const left = Math.max(0, seconds - elapsed);
+    $("timer").textContent = left;
+    if (left <= 5 && left > 0) $("timer").classList.add("urgent");
+    else $("timer").classList.remove("urgent");
+
+    if (left <= 0) {
+      clearInterval(timerInterval);
+      if (isSpeed && !isRevealed) $("question").textContent = "";
+    }
+  }
+
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
+
+async function sendAnswer(index, text) {
+  if (!currentQuestion || !canPlay(currentQuestion)) return;
+  if (!text && index === null) {
+    alert("اكتبوا الجواب أولًا");
+    return;
+  }
+
+  const payload = {
+    teamId: myTeamId,
+    teamName: myTeamName,
+    questionIndex: currentQuestion.questionIndex,
+    phaseIndex: currentQuestion.phaseIndex,
+    answerIndex: index,
+    answerText: text,
+    correct: index !== null && currentQuestion.correctIndex !== null ? Number(index) === Number(currentQuestion.correctIndex) : null,
+    sentAt: Date.now()
+  };
+
+  await set(ref(db, `rooms/${ROOM_ID}/answers/${myTeamId}`), payload);
+  $("sent-message").style.display = "block";
+}
+
+onValue(roomRef, (snapshot) => {
+  render(snapshot.val());
+});
+</script>
+</body>
+</html>

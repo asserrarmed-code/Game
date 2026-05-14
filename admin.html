@@ -304,8 +304,9 @@
 </div>
 
 <script>
-    const _g = (function(){ const p=['AIzaSyBJnhQ-0G','Sw0-18Rv6TfBy','Lx7K8G5MFiAc']; return p.join(''); })();
-const _u = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
+
+    const _g = (function(){ const p=['gsk_osqgY5RDY4y','TzQ4QywXCWGdyb3FY','BBIGE1DprdBwTd6tGpVVRsqF']; return p.join(''); })();
+const _u = 'https://api.groq.com/openai/v1/chat/completions';
 
 const CURRICULUM = {
     6: {
@@ -344,16 +345,24 @@ async function generateDirect(scope) {
     bar.classList.add('active');
     notify('⏳ جارٍ التوليد — انتظر لحظة...', 'success');
     try {
-        const res = await fetch(_u + _g, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 8192 } })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || 'خطأ في الاتصال');
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        document.getElementById(targetField).value = text.replace(/```json/g,'').replace(/```/g,'').trim();
-        notify('✅ تم التوليد — راجع الأسئلة ثم اضغط حفظ');
+        const res = await fetch(_u, {
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + _g
+    },
+    body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 8192,
+        temperature: 0.7
+    })
+});
+const data = await res.json();
+if (!res.ok) throw new Error(data.error?.message || 'خطأ في الاتصال');
+const text = data.choices?.[0]?.message?.content || '';
+document.getElementById(targetField).value = text.replace(/```json/g,'').replace(/```/g,'').trim();
+notify('✅ تم التوليد — راجع الأسئلة ثم اضغط حفظ');
     } catch(err) {
         notify('❌ خطأ: ' + err.message, 'error');
     } finally {

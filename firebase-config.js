@@ -1,0 +1,15 @@
+// firebase-config.js
+// ضعي هنا إعدادات مشروع Firebase الخاص بك.
+// Firebase Console > Project settings > Your apps > Web app
+
+export const firebaseConfig = {
+  apiKey: "AIzaSyDGVs_PTw_dgmX_d9Q_-06i7L16omRuTqo",
+  authDomain: "motarak-3097e.firebaseapp.com",
+  databaseURL: "https://firebase.google.com/docs/web/setup#available-libraries",
+  projectId: "motarak-3097e",
+  storageBucket: "motarak-3097e.firebasestorage.app",
+  messagingSenderId: "665568373830",
+  appId: "1:665568373830:web:b38bd8fc400c813f056e47"
+};
+
+export const ROOM_ID = "moatark-main-room";

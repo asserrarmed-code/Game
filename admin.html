@@ -382,7 +382,7 @@ async function generateDirect(scope) {
         document.getElementById(targetField).value = text.replace(/```json/g,'').replace(/```/g,'').trim();
         notify('✅ تم التوليد — راجع الأسئلة ثم اضغط حفظ');
     } catch(err) {
-        notify('❌ ' + err.message, 'error');
+        notify('❌ فشل التوليد — استخدم الطريقة اليدوية أدناه', 'error');
         document.getElementById('backup-' + scope).classList.add('visible');
     } finally {
         btn.disabled = false; btn.innerHTML = origLabel;

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -43,7 +42,6 @@
         .lesson-cb-row:hover { background: #f8fafc; }
         .lesson-cb-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--ai-purple); cursor: pointer; flex-shrink: 0; }
         .lesson-cb-row.teal input[type="checkbox"] { accent-color: var(--final-teal); }
-        .lesson-cb-row label { font-size: 0.88rem; cursor: pointer; flex: 1; }
         .lessons-footer { padding: 10px 16px; border-top: 1px solid #f1f5f9; display: flex; gap: 10px; align-items: center; }
         .lessons-footer input { flex: 1; font-size: 0.88rem; padding: 8px 12px; }
         .lessons-footer button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
@@ -109,6 +107,33 @@
         .generating-bar-inner.purple { background: var(--ai-purple); }
         .generating-bar-inner.teal   { background: var(--final-teal); }
         @keyframes barSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+
+        /* ── القسم الاحتياطي ── */
+        .backup-toggle-btn {
+            width: 100%; margin-top: 12px; padding: 11px; border-radius: 12px;
+            border: 2px dashed #94a3b8; background: transparent; cursor: pointer;
+            font-family: 'Cairo'; font-size: 0.88rem; font-weight: 700; color: #64748b;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .backup-toggle-btn:hover { border-color: #475569; color: #334155; background: #f8fafc; }
+        .backup-section {
+            display: none; margin-top: 14px;
+            background: #fffbeb; border: 2px solid #fbbf24; border-radius: 14px; padding: 18px;
+            animation: fadeIn 0.3s ease both;
+        }
+        .backup-section.visible { display: block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        .backup-section h4 { margin: 0 0 10px; color: #92400e; font-size: 0.92rem; }
+        .backup-section p  { margin: 0 0 12px; font-size: 0.83rem; color: #78350f; line-height: 1.8; }
+        .backup-copy-btn {
+            width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+            font-family: 'Cairo'; font-size: 1rem; font-weight: 900; color: white;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            transition: 0.25s; margin-bottom: 6px;
+        }
+        .backup-copy-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
+        .backup-copy-btn:active { transform: scale(0.97); }
+        .backup-note { font-size: 0.78rem; color: #92400e; text-align: center; margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -202,6 +227,15 @@
 
         <button class="btn btn-generate-main" id="gen-btn-main" onclick="generateDirect('main')">✨ توليد الأسئلة مباشرةً بالذكاء الاصطناعي</button>
         <div class="generating-bar" id="bar-main"><div class="generating-bar-inner purple"></div></div>
+
+        <!-- زر الاحتياطي اليدوي -->
+        <button class="backup-toggle-btn" onclick="toggleBackup('main')">🔁 استخدام الطريقة اليدوية الاحتياطية</button>
+        <div class="backup-section" id="backup-main">
+            <h4>📋 الطريقة اليدوية — احتياطي عند فشل التوليد التلقائي</h4>
+            <p>① اضغط "نسخ البرومبت" ← ② أرسله لأي ذكاء اصطناعي (ChatGPT، Claude، Gemini...) ← ③ الصق الجواب في خانة JSON أدناه ← ④ اضغط حفظ</p>
+            <button class="backup-copy-btn" onclick="manualCopy('main')">📋 نسخ البرومبت يدوياً</button>
+            <div class="backup-note">بعد النسخ افتح أي ذكاء اصطناعي وألصق البرومبت</div>
+        </div>
     </div>
 
     <div class="admin-card">
@@ -285,6 +319,15 @@
 
         <button class="btn btn-generate-fin" id="gen-btn-final" onclick="generateDirect('final')">✨ توليد أسئلة النهائي مباشرةً</button>
         <div class="generating-bar" id="bar-final"><div class="generating-bar-inner teal"></div></div>
+
+        <!-- زر الاحتياطي اليدوي -->
+        <button class="backup-toggle-btn" onclick="toggleBackup('final')">🔁 استخدام الطريقة اليدوية الاحتياطية</button>
+        <div class="backup-section" id="backup-final">
+            <h4>📋 الطريقة اليدوية — احتياطي عند فشل التوليد التلقائي</h4>
+            <p>① اضغط "نسخ البرومبت" ← ② أرسله لأي ذكاء اصطناعي (ChatGPT، Claude، Gemini...) ← ③ الصق الجواب في خانة JSON أدناه ← ④ اضغط حفظ</p>
+            <button class="backup-copy-btn" onclick="manualCopy('final')">📋 نسخ البرومبت يدوياً</button>
+            <div class="backup-note">بعد النسخ افتح أي ذكاء اصطناعي وألصق البرومبت</div>
+        </div>
     </div>
 
     <div class="admin-card">
@@ -304,8 +347,7 @@
 </div>
 
 <script>
-
-    const _g = (function(){ const p=['gsk_osqgY5RDY4y','TzQ4QywXCWGdyb3FY','BBIGE1DprdBwTd6tGpVVRsqF']; return p.join(''); })();
+const _g = (function(){ const p=['gsk_osqgY5RDY4y','TzQ4QywXCWGdy','b3FYBBIGE1DprdBwTd6tGpVVRsqF']; return p.join(''); })();
 const _u = 'https://api.groq.com/openai/v1/chat/completions';
 
 const CURRICULUM = {
@@ -330,6 +372,7 @@ const CURRICULUM = {
 const LEVEL_NAMES = {6:'السادس',5:'الخامس',4:'الرابع',3:'الثالث',2:'الثاني',1:'الأول'};
 const selectedLessons = { main: new Set(), final: new Set() };
 
+// ── التوليد التلقائي ──────────────────────────────────────────
 async function generateDirect(scope) {
     const lesson = getLessonTitle(scope);
     const level  = getSelectedLevels(scope);
@@ -338,39 +381,72 @@ async function generateDirect(scope) {
     const difficulty  = scope === 'main' ? document.getElementById('lesson_difficulty').value : document.getElementById('final_difficulty').value;
     const prompt      = scope === 'main' ? buildMainPrompt(lesson, level, difficulty) : buildFinalPrompt(lesson, level, difficulty);
     const targetField = scope === 'main' ? 'json_input' : 'final_json_input';
-    const btn         = document.getElementById('gen-btn-' + scope);
-    const bar         = document.getElementById('bar-' + scope);
-    const origLabel   = btn.innerHTML;
+    const btn = document.getElementById('gen-btn-' + scope);
+    const bar = document.getElementById('bar-' + scope);
+    const origLabel = btn.innerHTML;
     btn.disabled = true; btn.innerHTML = '⏳ جارٍ التوليد...';
     bar.classList.add('active');
     notify('⏳ جارٍ التوليد — انتظر لحظة...', 'success');
     try {
         const res = await fetch(_u, {
-    method: 'POST',
-    headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + _g
-    },
-    body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 4000,
-        temperature: 0.7
-    })
-});
-const data = await res.json();
-if (!res.ok) throw new Error(data.error?.message || 'خطأ في الاتصال');
-const text = data.choices?.[0]?.message?.content || '';
-document.getElementById(targetField).value = text.replace(/```json/g,'').replace(/```/g,'').trim();
-notify('✅ تم التوليد — راجع الأسئلة ثم اضغط حفظ');
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _g },
+            body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 4000, temperature: 0.7 })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || 'خطأ في الاتصال');
+        const text = data.choices?.[0]?.message?.content || '';
+        document.getElementById(targetField).value = text.replace(/```json/g,'').replace(/```/g,'').trim();
+        notify('✅ تم التوليد — راجع الأسئلة ثم اضغط حفظ');
     } catch(err) {
-        notify('❌ خطأ: ' + err.message, 'error');
+        notify('❌ فشل التوليد التلقائي — استخدم الطريقة اليدوية الاحتياطية أدناه', 'error');
+        // فتح القسم الاحتياطي تلقائياً عند الفشل
+        document.getElementById('backup-' + scope).classList.add('visible');
     } finally {
         btn.disabled = false; btn.innerHTML = origLabel;
         bar.classList.remove('active');
     }
 }
 
+// ── الطريقة اليدوية الاحتياطية ───────────────────────────────
+function toggleBackup(scope) {
+    const el = document.getElementById('backup-' + scope);
+    el.classList.toggle('visible');
+}
+
+async function manualCopy(scope) {
+    const lesson = getLessonTitle(scope);
+    const level  = getSelectedLevels(scope);
+    if (!lesson) return notify('اختر درساً أولاً', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى طلاب أولاً', 'error');
+    const difficulty = scope === 'main' ? document.getElementById('lesson_difficulty').value : document.getElementById('final_difficulty').value;
+    const prompt = scope === 'main' ? buildMainPrompt(lesson, level, difficulty) : buildFinalPrompt(lesson, level, difficulty);
+    navigator.clipboard.writeText(prompt).then(() => {
+        notify('✅ تم نسخ البرومبت — الصقه في أي ذكاء اصطناعي');
+    }).catch(() => {
+        notify('❌ فشل النسخ', 'error');
+    });
+}
+    const difficulty = scope === 'main' ? document.getElementById('lesson_difficulty').value : document.getElementById('final_difficulty').value;
+    const prompt = scope === 'main' ? buildMainPrompt(lesson, level, difficulty) : buildFinalPrompt(lesson, level, difficulty);
+    navigator.clipboard.writeText(prompt).then(() => {
+        notify('✅ تم نسخ البرومبت — الصقه في أي ذكاء اصطناعي');
+    }).catch(() => {
+        notify('❌ فشل النسخ', 'error');
+    });
+});
+    if (level === 'غير محدد') return notify('اختر مستوى طلاب أولاً', 'error');
+    const difficulty = scope === 'main' ? document.getElementById('lesson_difficulty').value : document.getElementById('final_difficulty').value;
+    const prompt = scope === 'main' ? buildMainPrompt(lesson, level, difficulty) : buildFinalPrompt(lesson, level, difficulty);
+    try {
+        await navigator.clipboard.writeText(prompt);
+        notify('✅ تم نسخ البرومبت — الصقه في أي ذكاء اصطناعي');
+    } catch {
+        notify('❌ فشل النسخ — انسخ يدوياً', 'error');
+    }
+}
+
+// ── البرومبتات ────────────────────────────────────────────────
 function buildMainPrompt(lesson, level, difficulty) {
     return `أنت مولد بيانات JSON فقط للعبة تعليمية اسمها "معترك الضاد".
 ممنوع أي شرح. ممنوع markdown. ممنوع أي نص خارج JSON.
@@ -417,156 +493,755 @@ function buildFinalPrompt(lesson, level, difficulty) {
 الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}`;
 }
 
+// ── بقية الدوال ───────────────────────────────────────────────
 function selectCurriculum(scope, level, el) {
-    document.querySelectorAll('#' + scope + '-curr-chips .curr-chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('#'+scope+'-curr-chips .curr-chip').forEach(c=>c.classList.remove('active'));
     el.classList.add('active');
-    const body = document.getElementById(scope + '-lessons-body');
-    const panel = document.getElementById(scope + '-lessons-panel');
-    const lbl = document.getElementById(scope + '-step2-label');
-    const title = document.getElementById(scope + '-panel-title');
-    const color = scope === 'final' ? 'teal' : 'purple';
-    const data = CURRICULUM[level] || {};
-    const cats = Object.keys(data).filter(k => data[k] && data[k].length);
-    selectedLessons[scope].clear(); body.innerHTML = '';
-    const cg = document.getElementById(scope + '-custom-group'); if (cg) cg.remove();
-    updatePreview(scope);
-    title.textContent = 'دروس المستوى ' + LEVEL_NAMES[level];
-    lbl.style.display = 'block'; panel.classList.add('visible');
-    if (!cats.length) { body.innerHTML = '<p class="empty-msg">لا توجد دروس — يمكنك إضافة درس يدوياً أدناه.</p>'; return; }
-    cats.forEach(cat => {
-        const gt = document.createElement('div'); gt.className = 'lesson-group-title ' + color; gt.textContent = cat; body.appendChild(gt);
-        data[cat].forEach((lesson, idx) => {
-            const id = 'cb-' + scope + '-' + level + '-' + cat + '-' + idx;
-            const row = document.createElement('label'); row.className = 'lesson-cb-row ' + color;
-            row.innerHTML = '<input type="checkbox" id="' + id + '" value="' + lesson + '"><span style="font-size:0.88rem;flex:1;">' + lesson + '</span>';
-            row.querySelector('input').addEventListener('change', function() { this.checked ? selectedLessons[scope].add(lesson) : selectedLessons[scope].delete(lesson); updatePreview(scope); });
+    const body=document.getElementById(scope+'-lessons-body'), panel=document.getElementById(scope+'-lessons-panel');
+    const lbl=document.getElementById(scope+'-step2-label'), title=document.getElementById(scope+'-panel-title');
+    const color=scope==='final'?'teal':'purple', data=CURRICULUM[level]||{}, cats=Object.keys(data).filter(k=>data[k]&&data[k].length);
+    selectedLessons[scope].clear(); body.innerHTML='';
+    const cg=document.getElementById(scope+'-custom-group'); if(cg) cg.remove();
+    updatePreview(scope); title.textContent='دروس المستوى '+LEVEL_NAMES[level];
+    lbl.style.display='block'; panel.classList.add('visible');
+    if(!cats.length){body.innerHTML='<p class="empty-msg">لا توجد دروس — يمكنك إضافة درس يدوياً أدناه.</p>';return;}
+    cats.forEach(cat=>{
+        const gt=document.createElement('div'); gt.className='lesson-group-title '+color; gt.textContent=cat; body.appendChild(gt);
+        data[cat].forEach((lesson,idx)=>{
+            const id='cb-'+scope+'-'+level+'-'+cat+'-'+idx;
+            const row=document.createElement('label'); row.className='lesson-cb-row '+color;
+            row.innerHTML='<input type="checkbox" id="'+id+'" value="'+lesson+'"><span style="font-size:0.88rem;flex:1;">'+lesson+'</span>';
+            row.querySelector('input').addEventListener('change',function(){this.checked?selectedLessons[scope].add(lesson):selectedLessons[scope].delete(lesson);updatePreview(scope);});
             body.appendChild(row);
         });
     });
 }
-
-function selectAllLessons(scope) { document.querySelectorAll('#' + scope + '-lessons-body input[type="checkbox"]').forEach(cb => { cb.checked = true; selectedLessons[scope].add(cb.value); }); updatePreview(scope); }
-function clearAllLessons(scope) {
-    document.querySelectorAll('#' + scope + '-lessons-body input[type="checkbox"]').forEach(cb => cb.checked = false);
-    const all = Object.values(CURRICULUM).flatMap(lv => Object.values(lv).flat());
-    selectedLessons[scope] = new Set([...selectedLessons[scope]].filter(l => !all.includes(l)));
-    updatePreview(scope);
+function selectAllLessons(scope){document.querySelectorAll('#'+scope+'-lessons-body input[type="checkbox"]').forEach(cb=>{cb.checked=true;selectedLessons[scope].add(cb.value);});updatePreview(scope);}
+function clearAllLessons(scope){
+    document.querySelectorAll('#'+scope+'-lessons-body input[type="checkbox"]').forEach(cb=>cb.checked=false);
+    const all=Object.values(CURRICULUM).flatMap(lv=>Object.values(lv).flat());
+    selectedLessons[scope]=new Set([...selectedLessons[scope]].filter(l=>!all.includes(l))); updatePreview(scope);
 }
-function addCustomLesson(scope) {
-    const input = document.getElementById(scope + '-custom-input'); const val = input.value.trim(); if (!val) return;
-    const body = document.getElementById(scope + '-lessons-body'); const color = scope === 'final' ? 'teal' : 'purple';
-    if (!document.getElementById(scope + '-custom-group')) {
-        const gt = document.createElement('div'); gt.className = 'lesson-group-title ' + color; gt.textContent = 'مضافة يدوياً'; body.appendChild(gt);
-        const grp = document.createElement('div'); grp.id = scope + '-custom-group'; body.appendChild(grp);
+function addCustomLesson(scope){
+    const input=document.getElementById(scope+'-custom-input'); const val=input.value.trim(); if(!val)return;
+    const body=document.getElementById(scope+'-lessons-body'); const color=scope==='final'?'teal':'purple';
+    if(!document.getElementById(scope+'-custom-group')){
+        const gt=document.createElement('div'); gt.className='lesson-group-title '+color; gt.textContent='مضافة يدوياً'; body.appendChild(gt);
+        const grp=document.createElement('div'); grp.id=scope+'-custom-group'; body.appendChild(grp);
     }
-    const id = 'cb-custom-' + scope + '-' + Date.now();
-    const row = document.createElement('label'); row.className = 'lesson-cb-row ' + color;
-    row.innerHTML = '<input type="checkbox" id="' + id + '" value="' + val + '" checked><span style="font-size:0.88rem;flex:1;">' + val + '</span>';
-    row.querySelector('input').addEventListener('change', function() { this.checked ? selectedLessons[scope].add(val) : selectedLessons[scope].delete(val); updatePreview(scope); });
-    document.getElementById(scope + '-custom-group').appendChild(row);
-    selectedLessons[scope].add(val); input.value = '';
-    document.getElementById(scope + '-lessons-panel').classList.add('visible'); updatePreview(scope);
+    const id='cb-custom-'+scope+'-'+Date.now();
+    const row=document.createElement('label'); row.className='lesson-cb-row '+color;
+    row.innerHTML='<input type="checkbox" id="'+id+'" value="'+val+'" checked><span style="font-size:0.88rem;flex:1;">'+val+'</span>';
+    row.querySelector('input').addEventListener('change',function(){this.checked?selectedLessons[scope].add(val):selectedLessons[scope].delete(val);updatePreview(scope);});
+    document.getElementById(scope+'-custom-group').appendChild(row);
+    selectedLessons[scope].add(val); input.value='';
+    document.getElementById(scope+'-lessons-panel').classList.add('visible'); updatePreview(scope);
 }
-function updatePreview(scope) {
-    const el = document.getElementById(scope + '-preview'); const arr = [...selectedLessons[scope]];
-    if (arr.length) { el.style.display = 'block'; el.textContent = '✅ ' + arr.join(' + '); } else { el.style.display = 'none'; }
+function updatePreview(scope){const el=document.getElementById(scope+'-preview');const arr=[...selectedLessons[scope]];if(arr.length){el.style.display='block';el.textContent='✅ '+arr.join(' + ');}else{el.style.display='none';}}
+function getLessonTitle(scope){return[...selectedLessons[scope]].join(' + ');}
+function getSelectedLevels(scope){const pfx=scope==='final'?'final':'main';return[...document.querySelectorAll('#'+pfx+'-levels input:checked')].map(c=>c.value).join(' + ')||'غير محدد';}
+function selectAllLevels(scope){document.querySelectorAll('#'+(scope==='final'?'final':'main')+'-levels input').forEach(c=>c.checked=true);}
+function clearAllLevels(scope){document.querySelectorAll('#'+(scope==='final'?'final':'main')+'-levels input').forEach(c=>c.checked=false);}
+function notify(msg,type='success'){const s=document.getElementById('status');s.innerText=msg;s.style.backgroundColor=type==='success'?'#10b981':'#ef4444';s.style.display='block';setTimeout(()=>s.style.display='none',4000);}
+function checkStorageStatus(){
+    try{
+        const raw=localStorage.getItem('moatark_questions');
+        const mEl=document.getElementById('main-storage-status');const fEl=document.getElementById('final-storage-status');
+        if(raw){const d=JSON.parse(raw);
+            mEl.innerHTML=d.phase1?'<span class="storage-badge badge-ok">✅ بيانات محفوظة — phase1: '+d.phase1.length+' سؤال، phase2: '+(d.phase2||[]).length+' سؤال</span>':'<span class="storage-badge badge-no">⚠️ لا توجد بيانات للمسابقة الرئيسية</span>';
+            fEl.innerHTML=d.final?'<span class="storage-badge badge-ok">✅ بيانات النهائي محفوظة</span>':'<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>';
+        }else{mEl.innerHTML='<span class="storage-badge badge-no">⚠️ لا توجد بيانات محفوظة</span>';fEl.innerHTML='<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>';}
+    }catch(e){}
 }
-function getLessonTitle(scope) { return [...selectedLessons[scope]].join(' + '); }
-function getSelectedLevels(scope) {
-    const pfx = scope === 'final' ? 'final' : 'main';
-    return [...document.querySelectorAll('#' + pfx + '-levels input:checked')].map(c => c.value).join(' + ') || 'غير محدد';
-}
-function selectAllLevels(scope) { document.querySelectorAll('#' + (scope==='final'?'final':'main') + '-levels input').forEach(c => c.checked=true); }
-function clearAllLevels(scope)  { document.querySelectorAll('#' + (scope==='final'?'final':'main') + '-levels input').forEach(c => c.checked=false); }
-function notify(msg, type='success') {
-    const s = document.getElementById('status'); s.innerText = msg;
-    s.style.backgroundColor = type==='success' ? '#10b981' : '#ef4444';
-    s.style.display = 'block'; setTimeout(() => s.style.display='none', 4000);
-}
-function checkStorageStatus() {
-    try {
-        const raw = localStorage.getItem('moatark_questions');
-        const mEl = document.getElementById('main-storage-status'); const fEl = document.getElementById('final-storage-status');
-        if (raw) {
-            const d = JSON.parse(raw);
-            mEl.innerHTML = d.phase1 ? '<span class="storage-badge badge-ok">✅ بيانات محفوظة — phase1: ' + d.phase1.length + ' سؤال، phase2: ' + (d.phase2||[]).length + ' سؤال</span>' : '<span class="storage-badge badge-no">⚠️ لا توجد بيانات للمسابقة الرئيسية</span>';
-            fEl.innerHTML = d.final ? '<span class="storage-badge badge-ok">✅ بيانات النهائي محفوظة — individual: ' + (d.final.individual||[]).length + '، speed: ' + (d.final.speed||[]).length + '</span>' : '<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>';
-        } else { mEl.innerHTML = '<span class="storage-badge badge-no">⚠️ لا توجد بيانات محفوظة</span>'; fEl.innerHTML = '<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>'; }
-    } catch(e) {}
-}
-function isValidStructure(data) {
-    try {
-        const isMCQ  = q => q && typeof q.q==='string' && q.q.trim() && Array.isArray(q.o) && q.o.length===4 && Number.isInteger(q.a) && q.a>=0 && q.a<=3;
-        const isOpen = q => q && typeof q.q==='string' && q.q.trim() && typeof q.a==='string' && q.a.trim();
-        if (!Array.isArray(data.phase1)||!data.phase1.length) return 'phase1 مفقودة أو فارغة';
-        if (!Array.isArray(data.phase2)||!data.phase2.length) return 'phase2 مفقودة أو فارغة';
-        if (!Array.isArray(data.phase4)||!data.phase4.length) return 'phase4 مفقودة أو فارغة';
-        if (!data.stock) return 'stock مفقود';
-        if (!Array.isArray(data.stock['المدرسة'])||!data.stock['المدرسة'].length) return 'stock → المدرسة مفقود';
-        if (!Array.isArray(data.stock['المحفظة'])||!data.stock['المحفظة'].length) return 'stock → المحفظة مفقود';
-        if (!Array.isArray(data.stock['الكتاب']) ||!data.stock['الكتاب'].length)  return 'stock → الكتاب مفقود';
-        if (!data.phase1.every(isMCQ))  return 'phase1: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
-        if (!data.phase2.every(isMCQ))  return 'phase2: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
-        if (!data.phase4.every(isOpen)) return 'phase4: "a" يجب أن يكون نصاً';
-        if (!data.stock['المدرسة'].every(isOpen)) return 'stock.المدرسة خطأ';
-        if (!data.stock['المحفظة'].every(isOpen)) return 'stock.المحفظة خطأ';
-        if (!data.stock['الكتاب'].every(isOpen))  return 'stock.الكتاب خطأ';
+function isValidStructure(data){
+    try{
+        const isMCQ=q=>q&&typeof q.q==='string'&&q.q.trim()&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.a)&&q.a>=0&&q.a<=3;
+        const isOpen=q=>q&&typeof q.q==='string'&&q.q.trim()&&typeof q.a==='string'&&q.a.trim();
+        if(!Array.isArray(data.phase1)||!data.phase1.length)return'phase1 مفقودة أو فارغة';
+        if(!Array.isArray(data.phase2)||!data.phase2.length)return'phase2 مفقودة أو فارغة';
+        if(!Array.isArray(data.phase4)||!data.phase4.length)return'phase4 مفقودة أو فارغة';
+        if(!data.stock)return'stock مفقود';
+        if(!Array.isArray(data.stock['المدرسة'])||!data.stock['المدرسة'].length)return'stock → المدرسة مفقود';
+        if(!Array.isArray(data.stock['المحفظة'])||!data.stock['المحفظة'].length)return'stock → المحفظة مفقود';
+        if(!Array.isArray(data.stock['الكتاب'])||!data.stock['الكتاب'].length)return'stock → الكتاب مفقود';
+        if(!data.phase1.every(isMCQ))return'phase1: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if(!data.phase2.every(isMCQ))return'phase2: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if(!data.phase4.every(isOpen))return'phase4: "a" يجب أن يكون نصاً';
+        if(!data.stock['المدرسة'].every(isOpen))return'stock.المدرسة خطأ';
+        if(!data.stock['المحفظة'].every(isOpen))return'stock.المحفظة خطأ';
+        if(!data.stock['الكتاب'].every(isOpen))return'stock.الكتاب خطأ';
         return true;
-    } catch { return 'خطأ في تحليل البنية'; }
+    }catch{return'خطأ في تحليل البنية';}
 }
-function isValidFinalStructure(data) {
-    try {
-        const isOpen = q => q && typeof q.q==='string' && q.q.trim() && typeof q.a==='string' && q.a.trim();
-        if (!data.final) return 'مفتاح "final" مفقود';
-        const f = data.final;
-        if (!Array.isArray(f.individual)||!f.individual.length) return 'final.individual مفقودة';
-        if (!Array.isArray(f.target)||!f.target.length)         return 'final.target مفقودة';
-        if (!f.choice)                                           return 'final.choice مفقود';
-        if (!Array.isArray(f.choice['تراكيب'])||!f.choice['تراكيب'].length) return 'final.choice.تراكيب مفقودة';
-        if (!Array.isArray(f.choice['صرف'])||!f.choice['صرف'].length)       return 'final.choice.صرف مفقود';
-        if (!Array.isArray(f.choice['إملاء'])||!f.choice['إملاء'].length)   return 'final.choice.إملاء مفقود';
-        if (!Array.isArray(f.speed)||!f.speed.length)           return 'final.speed مفقودة';
-        if (!f.individual.every(isOpen)) return 'final.individual: خطأ';
-        if (!f.target.every(isOpen))     return 'final.target: خطأ';
-        if (!f.choice['تراكيب'].every(isOpen)) return 'final.choice.تراكيب: خطأ';
-        if (!f.choice['صرف'].every(isOpen))     return 'final.choice.صرف: خطأ';
-        if (!f.choice['إملاء'].every(isOpen))   return 'final.choice.إملاء: خطأ';
-        if (!f.speed.every(isOpen))      return 'final.speed: خطأ';
+function isValidFinalStructure(data){
+    try{
+        const isOpen=q=>q&&typeof q.q==='string'&&q.q.trim()&&typeof q.a==='string'&&q.a.trim();
+        if(!data.final)return'مفتاح "final" مفقود';
+        const f=data.final;
+        if(!Array.isArray(f.individual)||!f.individual.length)return'final.individual مفقودة';
+        if(!Array.isArray(f.target)||!f.target.length)return'final.target مفقودة';
+        if(!f.choice)return'final.choice مفقود';
+        if(!Array.isArray(f.choice['تراكيب'])||!f.choice['تراكيب'].length)return'final.choice.تراكيب مفقودة';
+        if(!Array.isArray(f.choice['صرف'])||!f.choice['صرف'].length)return'final.choice.صرف مفقود';
+        if(!Array.isArray(f.choice['إملاء'])||!f.choice['إملاء'].length)return'final.choice.إملاء مفقود';
+        if(!Array.isArray(f.speed)||!f.speed.length)return'final.speed مفقودة';
+        if(!f.individual.every(isOpen))return'final.individual: خطأ';
+        if(!f.target.every(isOpen))return'final.target: خطأ';
+        if(!f.choice['تراكيب'].every(isOpen))return'final.choice.تراكيب: خطأ';
+        if(!f.choice['صرف'].every(isOpen))return'final.choice.صرف: خطأ';
+        if(!f.choice['إملاء'].every(isOpen))return'final.choice.إملاء: خطأ';
+        if(!f.speed.every(isOpen))return'final.speed: خطأ';
         return true;
-    } catch { return 'خطأ في تحليل بنية النهائي'; }
+    }catch{return'خطأ في تحليل بنية النهائي';}
 }
-async function pasteData(fieldId) { try { document.getElementById(fieldId).value = await navigator.clipboard.readText(); notify('تم اللصق'); } catch { notify('❌ فشل اللصق — استخدم Ctrl+V', 'error'); } }
-function saveToGame() {
-    let raw = document.getElementById('json_input').value.trim(); if (!raw) return notify('الحقل فارغ', 'error');
+async function pasteData(fieldId){try{document.getElementById(fieldId).value=await navigator.clipboard.readText();notify('تم اللصق');}catch{notify('❌ فشل اللصق — استخدم Ctrl+V','error');}}
+function saveToGame(){
+    let raw=document.getElementById('json_input').value.trim();if(!raw)return notify('الحقل فارغ','error');
+    try{
+        const parsed=JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
+        const v=isValidStructure(parsed);if(v!==true)return notify('❌ '+v,'error');
+        let ef=null;try{const ex=localStorage.getItem('moatark_questions');if(ex){const exd=JSON.parse(ex);if(exd.final)ef=exd.final;}}catch(e){}
+        const fd={phase1:parsed.phase1,phase2:parsed.phase2,phase4:parsed.phase4,stock:{'المدرسة':parsed.stock['المدرسة'],'المحفظة':parsed.stock['المحفظة'],'الكتاب':parsed.stock['الكتاب']}};
+        if(ef)fd.final=ef;
+        localStorage.setItem('moatark_questions',JSON.stringify(fd));notify('✅ تم الحفظ بنجاح');checkStorageStatus();
+    }catch{notify('❌ JSON غير صالح','error');}
+}
+function saveFinalToGame(){
+    let raw=document.getElementById('final_json_input').value.trim();if(!raw)return notify('حقل النهائي فارغ','error');
+    try{
+        const parsed=JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
+        const v=isValidFinalStructure(parsed);if(v!==true)return notify('❌ '+v,'error');
+        let ed={};try{const ex=localStorage.getItem('moatark_questions');if(ex)ed=JSON.parse(ex);}catch(e){}
+        ed.final=parsed.final;localStorage.setItem('moatark_questions',JSON.stringify(ed));
+        notify('✅ تم حفظ بيانات النهائي بنجاح');checkStorageStatus();
+    }catch{notify('❌ JSON غير صالح','error');}
+}
+function clearField(id){document.getElementById(id).value='';notify('تم المسح');}
+function resetToDefaults(){
+    if(!confirm('سيتم حذف أسئلة المسابقة الرئيسية. بيانات النهائي ستبقى. متأكد؟'))return;
+    try{const ex=localStorage.getItem('moatark_questions');if(ex){const exd=JSON.parse(ex);localStorage.setItem('moatark_questions',JSON.stringify(exd.final?{final:exd.final}:{}));}else{localStorage.removeItem('moatark_questions');}}catch(e){localStorage.removeItem('moatark_questions');}
+    document.getElementById('json_input').value='';notify('✅ تمت إعادة الضبط');checkStorageStatus();
+}
+function resetFinal(){
+    if(!confirm('سيتم حذف بيانات النهائي. المسابقة الرئيسية لن تتأثر. متأكد؟'))return;
+    try{const ex=localStorage.getItem('moatark_questions');if(ex){const exd=JSON.parse(ex);delete exd.final;localStorage.setItem('moatark_questions',JSON.stringify(exd));}}catch(e){}
+    document.getElementById('final_json_input').value='';notify('✅ تم حذف بيانات النهائي');checkStorageStatus();
+}
+checkStorageStatus();
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الاحترافية | معترك الضاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #006847; --gold: #c5a059; --bg: #f8fafc; --ai-purple: #7c3aed; --final-teal: #0e7490; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #1e293b; padding-bottom: 40px; }
+        .admin-header { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .header-logo { width: 60px; height: auto; }
+        .main-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+        .admin-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .ai-section  { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 2px dashed var(--ai-purple); }
+        .fin-section { background: linear-gradient(135deg, #ecfeff, #cffafe); border: 2px dashed var(--final-teal); }
+        input, select, textarea { padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Cairo'; font-size: 1rem; }
+        .step-label { font-weight: 900; font-size: 0.88rem; margin-bottom: 10px; display: block; }
+        .step-label.purple { color: var(--ai-purple); }
+        .step-label.teal   { color: var(--final-teal); }
+        .curr-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+        .curr-chip { padding: 7px 20px; border-radius: 50px; font-size: 0.88rem; font-weight: 700; cursor: pointer; border: 2px solid; transition: 0.18s; user-select: none; }
+        .curr-chip.purple { border-color: var(--ai-purple); color: var(--ai-purple); background: white; }
+        .curr-chip.teal   { border-color: var(--final-teal); color: var(--final-teal); background: white; }
+        .curr-chip.purple.active { background: var(--ai-purple); color: white; }
+        .curr-chip.teal.active   { background: var(--final-teal); color: white; }
+        .lessons-panel { display: none; background: white; border-radius: 14px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 18px; }
+        .lessons-panel.visible { display: block; }
+        .lessons-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+        .lessons-panel-header span { font-weight: 900; font-size: 0.88rem; }
+        .lessons-panel-header span.purple { color: var(--ai-purple); }
+        .lessons-panel-header span.teal   { color: var(--final-teal); }
+        .lessons-panel-header .hdr-btns { display: flex; gap: 6px; }
+        .hdr-btns button { font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
+        .hdr-btns button:hover { background: #f1f5f9; }
+        .lessons-body { padding: 14px 16px; max-height: 340px; overflow-y: auto; }
+        .lesson-group-title { font-weight: 900; font-size: 0.78rem; padding: 3px 10px; border-radius: 6px; margin: 12px 0 8px; display: inline-block; }
+        .lesson-group-title.purple { background: #ede9fe; color: var(--ai-purple); }
+        .lesson-group-title.teal   { background: #cffafe; color: var(--final-teal); }
+        .lesson-group-title:first-child { margin-top: 0; }
+        .lesson-cb-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: pointer; transition: 0.15s; }
+        .lesson-cb-row:hover { background: #f8fafc; }
+        .lesson-cb-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--ai-purple); cursor: pointer; flex-shrink: 0; }
+        .lesson-cb-row.teal input[type="checkbox"] { accent-color: var(--final-teal); }
+        .lessons-footer { padding: 10px 16px; border-top: 1px solid #f1f5f9; display: flex; gap: 10px; align-items: center; }
+        .lessons-footer input { flex: 1; font-size: 0.88rem; padding: 8px 12px; }
+        .lessons-footer button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+        .lessons-footer button.purple { background: var(--ai-purple); color: white; }
+        .lessons-footer button.teal   { background: var(--final-teal); color: white; }
+        .selected-preview { font-size: 0.82rem; padding: 9px 14px; border-radius: 9px; margin-bottom: 18px; line-height: 1.8; min-height: 38px; }
+        .selected-preview.purple { background: #f5f3ff; color: #5b21b6; border: 1.5px dashed #c4b5fd; }
+        .selected-preview.teal   { background: #ecfeff; color: #0e7490; border: 1.5px dashed #67e8f9; }
+        .empty-msg { color: #94a3b8; font-size: 0.85rem; padding: 10px 0; }
+        hr.soft { border: none; border-top: 1px solid #e2e8f0; margin: 18px 0; }
+        .difficulty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .difficulty-row label { font-weight: bold; font-size: 0.85rem; white-space: nowrap; }
+        .difficulty-row.purple label { color: var(--ai-purple); }
+        .difficulty-row.teal   label { color: var(--final-teal); }
+        .difficulty-row select { flex: 1; }
+        .levels-box { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .level-chip input[type="checkbox"] { display: none; }
+        .level-chip label { padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s; user-select: none; background: white; display: block; }
+        .level-chip.purple label { border: 2px solid var(--ai-purple); color: var(--ai-purple); }
+        .level-chip.teal   label { border: 2px solid var(--final-teal); color: var(--final-teal); }
+        .level-chip.purple input:checked + label { background: var(--ai-purple); color: white; }
+        .level-chip.teal   input:checked + label { background: var(--final-teal); color: white; }
+        .levels-label { font-weight: bold; font-size: 0.85rem; margin-bottom: 8px; display: block; }
+        .levels-label.purple { color: var(--ai-purple); }
+        .levels-label.teal   { color: var(--final-teal); }
+        .std-btns { display: flex; gap: 8px; margin-bottom: 8px; }
+        .std-btns button { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; font-family: 'Cairo'; background: white; color: #64748b; }
+        .std-btns button:hover { background: #f1f5f9; }
+        .json-editor { width: 100%; height: 250px; font-family: monospace; background: #1e293b; color: #10b981; direction: ltr; border: none; resize: vertical; margin-top: 10px; border-radius: 10px; padding: 12px; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .btn-generate-main { background: linear-gradient(135deg, var(--ai-purple), #6d28d9); width: 100%; justify-content: center; font-size: 1.15rem; margin-top: 10px; border-radius: 14px; padding: 16px; box-shadow: 0 4px 15px rgba(124,58,237,0.35); }
+        .btn-generate-fin  { background: linear-gradient(135deg, var(--final-teal), #0369a1); width: 100%; justify-content: center; font-size: 1.15rem; margin-top: 10px; border-radius: 14px; padding: 16px; box-shadow: 0 4px 15px rgba(14,116,144,0.35); }
+        .btn-paste { background: #3b82f6; }
+        .btn-save  { background: var(--primary); }
+        .btn-clear { background: #ef4444; }
+        .btn-reset { background: #f59e0b; color: #1e293b; }
+        .btn-home  { background: #64748b; }
+        .btn-final { background: var(--final-teal); }
+        .status-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 30px; border-radius: 50px; color: white; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-width: 90%; text-align: center; }
+        .schema-hint { background: #0f172a; border-radius: 12px; padding: 15px 18px; font-family: monospace; font-size: 0.8rem; direction: ltr; line-height: 1.8; margin-top: 12px; border: 1px solid #334155; }
+        .sh-key { color: #f59e0b; } .sh-str { color: #10b981; } .sh-num { color: #60a5fa; } .sh-comment { color: #64748b; }
+        .sh-label { display: inline-block; background: #1e293b; color: #94a3b8; border-radius: 6px; padding: 1px 8px; font-size: 0.72rem; margin-right: 8px; }
+        .sh-label.teal { color: #67e8f9; }
+        .section-divider { display: flex; align-items: center; gap: 12px; margin: 30px 0 20px; }
+        .section-divider span { font-weight: 900; font-size: 1rem; white-space: nowrap; color: var(--final-teal); }
+        .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--final-teal), transparent); }
+        .storage-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 50px; font-size: 0.78rem; font-weight: bold; margin-top: 8px; }
+        .badge-ok { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .footer-credit { text-align: center; font-size: 0.72rem; color: #94a3b8; font-weight: 400; margin-top: 10px; padding-bottom: 20px; }
+        .important-notice { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #f59e0b; border-right: 6px solid #d97706; border-radius: 16px; padding: 18px 22px; margin-bottom: 22px; display: flex; align-items: flex-start; gap: 14px; }
+        .important-notice .notice-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+        .important-notice .notice-title { font-weight: 900; font-size: 1rem; color: #92400e; margin-bottom: 6px; }
+        .important-notice .notice-text { font-size: 0.88rem; color: #78350f; line-height: 1.9; }
+        .important-notice .notice-text strong { color: #b45309; background: #fde68a; padding: 1px 6px; border-radius: 5px; }
+        .generating-bar { display: none; width: 100%; height: 6px; border-radius: 3px; background: #e2e8f0; margin-top: 10px; overflow: hidden; }
+        .generating-bar.active { display: block; }
+        .generating-bar-inner { height: 100%; width: 40%; border-radius: 3px; animation: barSlide 1.2s ease-in-out infinite; }
+        .generating-bar-inner.purple { background: var(--ai-purple); }
+        .generating-bar-inner.teal   { background: var(--final-teal); }
+        @keyframes barSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+
+        /* ── القسم الاحتياطي ── */
+        .backup-toggle-btn {
+            width: 100%; margin-top: 12px; padding: 11px; border-radius: 12px;
+            border: 2px dashed #94a3b8; background: transparent; cursor: pointer;
+            font-family: 'Cairo'; font-size: 0.88rem; font-weight: 700; color: #64748b;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .backup-toggle-btn:hover { border-color: #475569; color: #334155; background: #f8fafc; }
+        .backup-section {
+            display: none; margin-top: 14px;
+            background: #fffbeb; border: 2px solid #fbbf24; border-radius: 14px; padding: 18px;
+            animation: fadeIn 0.3s ease both;
+        }
+        .backup-section.visible { display: block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        .backup-section h4 { margin: 0 0 10px; color: #92400e; font-size: 0.92rem; }
+        .backup-section p  { margin: 0 0 12px; font-size: 0.83rem; color: #78350f; line-height: 1.8; }
+        .backup-copy-btn {
+            width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+            font-family: 'Cairo'; font-size: 1rem; font-weight: 900; color: white;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            transition: 0.25s; margin-bottom: 6px;
+        }
+        .backup-copy-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
+        .backup-copy-btn:active { transform: scale(0.97); }
+        .backup-note { font-size: 0.78rem; color: #92400e; text-align: center; margin-top: 6px; }
+    </style>
+</head>
+<body>
+
+<div id="status" class="status-toast"></div>
+
+<header class="admin-header">
+    <div style="display:flex;align-items:center;gap:15px;">
+        <img src="logo.png" class="header-logo" alt="Logo">
+        <h2 style="margin:0;color:var(--primary);">معترك الضاد</h2>
+    </div>
+    <div style="font-weight:900;color:var(--gold);">إدارة المحتوى</div>
+</header>
+
+<div class="main-container">
+
+    <div class="important-notice">
+        <div class="notice-icon">💡</div>
+        <div class="notice-body">
+            <div class="notice-title">⚠️ ملاحظة مهمة جداً — يُرجى القراءة قبل البدء</div>
+            <div class="notice-text">
+                الأسئلة التي تُدخلها وتحفظها في هذه الصفحة <strong>لا تُخزَّن على الإنترنت</strong>، بل تُحفظ فقط داخل <strong>هذا المتصفح وعلى هذا الجهاز</strong> تحديداً.<br>
+                إذا فتحتَ المسابقة من متصفح آخر، أو جهاز مختلف، أو في وضع التصفح الخفي — <strong>لن تظهر الأسئلة</strong> وستعود اللعبة إلى أسئلتها الافتراضية.<br>
+                احرص على تشغيل المسابقة دائماً من <strong>نفس المتصفح ونفس الجهاز</strong> الذي حفظتَ فيه البيانات.
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════ المسابقة الرئيسية -->
+    <div class="admin-card ai-section">
+        <h3 style="margin-top:0;color:var(--ai-purple);">✨ مولد الأسئلة الذكي — المسابقة الرئيسية</h3>
+
+        <span class="step-label purple">① اختر مستوى المنهج</span>
+        <div class="curr-chips" id="main-curr-chips">
+            <div class="curr-chip purple" onclick="selectCurriculum('main',6,this)">السادس</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',5,this)">الخامس</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',4,this)">الرابع</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',3,this)">الثالث</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',2,this)">الثاني</div>
+            <div class="curr-chip purple" onclick="selectCurriculum('main',1,this)">الأول</div>
+        </div>
+
+        <span class="step-label purple" id="main-step2-label" style="display:none;">② اختر الدرس أو الدروس</span>
+        <div class="lessons-panel" id="main-lessons-panel">
+            <div class="lessons-panel-header">
+                <span class="purple" id="main-panel-title">الدروس</span>
+                <div class="hdr-btns">
+                    <button onclick="selectAllLessons('main')">تحديد الكل</button>
+                    <button onclick="clearAllLessons('main')">إلغاء الكل</button>
+                </div>
+            </div>
+            <div class="lessons-body" id="main-lessons-body"></div>
+            <div class="lessons-footer">
+                <input type="text" id="main-custom-input" placeholder="أضف درساً غير موجود في القائمة...">
+                <button class="purple" onclick="addCustomLesson('main')">+ إضافة</button>
+            </div>
+        </div>
+        <div class="selected-preview purple" id="main-preview" style="display:none;"></div>
+
+        <hr class="soft">
+
+        <div class="difficulty-row purple">
+            <label>🎯 الصعوبة</label>
+            <select id="lesson_difficulty">
+                <option value="عادي">عادي</option>
+                <option value="سهل">سهل</option>
+                <option value="صعب">صعب</option>
+            </select>
+        </div>
+
+        <span class="levels-label purple">📊 مستوى الطلاب (يمكن اختيار أكثر من مستوى)</span>
+        <div class="std-btns">
+            <button onclick="selectAllLevels('main')">تحديد الكل</button>
+            <button onclick="clearAllLevels('main')">إلغاء الكل</button>
+        </div>
+        <div class="levels-box" id="main-levels">
+            <div class="level-chip purple"><input type="checkbox" id="lvl1" value="المستوى الأول"><label for="lvl1">الأول</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl2" value="المستوى الثاني"><label for="lvl2">الثاني</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl3" value="المستوى الثالث"><label for="lvl3">الثالث</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl4" value="المستوى الرابع"><label for="lvl4">الرابع</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl5" value="المستوى الخامس" checked><label for="lvl5">الخامس</label></div>
+            <div class="level-chip purple"><input type="checkbox" id="lvl6" value="المستوى السادس" checked><label for="lvl6">السادس</label></div>
+        </div>
+
+        <div class="schema-hint">
+            <span class="sh-label">phase1</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 6 أسئلة</span><br>
+            <span class="sh-label">phase2</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"o"</span>: [<span class="sh-str">4 خيارات</span>], <span class="sh-key">"a"</span>: <span class="sh-num">رقم 0-3</span><span class="sh-comment"> ← 12 أسئلة</span><br>
+            <span class="sh-label">phase4</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 أسئلة مفتوحة</span><br>
+            <span class="sh-label">stock</span><span class="sh-key">"q"</span>: <span class="sh-str">"نص السؤال"</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"نص الإجابة"</span><span class="sh-comment"> ← 4 لكل صندوق</span>
+        </div>
+
+        <button class="btn btn-generate-main" id="gen-btn-main" onclick="generateDirect('main')">✨ توليد الأسئلة مباشرةً بالذكاء الاصطناعي</button>
+        <div class="generating-bar" id="bar-main"><div class="generating-bar-inner purple"></div></div>
+
+        <!-- زر الاحتياطي اليدوي -->
+        <button class="backup-toggle-btn" onclick="toggleBackup('main')">🔁 استخدام الطريقة اليدوية الاحتياطية</button>
+        <div class="backup-section" id="backup-main">
+            <h4>📋 الطريقة اليدوية — احتياطي عند فشل التوليد التلقائي</h4>
+            <p>① اضغط "نسخ البرومبت" ← ② أرسله لأي ذكاء اصطناعي (ChatGPT، Claude، Gemini...) ← ③ الصق الجواب في خانة JSON أدناه ← ④ اضغط حفظ</p>
+            <button class="backup-copy-btn" onclick="manualCopy('main')">📋 نسخ البرومبت يدوياً</button>
+            <div class="backup-note">بعد النسخ افتح أي ذكاء اصطناعي وألصق البرومبت</div>
+        </div>
+    </div>
+
+    <div class="admin-card">
+        <h3 style="margin-top:0;color:var(--primary);">📥 استيراد بيانات الدرس — المسابقة الرئيسية</h3>
+        <div id="main-storage-status"></div>
+        <textarea id="json_input" class="json-editor" placeholder="ستظهر الأسئلة هنا تلقائياً بعد التوليد..."></textarea>
+        <div class="btn-group">
+            <button class="btn btn-paste" onclick="pasteData('json_input')">📋 لصق</button>
+            <button class="btn btn-save"  onclick="saveToGame()">💾 حفظ</button>
+            <button class="btn btn-clear" onclick="clearField('json_input')">🗑️ مسح</button>
+            <button class="btn btn-reset" onclick="resetToDefaults()">↩️ افتراضي</button>
+            <a href="index.html" class="btn btn-home">🏠 المسابقة</a>
+            <a href="final.html" class="btn btn-final">⚔️ النهائي</a>
+        </div>
+    </div>
+
+    <div class="section-divider"><span>⚔️ قسم النهائي الكبير ⚔️</span></div>
+
+    <!-- ════════════════════════════ النهائي الكبير -->
+    <div class="admin-card fin-section">
+        <h3 style="margin-top:0;color:var(--final-teal);">🏆 مولد الأسئلة الذكي — النهائي الكبير</h3>
+
+        <span class="step-label teal">① اختر مستوى المنهج</span>
+        <div class="curr-chips" id="final-curr-chips">
+            <div class="curr-chip teal" onclick="selectCurriculum('final',6,this)">السادس</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',5,this)">الخامس</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',4,this)">الرابع</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',3,this)">الثالث</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',2,this)">الثاني</div>
+            <div class="curr-chip teal" onclick="selectCurriculum('final',1,this)">الأول</div>
+        </div>
+
+        <span class="step-label teal" id="final-step2-label" style="display:none;">② اختر الموضوع أو المواضيع</span>
+        <div class="lessons-panel" id="final-lessons-panel">
+            <div class="lessons-panel-header">
+                <span class="teal" id="final-panel-title">الدروس</span>
+                <div class="hdr-btns">
+                    <button onclick="selectAllLessons('final')">تحديد الكل</button>
+                    <button onclick="clearAllLessons('final')">إلغاء الكل</button>
+                </div>
+            </div>
+            <div class="lessons-body" id="final-lessons-body"></div>
+            <div class="lessons-footer">
+                <input type="text" id="final-custom-input" placeholder="أضف موضوعاً غير موجود في القائمة...">
+                <button class="teal" onclick="addCustomLesson('final')">+ إضافة</button>
+            </div>
+        </div>
+        <div class="selected-preview teal" id="final-preview" style="display:none;"></div>
+
+        <hr class="soft">
+
+        <div class="difficulty-row teal">
+            <label>🎯 الصعوبة</label>
+            <select id="final_difficulty">
+                <option value="متقدم">متقدم (نهائي)</option>
+                <option value="صعب جداً">صعب جداً</option>
+                <option value="صعب">صعب</option>
+            </select>
+        </div>
+
+        <span class="levels-label teal">📊 مستوى الطلاب</span>
+        <div class="std-btns">
+            <button onclick="selectAllLevels('final')">تحديد الكل</button>
+            <button onclick="clearAllLevels('final')">إلغاء الكل</button>
+        </div>
+        <div class="levels-box" id="final-levels">
+            <div class="level-chip teal"><input type="checkbox" id="flvl1" value="المستوى الأول"><label for="flvl1">الأول</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl2" value="المستوى الثاني"><label for="flvl2">الثاني</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl3" value="المستوى الثالث"><label for="flvl3">الثالث</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl4" value="المستوى الرابع"><label for="flvl4">الرابع</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl5" value="المستوى الخامس" checked><label for="flvl5">الخامس</label></div>
+            <div class="level-chip teal"><input type="checkbox" id="flvl6" value="المستوى السادس" checked><label for="flvl6">السادس</label></div>
+        </div>
+
+        <div class="schema-hint">
+            <span class="sh-label teal">individual</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 3 أسئلة</span><br>
+            <span class="sh-label teal">target</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة</span><br>
+            <span class="sh-label teal">choice</span><span class="sh-key">"تراكيب"</span> / <span class="sh-key">"صرف"</span> / <span class="sh-key">"إملاء"</span>: [{q,a}]<span class="sh-comment"> ← 2 لكل</span><br>
+            <span class="sh-label teal">speed</span><span class="sh-key">"q"</span>: <span class="sh-str">"..."</span>, <span class="sh-key">"a"</span>: <span class="sh-str">"..."</span><span class="sh-comment"> ← 4 أسئلة</span>
+        </div>
+
+        <button class="btn btn-generate-fin" id="gen-btn-final" onclick="generateDirect('final')">✨ توليد أسئلة النهائي مباشرةً</button>
+        <div class="generating-bar" id="bar-final"><div class="generating-bar-inner teal"></div></div>
+
+        <!-- زر الاحتياطي اليدوي -->
+        <button class="backup-toggle-btn" onclick="toggleBackup('final')">🔁 استخدام الطريقة اليدوية الاحتياطية</button>
+        <div class="backup-section" id="backup-final">
+            <h4>📋 الطريقة اليدوية — احتياطي عند فشل التوليد التلقائي</h4>
+            <p>① اضغط "نسخ البرومبت" ← ② أرسله لأي ذكاء اصطناعي (ChatGPT، Claude، Gemini...) ← ③ الصق الجواب في خانة JSON أدناه ← ④ اضغط حفظ</p>
+            <button class="backup-copy-btn" onclick="manualCopy('final')">📋 نسخ البرومبت يدوياً</button>
+            <div class="backup-note">بعد النسخ افتح أي ذكاء اصطناعي وألصق البرومبت</div>
+        </div>
+    </div>
+
+    <div class="admin-card">
+        <h3 style="margin-top:0;color:var(--final-teal);">📥 استيراد بيانات النهائي الكبير</h3>
+        <div id="final-storage-status"></div>
+        <textarea id="final_json_input" class="json-editor" placeholder="ستظهر أسئلة النهائي هنا تلقائياً بعد التوليد..."></textarea>
+        <div class="btn-group">
+            <button class="btn btn-paste" onclick="pasteData('final_json_input')">📋 لصق</button>
+            <button class="btn" style="background:var(--final-teal);" onclick="saveFinalToGame()">💾 حفظ النهائي</button>
+            <button class="btn btn-clear" onclick="clearField('final_json_input')">🗑️ مسح</button>
+            <button class="btn btn-reset" onclick="resetFinal()">↩️ حذف بيانات النهائي</button>
+            <a href="final.html" class="btn btn-final">⚔️ فتح النهائي</a>
+        </div>
+    </div>
+
+    <div class="footer-credit">من إعداد وتصميم الأستاذ محمد أسرار &mdash; مدرسة ميمونة أم المؤمنين &mdash; مديرية مراكش</div>
+</div>
+
+<script>
+const _g = (function(){ const p=['gsk_osqgY5RDY4y','TzQ4QywXCWGdy','b3FYBBIGE1DprdBwTd6tGpVVRsqF']; return p.join(''); })();
+const _u = 'https://api.groq.com/openai/v1/chat/completions';
+
+const CURRICULUM = {
+    6: {
+        'التراكيب': ['نصب المضارع والجملة المؤولة','جزم المضارع والجملة الشرطية','الأفعال الخمسة','الأسماء الخمسة','إعراب المثنى','إعراب جمع المذكر السالم','إعراب جمع المؤنث السالم','الحال والجملة الحالية','التمييز (الملفوظ والملحوظ)'],
+        'الصرف والتحويل': ['تصريف الفعل الصحيح (السالم والمهموز والمضعف)','تصريف الفعل المعتل (المثال والأجوف والناقص)','الميزان الصرفي','اسم الفاعل واسم المفعول','اسما الزمان والمكان','اسم الآلة','اسم التفضيل','العدد والمعدود','جمع التكسير'],
+        'الإملاء': ['همزتا الوصل والقطع وهمزة ابن','الألف اللينة (الممدودة والمقصورة)','الهمزة المتوسطة والهمزة المتطرفة','الكلمات التي يخالف نطقها رسمها'],
+    },
+    5: {
+        'التراكيب': ['الجملة الاسمية: أنواع الخبر','كان وأخواتها','إن وأخواتها','اللازم والمتعدي','المفعول المطلق','المفعول لأجله','المفعول فيه','الحال مفردة','النعت الحقيقي','التوكيد','نائب الفاعل'],
+        'الصرف والتحويل': ['المجرد والمزيد','الصحيح والمعتل','الصحيح في الأزمنة الثلاثة','المعتل في الأزمنة الثلاثة','المصادر','المثنى: صياغته','جمع المذكر السالم: صياغته','جمع المؤنث السالم: صياغته','اسم الفاعل: صياغته','اسم المفعول: صياغته','الماضي المبني للمجهول'],
+        'الإملاء': ['التاء المربوطة والمبسوطة','همزتا الوصل والقطع','همزة ابن','الهمزة المتوسطة','الهمزة المتطرفة','كتابة "ما" الاستفهامية','الألف اللينة في الأفعال','الألف اللينة في الأسماء','كلمات يخالف نطقها رسمها','تنوين المقصور والمنقوص والممدود'],
+    },
+    4: {
+        'التراكيب': ['الجملة المفيدة','عناصر الجملة الفعلية','عناصر الجملة الاسمية','الفعل اللازم والمتعدي','الفاعل: ظاهر وضمير','المفعول به: ظاهر وضمير','نصب المضارع الصحيح والجملة المؤولة','جزم المضارع الصحيح والجملة الشرطية','النواسخ الفعلية','النواسخ الحرفية','العطف بالواو والفاء وثم'],
+        'الصرف والتحويل': ['أقسام الكلمة','الفعل وأزمنته','الاسم: الجنس والعدد','الفعل الصحيح: تعريفه وأنواعه','الفعل المعتل: تعريفه وأنواعه','أسماء الإشارة','الأسماء الموصولة','الضمائر المتصلة','الضمائر المنفصلة','النكرة والمعرفة بالاسم العلم، بالتعريف وبالإضافة','الإضافة إلى اسم ظاهر أو ضمير'],
+        'الإملاء': ['علامات الترقيم','التاء المربوطة','التاء المبسوطة','همزتا الوصل والقطع','الهمزة المتوسطة على الألف','الهمزة المتوسطة على الواو','الهمزة المتوسطة على الياء','الهمزة المتطرفة','أسماء الإشارة','الأسماء الموصولة'],
+    },
+    3:{}, 2:{}, 1:{},
+};
+
+const LEVEL_NAMES = {6:'السادس',5:'الخامس',4:'الرابع',3:'الثالث',2:'الثاني',1:'الأول'};
+const selectedLessons = { main: new Set(), final: new Set() };
+
+// ── التوليد التلقائي ──────────────────────────────────────────
+async function generateDirect(scope) {
+    const lesson = getLessonTitle(scope);
+    const level  = getSelectedLevels(scope);
+    if (!lesson) return notify('اختر درساً واحداً على الأقل', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى طلاب واحداً على الأقل', 'error');
+    const difficulty  = scope === 'main' ? document.getElementById('lesson_difficulty').value : document.getElementById('final_difficulty').value;
+    const prompt      = scope === 'main' ? buildMainPrompt(lesson, level, difficulty) : buildFinalPrompt(lesson, level, difficulty);
+    const targetField = scope === 'main' ? 'json_input' : 'final_json_input';
+    const btn = document.getElementById('gen-btn-' + scope);
+    const bar = document.getElementById('bar-' + scope);
+    const origLabel = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = '⏳ جارٍ التوليد...';
+    bar.classList.add('active');
+    notify('⏳ جارٍ التوليد — انتظر لحظة...', 'success');
     try {
-        const parsed = JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
-        const v = isValidStructure(parsed); if (v !== true) return notify('❌ ' + v, 'error');
-        let ef = null; try { const ex=localStorage.getItem('moatark_questions'); if(ex){const exd=JSON.parse(ex); if(exd.final) ef=exd.final;} } catch(e){}
-        const fd = { phase1:parsed.phase1, phase2:parsed.phase2, phase4:parsed.phase4, stock:{'المدرسة':parsed.stock['المدرسة'],'المحفظة':parsed.stock['المحفظة'],'الكتاب':parsed.stock['الكتاب']} };
-        if (ef) fd.final = ef;
-        localStorage.setItem('moatark_questions', JSON.stringify(fd)); notify('✅ تم الحفظ بنجاح'); checkStorageStatus();
-    } catch { notify('❌ JSON غير صالح', 'error'); }
+        const res = await fetch(_u, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _g },
+            body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 4000, temperature: 0.7 })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || 'خطأ في الاتصال');
+        const text = data.choices?.[0]?.message?.content || '';
+        document.getElementById(targetField).value = text.replace(/```json/g,'').replace(/```/g,'').trim();
+        notify('✅ تم التوليد — راجع الأسئلة ثم اضغط حفظ');
+    } catch(err) {
+        notify('❌ فشل التوليد التلقائي — استخدم الطريقة اليدوية الاحتياطية أدناه', 'error');
+        // فتح القسم الاحتياطي تلقائياً عند الفشل
+        document.getElementById('backup-' + scope).classList.add('visible');
+    } finally {
+        btn.disabled = false; btn.innerHTML = origLabel;
+        bar.classList.remove('active');
+    }
 }
-function saveFinalToGame() {
-    let raw = document.getElementById('final_json_input').value.trim(); if (!raw) return notify('حقل النهائي فارغ', 'error');
+
+// ── الطريقة اليدوية الاحتياطية ───────────────────────────────
+function toggleBackup(scope) {
+    const el = document.getElementById('backup-' + scope);
+    el.classList.toggle('visible');
+}
+
+async function manualCopy(scope) {
+    const lesson = getLessonTitle(scope);
+    const level  = getSelectedLevels(scope);
+    if (!lesson) return notify('اختر درساً أولاً', 'error');
+    if (level === 'غير محدد') return notify('اختر مستوى طلاب أولاً', 'error');
+    const difficulty = scope === 'main' ? document.getElementById('lesson_difficulty').value : document.getElementById('final_difficulty').value;
+    const prompt = scope === 'main' ? buildMainPrompt(lesson, level, difficulty) : buildFinalPrompt(lesson, level, difficulty);
     try {
-        const parsed = JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
-        const v = isValidFinalStructure(parsed); if (v !== true) return notify('❌ ' + v, 'error');
-        let ed = {}; try { const ex=localStorage.getItem('moatark_questions'); if(ex) ed=JSON.parse(ex); } catch(e){}
-        ed.final = parsed.final; localStorage.setItem('moatark_questions', JSON.stringify(ed));
-        notify('✅ تم حفظ بيانات النهائي بنجاح'); checkStorageStatus();
-    } catch { notify('❌ JSON غير صالح', 'error'); }
+        await navigator.clipboard.writeText(prompt);
+        notify('✅ تم نسخ البرومبت — الصقه في أي ذكاء اصطناعي');
+    } catch {
+        notify('❌ فشل النسخ — انسخ يدوياً', 'error');
+    }
 }
-function clearField(id) { document.getElementById(id).value=''; notify('تم المسح'); }
-function resetToDefaults() {
-    if (!confirm('سيتم حذف أسئلة المسابقة الرئيسية. بيانات النهائي ستبقى. متأكد؟')) return;
-    try { const ex=localStorage.getItem('moatark_questions'); if(ex){const exd=JSON.parse(ex); localStorage.setItem('moatark_questions',JSON.stringify(exd.final?{final:exd.final}:{}));} else {localStorage.removeItem('moatark_questions');} } catch(e){localStorage.removeItem('moatark_questions');}
-    document.getElementById('json_input').value=''; notify('✅ تمت إعادة الضبط'); checkStorageStatus();
+
+// ── البرومبتات ────────────────────────────────────────────────
+function buildMainPrompt(lesson, level, difficulty) {
+    return `أنت مولد بيانات JSON فقط للعبة تعليمية اسمها "معترك الضاد".
+ممنوع أي شرح. ممنوع markdown. ممنوع أي نص خارج JSON.
+
+البنية إلزامية بالضبط:
+{
+  "phase1": [{"q":"...","o":["...","...","...","..."],"a":0}, ...],
+  "phase2": [{"q":"...","o":["...","...","...","..."],"a":0}, ...],
+  "phase4": [{"q":"...","a":"..."}, ...],
+  "stock": {
+    "المدرسة": [{"q":"...","a":"..."}, ...],
+    "المحفظة": [{"q":"...","a":"..."}, ...],
+    "الكتاب":  [{"q":"...","a":"..."}, ...]
+  }
 }
-function resetFinal() {
-    if (!confirm('سيتم حذف بيانات النهائي. المسابقة الرئيسية لن تتأثر. متأكد؟')) return;
-    try { const ex=localStorage.getItem('moatark_questions'); if(ex){const exd=JSON.parse(ex); delete exd.final; localStorage.setItem('moatark_questions',JSON.stringify(exd));} } catch(e){}
-    document.getElementById('final_json_input').value=''; notify('✅ تم حذف بيانات النهائي'); checkStorageStatus();
+القواعد:
+1. phase1: 6 أسئلة اختيار — "a" رقم 0-3
+2. phase2: 12 سؤالاً اختيار — "a" رقم 0-3
+3. phase4: 4 أسئلة مفتوحة — "a" نص
+4. stock.المدرسة: 4 أسئلة — "a" نص
+5. stock.المحفظة: 4 أسئلة — "a" نص
+6. stock.الكتاب: 4 أسئلة — "a" نص
+الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}`;
+}
+
+function buildFinalPrompt(lesson, level, difficulty) {
+    return `أنت مولد بيانات JSON للنهائي الكبير في لعبة "معترك الضاد".
+ممنوع أي شرح. ممنوع markdown. أخرج JSON فقط.
+
+البنية الإلزامية:
+{
+  "final": {
+    "individual": [{"q":"...","a":"..."},...],
+    "target":     [{"q":"...","a":"..."},...],
+    "choice": {
+      "تراكيب": [{"q":"...","a":"..."},{"q":"...","a":"..."}],
+      "صرف":    [{"q":"...","a":"..."},{"q":"...","a":"..."}],
+      "إملاء":  [{"q":"...","a":"..."},{"q":"...","a":"..."}]
+    },
+    "speed": [{"q":"...","a":"..."},...]
+  }
+}
+الأعداد: individual=3 | target=4 | تراكيب=2 | صرف=2 | إملاء=2 | speed=4
+الموضوع: ${lesson} | المستوى: ${level} | الصعوبة: ${difficulty}`;
+}
+
+// ── بقية الدوال ───────────────────────────────────────────────
+function selectCurriculum(scope, level, el) {
+    document.querySelectorAll('#'+scope+'-curr-chips .curr-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    const body=document.getElementById(scope+'-lessons-body'), panel=document.getElementById(scope+'-lessons-panel');
+    const lbl=document.getElementById(scope+'-step2-label'), title=document.getElementById(scope+'-panel-title');
+    const color=scope==='final'?'teal':'purple', data=CURRICULUM[level]||{}, cats=Object.keys(data).filter(k=>data[k]&&data[k].length);
+    selectedLessons[scope].clear(); body.innerHTML='';
+    const cg=document.getElementById(scope+'-custom-group'); if(cg) cg.remove();
+    updatePreview(scope); title.textContent='دروس المستوى '+LEVEL_NAMES[level];
+    lbl.style.display='block'; panel.classList.add('visible');
+    if(!cats.length){body.innerHTML='<p class="empty-msg">لا توجد دروس — يمكنك إضافة درس يدوياً أدناه.</p>';return;}
+    cats.forEach(cat=>{
+        const gt=document.createElement('div'); gt.className='lesson-group-title '+color; gt.textContent=cat; body.appendChild(gt);
+        data[cat].forEach((lesson,idx)=>{
+            const id='cb-'+scope+'-'+level+'-'+cat+'-'+idx;
+            const row=document.createElement('label'); row.className='lesson-cb-row '+color;
+            row.innerHTML='<input type="checkbox" id="'+id+'" value="'+lesson+'"><span style="font-size:0.88rem;flex:1;">'+lesson+'</span>';
+            row.querySelector('input').addEventListener('change',function(){this.checked?selectedLessons[scope].add(lesson):selectedLessons[scope].delete(lesson);updatePreview(scope);});
+            body.appendChild(row);
+        });
+    });
+}
+function selectAllLessons(scope){document.querySelectorAll('#'+scope+'-lessons-body input[type="checkbox"]').forEach(cb=>{cb.checked=true;selectedLessons[scope].add(cb.value);});updatePreview(scope);}
+function clearAllLessons(scope){
+    document.querySelectorAll('#'+scope+'-lessons-body input[type="checkbox"]').forEach(cb=>cb.checked=false);
+    const all=Object.values(CURRICULUM).flatMap(lv=>Object.values(lv).flat());
+    selectedLessons[scope]=new Set([...selectedLessons[scope]].filter(l=>!all.includes(l))); updatePreview(scope);
+}
+function addCustomLesson(scope){
+    const input=document.getElementById(scope+'-custom-input'); const val=input.value.trim(); if(!val)return;
+    const body=document.getElementById(scope+'-lessons-body'); const color=scope==='final'?'teal':'purple';
+    if(!document.getElementById(scope+'-custom-group')){
+        const gt=document.createElement('div'); gt.className='lesson-group-title '+color; gt.textContent='مضافة يدوياً'; body.appendChild(gt);
+        const grp=document.createElement('div'); grp.id=scope+'-custom-group'; body.appendChild(grp);
+    }
+    const id='cb-custom-'+scope+'-'+Date.now();
+    const row=document.createElement('label'); row.className='lesson-cb-row '+color;
+    row.innerHTML='<input type="checkbox" id="'+id+'" value="'+val+'" checked><span style="font-size:0.88rem;flex:1;">'+val+'</span>';
+    row.querySelector('input').addEventListener('change',function(){this.checked?selectedLessons[scope].add(val):selectedLessons[scope].delete(val);updatePreview(scope);});
+    document.getElementById(scope+'-custom-group').appendChild(row);
+    selectedLessons[scope].add(val); input.value='';
+    document.getElementById(scope+'-lessons-panel').classList.add('visible'); updatePreview(scope);
+}
+function updatePreview(scope){const el=document.getElementById(scope+'-preview');const arr=[...selectedLessons[scope]];if(arr.length){el.style.display='block';el.textContent='✅ '+arr.join(' + ');}else{el.style.display='none';}}
+function getLessonTitle(scope){return[...selectedLessons[scope]].join(' + ');}
+function getSelectedLevels(scope){const pfx=scope==='final'?'final':'main';return[...document.querySelectorAll('#'+pfx+'-levels input:checked')].map(c=>c.value).join(' + ')||'غير محدد';}
+function selectAllLevels(scope){document.querySelectorAll('#'+(scope==='final'?'final':'main')+'-levels input').forEach(c=>c.checked=true);}
+function clearAllLevels(scope){document.querySelectorAll('#'+(scope==='final'?'final':'main')+'-levels input').forEach(c=>c.checked=false);}
+function notify(msg,type='success'){const s=document.getElementById('status');s.innerText=msg;s.style.backgroundColor=type==='success'?'#10b981':'#ef4444';s.style.display='block';setTimeout(()=>s.style.display='none',4000);}
+function checkStorageStatus(){
+    try{
+        const raw=localStorage.getItem('moatark_questions');
+        const mEl=document.getElementById('main-storage-status');const fEl=document.getElementById('final-storage-status');
+        if(raw){const d=JSON.parse(raw);
+            mEl.innerHTML=d.phase1?'<span class="storage-badge badge-ok">✅ بيانات محفوظة — phase1: '+d.phase1.length+' سؤال، phase2: '+(d.phase2||[]).length+' سؤال</span>':'<span class="storage-badge badge-no">⚠️ لا توجد بيانات للمسابقة الرئيسية</span>';
+            fEl.innerHTML=d.final?'<span class="storage-badge badge-ok">✅ بيانات النهائي محفوظة</span>':'<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>';
+        }else{mEl.innerHTML='<span class="storage-badge badge-no">⚠️ لا توجد بيانات محفوظة</span>';fEl.innerHTML='<span class="storage-badge badge-no">⚠️ لا توجد بيانات للنهائي</span>';}
+    }catch(e){}
+}
+function isValidStructure(data){
+    try{
+        const isMCQ=q=>q&&typeof q.q==='string'&&q.q.trim()&&Array.isArray(q.o)&&q.o.length===4&&Number.isInteger(q.a)&&q.a>=0&&q.a<=3;
+        const isOpen=q=>q&&typeof q.q==='string'&&q.q.trim()&&typeof q.a==='string'&&q.a.trim();
+        if(!Array.isArray(data.phase1)||!data.phase1.length)return'phase1 مفقودة أو فارغة';
+        if(!Array.isArray(data.phase2)||!data.phase2.length)return'phase2 مفقودة أو فارغة';
+        if(!Array.isArray(data.phase4)||!data.phase4.length)return'phase4 مفقودة أو فارغة';
+        if(!data.stock)return'stock مفقود';
+        if(!Array.isArray(data.stock['المدرسة'])||!data.stock['المدرسة'].length)return'stock → المدرسة مفقود';
+        if(!Array.isArray(data.stock['المحفظة'])||!data.stock['المحفظة'].length)return'stock → المحفظة مفقود';
+        if(!Array.isArray(data.stock['الكتاب'])||!data.stock['الكتاب'].length)return'stock → الكتاب مفقود';
+        if(!data.phase1.every(isMCQ))return'phase1: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if(!data.phase2.every(isMCQ))return'phase2: كل سؤال يحتاج (q, o أربعة خيارات, a رقم 0-3)';
+        if(!data.phase4.every(isOpen))return'phase4: "a" يجب أن يكون نصاً';
+        if(!data.stock['المدرسة'].every(isOpen))return'stock.المدرسة خطأ';
+        if(!data.stock['المحفظة'].every(isOpen))return'stock.المحفظة خطأ';
+        if(!data.stock['الكتاب'].every(isOpen))return'stock.الكتاب خطأ';
+        return true;
+    }catch{return'خطأ في تحليل البنية';}
+}
+function isValidFinalStructure(data){
+    try{
+        const isOpen=q=>q&&typeof q.q==='string'&&q.q.trim()&&typeof q.a==='string'&&q.a.trim();
+        if(!data.final)return'مفتاح "final" مفقود';
+        const f=data.final;
+        if(!Array.isArray(f.individual)||!f.individual.length)return'final.individual مفقودة';
+        if(!Array.isArray(f.target)||!f.target.length)return'final.target مفقودة';
+        if(!f.choice)return'final.choice مفقود';
+        if(!Array.isArray(f.choice['تراكيب'])||!f.choice['تراكيب'].length)return'final.choice.تراكيب مفقودة';
+        if(!Array.isArray(f.choice['صرف'])||!f.choice['صرف'].length)return'final.choice.صرف مفقود';
+        if(!Array.isArray(f.choice['إملاء'])||!f.choice['إملاء'].length)return'final.choice.إملاء مفقود';
+        if(!Array.isArray(f.speed)||!f.speed.length)return'final.speed مفقودة';
+        if(!f.individual.every(isOpen))return'final.individual: خطأ';
+        if(!f.target.every(isOpen))return'final.target: خطأ';
+        if(!f.choice['تراكيب'].every(isOpen))return'final.choice.تراكيب: خطأ';
+        if(!f.choice['صرف'].every(isOpen))return'final.choice.صرف: خطأ';
+        if(!f.choice['إملاء'].every(isOpen))return'final.choice.إملاء: خطأ';
+        if(!f.speed.every(isOpen))return'final.speed: خطأ';
+        return true;
+    }catch{return'خطأ في تحليل بنية النهائي';}
+}
+async function pasteData(fieldId){try{document.getElementById(fieldId).value=await navigator.clipboard.readText();notify('تم اللصق');}catch{notify('❌ فشل اللصق — استخدم Ctrl+V','error');}}
+function saveToGame(){
+    let raw=document.getElementById('json_input').value.trim();if(!raw)return notify('الحقل فارغ','error');
+    try{
+        const parsed=JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
+        const v=isValidStructure(parsed);if(v!==true)return notify('❌ '+v,'error');
+        let ef=null;try{const ex=localStorage.getItem('moatark_questions');if(ex){const exd=JSON.parse(ex);if(exd.final)ef=exd.final;}}catch(e){}
+        const fd={phase1:parsed.phase1,phase2:parsed.phase2,phase4:parsed.phase4,stock:{'المدرسة':parsed.stock['المدرسة'],'المحفظة':parsed.stock['المحفظة'],'الكتاب':parsed.stock['الكتاب']}};
+        if(ef)fd.final=ef;
+        localStorage.setItem('moatark_questions',JSON.stringify(fd));notify('✅ تم الحفظ بنجاح');checkStorageStatus();
+    }catch{notify('❌ JSON غير صالح','error');}
+}
+function saveFinalToGame(){
+    let raw=document.getElementById('final_json_input').value.trim();if(!raw)return notify('حقل النهائي فارغ','error');
+    try{
+        const parsed=JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
+        const v=isValidFinalStructure(parsed);if(v!==true)return notify('❌ '+v,'error');
+        let ed={};try{const ex=localStorage.getItem('moatark_questions');if(ex)ed=JSON.parse(ex);}catch(e){}
+        ed.final=parsed.final;localStorage.setItem('moatark_questions',JSON.stringify(ed));
+        notify('✅ تم حفظ بيانات النهائي بنجاح');checkStorageStatus();
+    }catch{notify('❌ JSON غير صالح','error');}
+}
+function clearField(id){document.getElementById(id).value='';notify('تم المسح');}
+function resetToDefaults(){
+    if(!confirm('سيتم حذف أسئلة المسابقة الرئيسية. بيانات النهائي ستبقى. متأكد؟'))return;
+    try{const ex=localStorage.getItem('moatark_questions');if(ex){const exd=JSON.parse(ex);localStorage.setItem('moatark_questions',JSON.stringify(exd.final?{final:exd.final}:{}));}else{localStorage.removeItem('moatark_questions');}}catch(e){localStorage.removeItem('moatark_questions');}
+    document.getElementById('json_input').value='';notify('✅ تمت إعادة الضبط');checkStorageStatus();
+}
+function resetFinal(){
+    if(!confirm('سيتم حذف بيانات النهائي. المسابقة الرئيسية لن تتأثر. متأكد؟'))return;
+    try{const ex=localStorage.getItem('moatark_questions');if(ex){const exd=JSON.parse(ex);delete exd.final;localStorage.setItem('moatark_questions',JSON.stringify(exd));}}catch(e){}
+    document.getElementById('final_json_input').value='';notify('✅ تم حذف بيانات النهائي');checkStorageStatus();
 }
 checkStorageStatus();
 </script>

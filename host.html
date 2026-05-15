@@ -1,462 +1,390 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة الأستاذ: مُعترك الضاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* إضافة بسيطة لجمالية التنبيه */
-        #firebase-status {
-            position: fixed; top: 10px; left: 10px; padding: 4px 10px;
-            background: white; border-radius: 8px; font-weight: 900;
-            z-index: 100001; font-size: 0.7rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+        :root {
+            --moroccan-blue: #006847; --moroccan-gold: #c5a059; --deep-red: #8b0000;
+            --bg-light: #f4f1ea; --card: #ffffff; --text: #333;
+            --success: #10b981; --danger: #ef4444;
         }
+        body.dark-mode { --bg-light: #0f172a; --card: #1e293b; --text: #f1f5f9; --moroccan-gold: #fbbf24; --moroccan-blue: #00a873; }
+        body {
+            background-color: var(--bg-light);
+            background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            color: var(--text); font-family: 'Cairo', sans-serif; margin: 0; padding: 0;
+            height: 100vh; display: flex; flex-direction: column;
+            transition: background 0.3s; overflow: hidden; position: relative;
+        }
+
+        /* مؤثرات الحركة */
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; max-width: 1000px; margin: 0 auto; }
+        .logo-box { width: 55px; height: 55px; background: white; border-radius: 50%; border: 2px solid var(--moroccan-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .title-area { flex: 1; text-align: center; }
+        .title-area img { max-height: 70px; }
+
+        .top-controls { display: flex; justify-content: center; gap: 8px; margin: 5px 0; }
+        .icon-btn { background: var(--moroccan-gold); border: none; width: 35px; height: 35px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.3s; }
+        .icon-btn:hover { transform: scale(1.1); }
+
+        .container { width: 95%; max-width: 900px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 160px; overflow-y: auto; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; border-top: 6px solid var(--moroccan-blue); box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center; animation: fadeSlideUp 0.5s both; }
+
+        .scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+        .team-box { background: var(--card); padding: 10px; border-radius: 12px; border: 2px solid #ddd; position: relative; transition: 0.3s; }
+        .team-box.active-turn { border-color: var(--danger); border-width: 4px; transform: scale(1.05); box-shadow: 0 0 15px rgba(239,68,68,0.3); }
+
+        .lifeline-icons { position: absolute; top: -10px; right: 5px; display: flex; gap: 3px; }
+        .lifeline-icons span { background: white; border: 1px solid #ddd; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; }
+
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
+        .opt { background: #f8fafc; border: 2px solid #e2e8f0; padding: 12px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .opt:hover { border-color: var(--moroccan-gold); background: #fff; }
+
+        .admin-panel { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: white; padding: 15px; display: flex; align-items: center; gap: 15px; overflow-x: auto; z-index: 1000; border-top: 4px solid var(--moroccan-gold); }
+        .btn-admin { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; }
+
+        #timer { font-size: 3rem; color: var(--danger); font-weight: 900; margin: 10px 0; }
+        #q-text { font-size: 1.5rem; font-family: 'Amiri'; font-weight: bold; margin: 15px 0; min-height: 50px; }
+        
+        .component-btn { background: #fff; border: 2px solid var(--moroccan-blue); padding: 12px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 5px; transition: 0.3s; }
+        .component-btn:hover { background: var(--moroccan-blue); color: #white; }
+        .component-btn.depleted { opacity: 0.3; cursor: not-allowed; }
+
+        /* مودال الدليل */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 20000; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card); border: 3px solid var(--moroccan-gold); width: 90%; max-width: 500px; padding: 25px; border-radius: 20px; text-align: right; }
+
+        .final-gate { background: linear-gradient(45deg,#0f172a,#1e293b); border: 3px solid #c5a059; color: #c5a059; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 900; }
     </style>
 </head>
 <body>
+
+<div class="header-top">
+    <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
+    <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
+    <div class="logo-box"><img src="logo.png" alt="Logo"></div>
+</div>
+
+<div class="top-controls">
+    <button class="icon-btn" onclick="document.body.classList.toggle('dark-mode')">🌙</button>
+    <button class="icon-btn" onclick="document.getElementById('guideModal').style.display='flex'">📖</button>
+    <button class="icon-btn" onclick="location.reload()">🔄</button>
+    <button class="icon-btn" onclick="window.open('screen.html','_blank')">🖥️</button>
+    <button class="icon-btn" onclick="location.href='final.html'">🏆</button>
+</div>
+
+<div id="guideModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 style="text-align:center; color:var(--moroccan-blue)">📖 ميثاق معترك الضاد</h2>
+        <p>1. الجماعية: 6 أسئلة للجميع.</p>
+        <p>2. المواجهة: أسئلة موجهة عشوائياً.</p>
+        <p>3. الصناديق: اختيار الصندوق قبل السؤال.</p>
+        <p>4. السرعة: 8 ثوانٍ فقط.</p>
+        <button class="btn-admin" style="width:100%; background:var(--moroccan-blue); color:white;" onclick="document.getElementById('guideModal').style.display='none'">بدء التحدي</button>
+    </div>
+</div>
+
+<div id="setup-screen" class="container">
+    <div class="card">
+        <h3 style="color: var(--moroccan-blue);">👥 إعداد الفِرَقِ المتنافسة</h3>
+        <select id="team-count" onchange="updateTeamInputs(this.value)" style="padding:10px; margin-bottom:15px; border-radius:8px;">
+            <option value="2">فريقان</option>
+            <option value="3">ثلاثة فِرَق</option>
+            <option value="4" selected>أربعة فِرَق</option>
+        </select>
+        <div id="team-names-container" style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:20px;"></div>
+        <button class="btn-admin" style="background:var(--moroccan-blue); color:white; font-size:1.2rem; padding:15px 40px; border-radius:50px;" onclick="startMarathon()">انْطَلِقْ 🚀</button>
+    </div>
+</div>
+
+<div id="quiz-screen" class="container" style="display:none;">
+    <div id="dynamic-scoreboard" class="scoreboard"></div>
+    <div class="card">
+        <div id="target-announcer" style="background:var(--danger); color:white; padding:5px; border-radius:8px; display:none; margin-bottom:10px; font-weight:bold;"></div>
+        <div id="phase-label" style="background:var(--moroccan-blue); color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem; display:inline-block;"></div>
+        <div id="timer">00</div>
+        <div id="q-text"></div>
+        
+        <div id="component-selection" style="display:none; justify-content:center; gap:10px;">
+            <button class="component-btn" id="btn-المدرسة" onclick="selectComponent('المدرسة')">🏫 المدرسة <span id="count-المدرسة"></span></button>
+            <button class="component-btn" id="btn-المحفظة" onclick="selectComponent('المحفظة')">🎒 المحفظة <span id="count-المحفظة"></span></button>
+            <button class="component-btn" id="btn-الكتاب"  onclick="selectComponent('الكتاب')">📖 الكتاب <span id="count-الكتاب"></span></button>
+        </div>
+
+        <div class="options-grid" id="opt-container"></div>
+        <div id="manual-zone" style="display:none; font-size:1.5rem; color:var(--moroccan-blue); font-weight:bold;">
+            <div id="manual-answer-display">...</div>
+        </div>
+
+        <div id="finish-screen" style="display:none;">
+            <a href="final.html" class="final-gate">⚔️ الانتقال للنهائي الكبير ⚔️</a>
+        </div>
+    </div>
+
+    <div class="admin-panel">
+        <div style="display:flex; gap:10px; border-left:2px solid #555; padding-left:15px;">
+            <button class="btn-admin" style="background:var(--success); color:white;" onclick="reveal()">✅ كشف</button>
+            <button class="btn-admin" style="background:var(--moroccan-gold); color:black;" onclick="next()">➡️ التالي</button>
+        </div>
+        <div id="admin-score-controls" style="display:flex; gap:10px;"></div>
+    </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
 
 <script>
-// --- الجزء الأول: المنطق الأساسي للعبة (مع التعديلات لضمان الربط) ---
-let teamNames = [], scores = [], currentPhase = 0, currentQ = 0, timer, phaseTurns = [];
-let votedOnThisQuestion = [], currentModelAnswer = "", currentQuestionText = "";
-let lifelinesState = [], rocketActive = -1;
-let stockCounts = {};
-let usedByBox = {};
+let db, roomRef;
+let teamNames = [], scores = [], lifelinesState = [];
+let currentPhase = 0, currentQ = 0, timerInterval;
+let phaseTurns = [], stockCounts = {}, usedByBox = {};
+let currentModelAnswer = "", rocketActive = -1;
+
 const STOCK_KEYS = ["المدرسة", "المحفظة", "الكتاب"];
+const defaultStock = {
+    "المدرسة": [{q: "أعرب كلمة 'عَيْنُهُ' في جملة: (حَضَرَ الأُسْتَاذُ عَيْنُهُ).", a: "توكيد معنوي"}],
+    "المحفظة": [{q: "صغ اسم الفاعل من فعل غير ثلاثي: (اسْتَخْرَجَ).", a: "مُسْتَخْرِج"}],
+    "الكتاب": [{q: "علل كتابة الهمزة في كلمة: (ذِئْب).", a: "ساكنة وما قبلها كسر"}]
+};
 
-// إعداد Firebase
-if (!firebase.apps.length) { firebase.initializeApp(window.firebaseConfig); }
-const db = firebase.database();
-const roomRef = db.ref('rooms/moatark-main-room');
+const phasesData = [
+    { name: "النمط 1: الاستجابة الجماعية", type: "all", time: 20, questions: [
+        {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم","مهموز","مضعف","معتل"], a:2},
+        {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء","واو","ألف","نون"], a:1}
+    ]},
+    { name: "النمط 2: المواجهة الموجهة", type: "target", time: 20, questions: [
+        {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1}
+    ]},
+    { name: "النمط 3: الصناديق العجيبة", type: "free", time: 30 },
+    { name: "النمط 4: جولة السرعة", type: "speed", time: 8, questions: [
+        {q: "ما هو الوزن الصرفي لكلمة 'صِـلَة'؟", a: "عِـلَة"}
+    ]}
+];
 
-// دالة البدء الرئيسية (معدلة للإرسال لـ Firebase)
+function updateTeamInputs(count) {
+    const container = document.getElementById('team-names-container');
+    container.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+        container.innerHTML += `<input type="text" id="tn-${i}" value="الفريق ${i+1}" style="padding:10px; width:100px; text-align:center; border-radius:8px; border:1px solid #ddd;">`;
+    }
+}
+
 function startMarathon() {
     const count = parseInt(document.getElementById('team-count').value);
     teamNames = []; scores = []; lifelinesState = [];
-    let fbTeams = {};
-
     for (let i = 0; i < count; i++) {
-        let name = document.getElementById(`tn-${i}`).value;
-        teamNames.push(name);
+        teamNames.push(document.getElementById(`tn-${i}`).value);
         scores.push(0);
         lifelinesState.push({ del: false, dou: false, stp: false });
-        fbTeams[`team${i+1}`] = { name: name, score: 0, lifelines: {del:false, dou:false, stp:false} };
     }
-    
-    // إرسال البيانات الابتدائية للقاعدة
-    roomRef.set({
-        status: "started",
-        teams: fbTeams,
-        scores: scores,
-        currentQuestion: null,
-        lastUpdate: Date.now()
-    });
 
-    initStockCounts();
+    // تهيئة الصناديق
+    STOCK_KEYS.forEach(k => { stockCounts[k] = teamNames.length; usedByBox[k] = new Set(); });
+
     document.getElementById('setup-screen').style.display = 'none';
-    document.getElementById('quiz-screen').style.display  = 'flex';
-    renderInterface(); 
-    prepareTurns(); 
-    init(); // تشغيل أول سؤال
+    document.getElementById('quiz-screen').style.display = 'flex';
+    
+    initFirebase();
+    renderInterface();
+    prepareTurns();
+    init();
 }
 
-// دالة المزامنة الرئيسية (هي التي ترسل لكل الطلاب)
-function syncToFirebase() {
-    const p = phasesData[currentPhase];
-    const q = (p && p.questions) ? p.questions[currentQ] : null;
-    
-    // منطق الأنماط: تحديد من يرى السؤال
-    let target = 'all';
-    if (p.type === 'target' || p.type === 'free') {
-        target = `team${phaseTurns[currentQ] + 1}`;
-    }
-
-    const questionData = {
-        text: document.getElementById('q-text').innerText,
-        phaseName: p.name,
-        time: p.time,
-        startedAt: Date.now(),
-        questionId: Math.random().toString(36).substr(2, 9),
-        options: q && q.o ? q.o : [],
-        correctIndex: q ? q.a : -1,
-        targetTeam: target,
-        boxMode: (p.type === 'free' && !currentModelAnswer), // وضع اختيار الصندوق
-        revealed: false
-    };
-
-    roomRef.child('currentQuestion').set(questionData);
-    roomRef.child('scores').set(scores); // مزامنة النقاط باستمرار
-}
-
-// تعديل دالة init لتعمل بالمزامنة
-const originalInit = window.init;
-window.init = function() {
-    // (المنطق الأصلي في ملفك مع استدعاء المزامنة في النهاية)
-    votedOnThisQuestion = teamNames.map(() => false);
-    const p = phasesData[currentPhase];
-    currentModelAnswer = ""; currentQuestionText = ""; rocketActive = -1;
-    clearInterval(timer);
-
-    // ... (مسح الواجهة كما في كودك) ...
-    document.getElementById('q-text').innerText = '';
-    document.getElementById('opt-container').innerHTML = '';
-    document.getElementById('component-selection').style.display = 'none';
-    document.getElementById('manual-zone').style.display = 'none';
-    
-    if (!p) return;
-
-    if (p.type === 'free') {
-        const tid = phaseTurns[currentQ];
-        document.getElementById('target-announcer').style.display = 'block';
-        document.getElementById('target-announcer').innerHTML = `🎯 الصندوق العجيب لـ: ${teamNames[tid]}`;
-        showFreeSelection();
-        startTimer(p.time);
-    } else if (p.type === 'target') {
-        const tid = phaseTurns[currentQ];
-        document.getElementById('target-announcer').style.display = 'block';
-        document.getElementById('target-announcer').innerHTML = `🎯 الدور: ${teamNames[tid]}`;
-        displayQuestion(p.questions[currentQ]);
-    } else {
-        displayQuestion(p.questions[currentQ]);
-    }
-
-    syncToFirebase(); // ⚡ إرسال الإشارة للطلاب فوراً
-};
-
-// تعديل دالة كشف الإجابة
-function reveal() {
-    clearInterval(timer);
-    // (المنطق الأصلي لكشف الإجابة)
-    const p = phasesData[currentPhase];
-    // ...
-    // إرسال إشارة كشف الإجابة للطلاب
-    roomRef.child('currentQuestion/revealed').set(true);
-}
-
-// تعديل دالة اختيار الصندوق لمزامنة محتوى الصندوق
-function selectComponent(key) {
-    // (منطق الاختيار من الصناديق)
-    // ... بعد اختيار السؤال:
-    const item = available[Math.floor(Math.random() * available.length)];
-    document.getElementById('q-text').innerText = `📦 ${key}: ${item.q}`;
-    currentModelAnswer = item.a;
-    
-    // تحديث الطلاب فور اختيار الصندوق
-    roomRef.child('currentQuestion').update({
-        text: `📦 ${key}: ${item.q}`,
-        boxMode: false,
-        modelAnswer: item.a
+function initFirebase() {
+    if (!firebase.apps.length) firebase.initializeApp(window.firebaseConfig);
+    db = firebase.database();
+    roomRef = db.ref('rooms/moatark-main-room');
+    roomRef.update({ 
+        status: "active", 
+        teams: teamNames.reduce((acc, name, i) => { acc[`team${i+1}`] = { name: name, score: 0 }; return acc; }, {}) 
     });
 }
 
-// دالة مراقبة الاتصال (اللمسة الجمالية)
-db.ref('.info/connected').on('value', (s) => {
-    const status = document.getElementById('firebase-status') || document.createElement('div');
-    status.id = 'firebase-status';
-    status.innerText = s.val() ? "✅ متصل بالطلاب" : "❌ انقطع الاتصال";
-    status.style.color = s.val() ? "#006847" : "#ef4444";
-    if(!status.parentElement) document.body.appendChild(status);
-});
-
-// (أكمل باقي الدوال كما هي في ملفك: displayQuestion, startTimer, next, modifyScore...
+function renderInterface() {
+    const sb = document.getElementById('dynamic-scoreboard');
+    const adminCtrl = document.getElementById('admin-score-controls');
+    sb.innerHTML = ''; adminCtrl.innerHTML = '';
+    teamNames.forEach((name, i) => {
+        sb.innerHTML += `
+        <div class="team-box" id="t-card-${i}">
+            <div class="lifeline-icons">
+                <span id="ico-${i}-del" onclick="useLifeline(${i}, 'del')">💡</span>
+                <span id="ico-${i}-dou" onclick="useLifeline(${i}, 'dou')">🚀</span>
+                <span id="ico-${i}-stp" onclick="useLifeline(${i}, 'stp')">⏱️</span>
+            </div>
+            <div id="s-${i}" style="font-size:1.5rem; font-weight:900;">0</div>
+            <div style="font-size:0.7rem;">${name}</div>
+        </div>`;
+        adminCtrl.innerHTML += `
+        <div style="text-align:center; background:rgba(255,255,255,0.1); padding:5px; border-radius:8px;">
+            <div style="font-size:0.7rem;">${name}</div>
+            <button class="btn-admin" style="background:var(--success); color:white; padding:5px 10px;" onclick="modifyScore(${i}, 10)">+10</button>
+            <button class="btn-admin" style="background:var(--danger); color:white; padding:5px 10px;" onclick="modifyScore(${i}, -5)">-5</button>
+        </div>`;
+    });
+}
 
 function modifyScore(i, v) {
-    if (votedOnThisQuestion[i]) return;
-    let val = (rocketActive === i) ? (v > 0 ? 20 : -10) : v;
-    scores[i] += val;
+    let finalV = (rocketActive === i && v > 0) ? v * 2 : v;
+    scores[i] += finalV;
     document.getElementById(`s-${i}`).innerText = scores[i];
-    votedOnThisQuestion[i] = true;
+    roomRef.child('teams/team'+(i+1)).update({ score: scores[i] });
     rocketActive = -1;
-}
-
-function useLifeline(teamIdx, type, element) {
-    if (lifelinesState[teamIdx][type]) return;
-    if (type === 'del') {
-        const p = phasesData[currentPhase];
-        if (p && p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
-            const correct = parseInt(p.questions[currentQ].a);
-            const opts = Array.from(document.querySelectorAll('.opt'));
-            let wrong = opts.map((_, i) => i).filter(i => i !== correct);
-            wrong.sort(() => Math.random() - 0.5).slice(0, 2).forEach(idx => { opts[idx].style.visibility = 'hidden'; });
-        }
-    } else if (type === 'dou') { rocketActive = teamIdx; }
-    else if (type === 'stp') { clearInterval(timer); }
-    lifelinesState[teamIdx][type] = true;
-    element.style.opacity = "0.2";
 }
 
 function prepareTurns() {
     phaseTurns = [];
-    const count = teamNames.length;
     const p = phasesData[currentPhase];
-    if (!p) return;
-    if (p.type === 'target') { for (let i = 0; i < count; i++) for (let j = 0; j < 3; j++) phaseTurns.push(i); }
-    else if (p.type === 'free') { for (let i = 0; i < count; i++) for (let j = 0; j < 2; j++) phaseTurns.push(i); }
-    phaseTurns.sort(() => Math.random() - 0.5);
+    if (p.type === 'target' || p.type === 'free') {
+        for (let i = 0; i < teamNames.length; i++) phaseTurns.push(i);
+        phaseTurns.sort(() => Math.random() - 0.5);
+    }
 }
 
 function init() {
-    votedOnThisQuestion = teamNames.map(() => false);
+    clearInterval(timerInterval);
     const p = phasesData[currentPhase];
-    currentModelAnswer  = ""; currentQuestionText = ""; rocketActive = -1;
-    clearInterval(timer);
+    currentModelAnswer = ""; rocketActive = -1;
 
-    document.getElementById('q-text').innerText = '';
-    document.getElementById('opt-container').innerHTML = '';
-    document.getElementById('component-selection').style.display = 'none';
-    document.getElementById('manual-zone').style.display = 'none';
-    document.getElementById('target-announcer').style.display = 'none';
-    document.getElementById('answer-input').value = '';
-    document.getElementById('manual-answer-display').innerText = '...';
-    document.getElementById('manual-answer-display').classList.remove('revealed');
+    // إعادة ضبط الواجهة
+    document.getElementById('q-text').innerText = "";
+    document.getElementById('opt-container').innerHTML = "";
+    document.getElementById('manual-zone').style.display = "none";
+    document.getElementById('component-selection').style.display = "none";
+    document.getElementById('target-announcer').style.display = "none";
     document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
-
-    if (!p) return;
+    
     document.getElementById('phase-label').innerText = p.name;
 
     if (p.type === 'free') {
         const tid = phaseTurns[currentQ];
-        document.getElementById('target-announcer').style.display = 'block';
-        document.getElementById('target-announcer').innerHTML = `🎯 الصندوق العجيب لـ: ${teamNames[tid]}`;
+        document.getElementById('target-announcer').innerText = `🎯 الدور لـ: ${teamNames[tid]}`;
+        document.getElementById('target-announcer').style.display = "block";
         document.getElementById(`t-card-${tid}`).classList.add('active-turn');
         showFreeSelection();
-        // 🛠️ تعديل النمط 3: يبدأ المؤقت بمجرد ظهور اسم الفريق
-        startTimer(p.time); 
-
+        startTimer(p.time);
     } else if (p.type === 'target') {
         const tid = phaseTurns[currentQ];
-        document.getElementById('target-announcer').style.display = 'block';
-        document.getElementById('target-announcer').innerHTML = `🎯 الدور: ${teamNames[tid]}`;
+        document.getElementById('target-announcer').innerText = `🎯 الدور لـ: ${teamNames[tid]}`;
+        document.getElementById('target-announcer').style.display = "block";
         document.getElementById(`t-card-${tid}`).classList.add('active-turn');
-        displayQuestion(p.questions[currentQ]);
-
-    } else if (p.type === 'speed') {
-        const q = p.questions[currentQ];
-        if (!q) return;
-        currentQuestionText = q.q; currentModelAnswer = q.a;
-        document.getElementById('q-text').innerText = q.q;
-        document.getElementById('manual-zone').style.display = 'block';
-        startTimer(p.time, true);
-
+        loadQuestion(p.questions[currentQ]);
     } else {
-        displayQuestion(p.questions[currentQ]);
+        loadQuestion(p.questions[currentQ]);
     }
+
+    syncWithFirebase();
 }
 
-function displayQuestion(q) {
+function loadQuestion(q) {
     if (!q) return;
     document.getElementById('q-text').innerText = q.q;
-    if (q.o) { q.o.forEach(opt => { document.getElementById('opt-container').innerHTML += `<button class="opt">${opt}</button>`; }); }
+    if (q.o) {
+        q.o.forEach((opt, idx) => {
+            document.getElementById('opt-container').innerHTML += `<button class="opt" onclick="reveal()">${opt}</button>`;
+        });
+    } else {
+        document.getElementById('manual-zone').style.display = "block";
+        currentModelAnswer = q.a;
+    }
     startTimer(phasesData[currentPhase].time);
 }
 
 function showFreeSelection() {
-    document.getElementById('component-selection').style.display = 'flex';
+    document.getElementById('component-selection').style.display = "flex";
     STOCK_KEYS.forEach(key => {
-        const remaining = stockCounts[key];
-        const countEl = document.getElementById(`count-${key}`);
-        const btnEl = document.getElementById(`btn-${key}`);
-        countEl.innerText = `(${remaining})`;
-        if (remaining <= 0) { btnEl.disabled = true; btnEl.classList.add('depleted'); btnEl.onclick = null; }
-        else { btnEl.disabled = false; btnEl.classList.remove('depleted'); btnEl.onclick = () => selectComponent(key); }
+        document.getElementById(`count-${key}`).innerText = `(${stockCounts[key]})`;
+        const btn = document.getElementById(`btn-${key}`);
+        if (stockCounts[key] <= 0) btn.classList.add('depleted');
+        else btn.classList.remove('depleted');
     });
 }
 
 function selectComponent(key) {
     if (stockCounts[key] <= 0) return;
-    const stock = getStockData();
-    const questions = stock[key];
-    if (!questions || questions.length === 0) return;
-
-    let available = questions.filter(q => !usedByBox[key].has(q.q));
-    if (available.length === 0) { usedByBox[key].clear(); available = questions; }
-
-    const item = available[Math.floor(Math.random() * available.length)];
-    usedByBox[key].add(item.q);
+    const stock = defaultStock[key];
+    const item = stock[Math.floor(Math.random() * stock.length)];
+    
     stockCounts[key]--;
-
-    document.getElementById(`count-${key}`).innerText = `(${stockCounts[key]})`;
-    if (stockCounts[key] <= 0) {
-        const btnEl = document.getElementById(`btn-${key}`);
-        btnEl.disabled = true; btnEl.classList.add('depleted'); btnEl.onclick = null;
-    }
-
-    document.getElementById('component-selection').style.display = 'none';
-    document.getElementById('manual-zone').style.display = 'block';
+    document.getElementById('component-selection').style.display = "none";
     document.getElementById('q-text').innerText = `📦 ${key}: ${item.q}`;
+    document.getElementById('manual-zone').style.display = "block";
+    document.getElementById('manual-answer-display').innerText = "...";
     currentModelAnswer = item.a;
-    // 🛠️ تم إزالة استدعاء startTimer من هنا لكي لا يبدأ من جديد
+    
+    syncWithFirebase();
 }
 
-function startTimer(s, isSpeed = false) {
-    let tl = s;
-    document.getElementById('timer').innerText = tl;
-    timer = setInterval(() => {
-        tl--;
-        document.getElementById('timer').innerText = tl;
-        if (tl <= 0) {
-            clearInterval(timer);
-            if (isSpeed) document.getElementById('q-text').innerText = '';
-        }
+function startTimer(s) {
+    let left = s;
+    document.getElementById('timer').innerText = left;
+    timerInterval = setInterval(() => {
+        left--;
+        document.getElementById('timer').innerText = left;
+        if (left <= 0) clearInterval(timerInterval);
     }, 1000);
 }
 
 function reveal() {
-    clearInterval(timer);
+    clearInterval(timerInterval);
     const p = phasesData[currentPhase];
-    if (currentModelAnswer !== "") {
-        if (currentQuestionText) document.getElementById('q-text').innerText = currentQuestionText;
-        const dispEl = document.getElementById('manual-answer-display');
-        dispEl.innerText = currentModelAnswer;
-        dispEl.style.color = 'var(--success)';
-        dispEl.classList.remove('revealed');
-        void dispEl.offsetWidth; 
-        dispEl.classList.add('revealed');
-        document.getElementById('manual-zone').style.display = 'block';
-    } else if (p.questions && p.questions[currentQ] && p.questions[currentQ].o) {
-        const d = p.questions[currentQ];
+    if (currentModelAnswer) {
+        document.getElementById('manual-answer-display').innerText = currentModelAnswer;
+    } else {
+        const correctIdx = p.questions[currentQ].a;
         const opts = document.querySelectorAll('.opt');
-        const idx = parseInt(d.a);
-        if (opts[idx]) { opts[idx].style.background = 'var(--success)'; opts[idx].style.color = 'white'; }
+        if (opts[correctIdx]) opts[correctIdx].style.background = "var(--success)";
     }
+    roomRef.child('currentQuestion').update({ revealed: true });
 }
 
 function next() {
-    const p = phasesData[currentPhase];
-    if (!p) return;
     currentQ++;
+    const p = phasesData[currentPhase];
     const limit = (p.type === 'target' || p.type === 'free') ? phaseTurns.length : (p.questions ? p.questions.length : 0);
-    if (currentQ >= limit) { currentQ = 0; currentPhase++; if (currentPhase < phasesData.length) prepareTurns(); }
+    
+    if (currentQ >= limit) {
+        currentQ = 0;
+        currentPhase++;
+        prepareTurns();
+    }
+
     if (currentPhase >= phasesData.length) {
-        clearInterval(timer);
-        document.getElementById('q-text').innerText = '';
-        document.getElementById('opt-container').innerHTML = '';
-        document.getElementById('manual-zone').style.display = 'none';
-        document.getElementById('component-selection').style.display = 'none';
-        document.getElementById('timer').innerText = "🏁";
-        document.getElementById('finish-screen').style.display = 'block';
-    } else { init(); }
+        document.getElementById('quiz-screen').innerHTML = "<h1 style='color:white'>انتهت المسابقة!</h1><a href='final.html' class='final-gate'>النهائي</a>";
+    } else {
+        init();
+    }
 }
 
-function syncAnswer(v) { document.getElementById('manual-answer-display').innerText = v || '...'; }
+function syncWithFirebase() {
+    if (!roomRef) return;
+    const p = phasesData[currentPhase];
+    const tid = (p.type === 'target' || p.type === 'free') ? `team${phaseTurns[currentQ]+1}` : 'all';
+    
+    roomRef.child('currentQuestion').set({
+        text: document.getElementById('q-text').innerText,
+        options: (p.questions && p.questions[currentQ] && p.questions[currentQ].o) ? p.questions[currentQ].o : [],
+        correctIndex: (p.questions && p.questions[currentQ]) ? p.questions[currentQ].a : -1,
+        modelAnswer: currentModelAnswer,
+        time: p.time,
+        startedAt: Date.now(),
+        targetTeam: tid,
+        boxMode: document.getElementById('component-selection').style.display === "flex",
+        revealed: false
+    });
+}
 
 updateTeamInputs(4);
 </script>
-
-<!-- Firebase multi-device layer -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="host-firebase.js"></script>
-
-<div style="background:white;padding:20px;border-radius:20px;margin:20px 0;text-align:center;">
-<h3 style="margin-top:0;">📱 روابط و QR الفرق</h3>
-
-<p>غيّري https://asserrarmed.netlify.app إلى رابط موقعك الحقيقي.</p>
-
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
-
-<div>
-<h4>الفريق 1</h4>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://asserrarmed.netlify.app/player.html?team=team1">
-<p>player.html?team=team1</p>
-</div>
-
-<div>
-<h4>الفريق 2</h4>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://asserrarmed.netlify.app/player.html?team=team2">
-<p>player.html?team=team2</p>
-</div>
-
-<div>
-<h4>الفريق 3</h4>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://asserrarmed.netlify.app/player.html?team=team3">
-<p>player.html?team=team3</p>
-</div>
-
-<div>
-<h4>الفريق 4</h4>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://asserrarmed.netlify.app/player.html?team=team4">
-<p>player.html?team=team4</p>
-</div>
-
-</div>
-</div>
-<script>
-(function() {
-    // التحقق من وجود الإعدادات
-    if (!window.firebaseConfig) {
-        console.error("إعدادات Firebase غير موجودة!");
-        return;
-    }
-
-    // 1. بدء الاتصال
-    if (!firebase.apps.length) {
-        firebase.initializeApp(window.firebaseConfig);
-    }
-    const db = firebase.database();
-    const roomRef = db.ref('rooms/moatark-main-room');
-
-    // 2. إنشاء عنصر لعرض حالة الاتصال في أعلى الصفحة
-    const statusMsg = document.createElement('div');
-    statusMsg.id = 'firebase-status';
-    statusMsg.style = "position:fixed; top:5px; left:5px; padding:5px 12px; background:white; border:2px solid #ccc; border-radius:8px; font-weight:900; z-index:100001; font-size:0.8rem;";
-    document.body.appendChild(statusMsg);
-
-    // 3. مراقبة الاتصال الحقيقي
-    db.ref('.info/connected').on('value', (snap) => {
-        if (snap.val() === true) {
-            statusMsg.innerText = "✅ Firebase متصل الآن";
-            statusMsg.style.color = "#006847";
-            statusMsg.style.borderColor = "#006847";
-            // إرسال إشارة للقاعدة أن الهوست بدأ العمل
-            roomRef.update({ status: "started", hostConnected: true, lastSeen: Date.now() });
-        } else {
-            statusMsg.innerText = "❌ جاري محاولة الاتصال...";
-            statusMsg.style.color = "#ef4444";
-            statusMsg.style.borderColor = "#ef4444";
-        }
-    });
-
-    // 4. تعديل وظيفة البداية (startMarathon) لإرسال البيانات للطلاب
-    const originalStart = window.startMarathon;
-    window.startMarathon = function() {
-        if(originalStart) originalStart();
-        // تحديث أسماء الفرق في القاعدة
-        roomRef.update({
-            teams: teamNames.reduce((acc, name, i) => {
-                acc[`team${i+1}`] = { name: name, score: 0 };
-                return acc;
-            }, {})
-        });
-    };
-
-    // 5. تعديل وظيفة الأسئلة (init) لمزامنة الشاشات
-    const originalInit = window.init;
-    window.init = function() {
-        if(originalInit) originalInit();
-        const p = phasesData[currentPhase];
-        const q = (p && p.questions) ? p.questions[currentQ] : null;
-        
-        roomRef.update({
-            currentQuestion: {
-                text: document.getElementById('q-text').innerText,
-                phaseName: p ? p.name : 'جولة جديدة',
-                time: p ? p.time : 20,
-                startedAt: Date.now(),
-                options: q && q.o ? q.o : [],
-                correctIndex: q ? q.a : -1,
-                revealed: false
-            }
-        });
-    };
-})();
-</script>
-
 </body>
 </html>

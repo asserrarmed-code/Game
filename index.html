@@ -11,11 +11,10 @@
     <script src="firebase-config.js"></script>
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; max-width: 100%; }
+        *, *::before, *::after { box-sizing: border-box; }
         :root {
-            --moroccan-blue: #006847; --moroccan-gold: #c5a059; --deep-red: #8b0000;
-            --bg-light: #f4f1ea; --card: #ffffff; --text: #333;
-            --success: #10b981; --danger: #ef4444;
+            --moroccan-blue: #006847; --moroccan-gold: #c5a059; --bg-light: #f4f1ea;
+            --card: #ffffff; --text: #333; --success: #10b981; --danger: #ef4444;
         }
         body {
             background-color: var(--bg-light);
@@ -24,113 +23,100 @@
             height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* تنسيق الهيدر */
-        .header-top {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 20px; width: 100%; max-width: 1200px; margin: 0 auto;
-        }
-        .logo-box { width: 80px; height: 80px; background: white; border-radius: 50%; border: 3px solid var(--moroccan-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .logo-box { width: 70px; height: 70px; background: white; border-radius: 50%; border: 3px solid var(--moroccan-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .logo-box img { width: 100%; height: 100%; object-fit: cover; }
-        .title-area img { max-height: 120px; object-fit: contain; }
+        .title-area img { max-height: 100px; object-fit: contain; }
 
-        /* حاوية العرض */
-        .container { width: 95%; max-width: 1100px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; justify-content: center; z-index: 2; }
+        .container { width: 95%; max-width: 1100px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         
-        /* لوحة النقاط والكيو آر */
         .scoreboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
         .team-box {
-            background: var(--card); padding: 15px; border-radius: 20px;
-            border: 3px solid #ddd; text-align: center; position: relative;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: var(--card); padding: 10px; border-radius: 20px; border: 3px solid #ddd;
+            text-align: center; transition: all 0.5s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .team-box.active-turn { border-color: var(--danger); transform: scale(1.05); box-shadow: 0 0 30px rgba(239,68,68,0.4); }
-        
-        .qr-container { background: white; padding: 10px; border-radius: 10px; display: inline-block; margin: 10px 0; border: 1px solid #eee; }
+        .team-box.active-turn { border-color: var(--danger); transform: scale(1.05); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 15px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
 
-        /* منطقة السؤال */
+        .qr-container { background: white; padding: 5px; border-radius: 8px; display: inline-block; margin-top: 5px; }
+
         .card {
-            background: var(--card); padding: 30px; border-radius: 25px;
-            border-top: 8px solid var(--moroccan-blue); box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            text-align: center; width: 100%; min-height: 300px; position: relative;
+            background: var(--card); padding: 25px; border-radius: 25px; border-top: 8px solid var(--moroccan-blue);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); text-align: center; min-height: 350px;
         }
         
-        #timer { font-size: 4rem; color: var(--danger); font-weight: 900; margin: 10px 0; }
-        #q-text { font-size: 2.2rem; font-family: 'Amiri'; font-weight: bold; margin: 20px 0; line-height: 1.4; }
-        #phase-label { background: var(--moroccan-blue); color: white; padding: 5px 20px; border-radius: 50px; font-size: 1rem; }
+        #timer { font-size: 3.5rem; color: var(--danger); font-weight: 900; }
+        #q-text { font-size: 2rem; font-family: 'Amiri'; font-weight: bold; margin: 15px 0; }
+        #phase-label { background: var(--moroccan-blue); color: white; padding: 5px 20px; border-radius: 50px; }
 
-        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
-        .opt { background: #f8fafc; border: 3px solid #e2e8f0; padding: 15px; border-radius: 15px; font-size: 1.3rem; font-weight: bold; }
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .opt { background: #f8fafc; border: 3px solid #e2e8f0; padding: 12px; border-radius: 12px; font-size: 1.2rem; font-weight: bold; }
+        .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
 
-        /* إخفاء لوحة التحكم من الشاشة الكبرى */
-        .admin-panel, .top-controls { display: none !important; }
-
-        #setup-screen { text-align: center; padding: 50px; }
-        .setup-card { background: white; padding: 40px; border-radius: 30px; display: inline-block; border: 4px solid var(--moroccan-gold); }
-        
-        .lifeline-status { font-size: 1.2rem; margin-top: 5px; }
-        .lifeline-status span { opacity: 0.2; margin: 0 3px; }
-        .lifeline-status span.active { opacity: 1; filter: drop-shadow(0 0 5px gold); }
+        #setup-screen { position: fixed; inset: 0; background: var(--bg-light); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .setup-card { background: white; padding: 40px; border-radius: 30px; border: 4px solid var(--moroccan-gold); text-align: center; }
     </style>
 </head>
 
 <body>
 
-<div class="header-top">
-    <div class="logo-box"><img src="logo-cup.png" alt="Logo"></div>
-    <div class="title-area"><img src="banner-cup.png" alt="Banner"></div>
-    <div class="logo-box"><img src="logo.png" alt="Logo"></div>
-</div>
-
 <div id="setup-screen">
     <div class="setup-card">
-        <h2 style="color: var(--moroccan-blue);">تهيئة معترك الضاد</h2>
-        <p>أدخل عدد الفرق المشاركة لعرض أكواد الاستجابة</p>
-        <select id="team-count" style="padding:15px; font-size:1.2rem; border-radius:10px; border:2px solid var(--moroccan-gold);">
-            <option value="2">فريقان (2)</option>
-            <option value="3">ثلاثة فرق (3)</option>
-            <option value="4" selected>أربعة فرق (4)</option>
+        <h2 style="color: var(--moroccan-blue);">تهيئة شاشة العرض</h2>
+        <select id="team-count" style="padding:10px; font-size:1.2rem; border-radius:8px;">
+            <option value="2">فريقان</option>
+            <option value="3">ثلاثة فرق</option>
+            <option value="4" selected>أربعة فرق</option>
         </select>
-        <br><br>
-        <button onclick="startMarathon()" style="background:var(--moroccan-blue); color:white; padding:15px 40px; font-size:1.5rem; border-radius:50px; border:none; cursor:pointer;">عرض الشاشة الكبرى 📺</button>
+        <button onclick="startDisplay()" style="background:var(--moroccan-blue); color:white; padding:12px 30px; border-radius:50px; cursor:pointer; margin-top:20px; border:none;">ابدأ المعترك 🚀</button>
     </div>
 </div>
 
-<div id="quiz-screen" class="container" style="display:none;">
+<div class="header-top">
+    <div class="logo-box"><img src="logo-cup.png"></div>
+    <div class="title-area"><img src="banner-cup.png"></div>
+    <div class="logo-box"><img src="logo.png"></div>
+</div>
+
+<div class="container">
     <div id="dynamic-scoreboard" class="scoreboard"></div>
-    
     <div class="card">
-        <div id="target-announcer" style="background: var(--danger); color: white; padding: 8px 20px; border-radius: 15px; font-size: 1.4rem; margin-bottom: 15px; display: none; font-weight: 900;"></div>
-        <div id="phase-label">بانتظار انطلاق المعترك...</div>
+        <div id="phase-label">بانتظار التحكم...</div>
         <div id="timer">--</div>
-        <div id="q-text">أهلاً بكم في معترك الضاد.. المعلم يتحكم الآن</div>
-        
-        <div id="component-display" style="display:none; font-size: 2rem; color: var(--moroccan-gold); font-weight: 900; margin: 20px;"></div>
-        
+        <div id="q-text">المعترك جاهز، افتح لوحة التحكم من هاتفك</div>
+        <div id="target-announcer" style="color:var(--danger); font-weight:900; font-size:1.5rem; margin-bottom:10px; display:none;"></div>
         <div class="options-grid" id="opt-container"></div>
-        
-        <div id="manual-answer-zone" style="display:none; margin-top: 20px; border-top: 2px dashed #ddd; padding-top: 20px;">
-            <div style="color: var(--moroccan-blue); font-size: 1.8rem; font-weight: 900;" id="revealed-answer"></div>
-        </div>
+        <div id="manual-answer" style="display:none; font-size:1.8rem; color:var(--moroccan-blue); font-weight:900; margin-top:20px;"></div>
     </div>
 </div>
 
 <script>
-let db, roomRef;
-let teamNames = [], scores = [];
+// --- قاعدة بيانات الأسئلة (نفس بياناتك الأصلية) ---
+const phasesData = [
+    { name: "النمط 1: الاستجابة الجماعية", type: "all", time: 20, questions: [
+        {q: "الفعل 'شَدَّ' هو فعل صحيح نوعه:", o:["سالم","مهموز","مضعف","معتل"], a:2},
+        {q: "الألف اللينة في 'دعا' ممدودة لأن أصلها:", o:["ياء","واو","ألف","نون"], a:1},
+        {q: "تُحذف ألف 'ابن' إذا وقعت بين:", o:["فعل وفاعل","اسمين علمين","بداية السطر","حرفي جر"], a:1},
+        {q: "اسم الفاعل من فعل 'كَتَبَ' هو:", o:["مكتوب","كاتب","يُكتب","كتاب"], a:1},
+        {q: "الفعل المضارع 'يذهبُ' يصبح منصوباً إذا سبقه:", o:["لَمْ","لَنْ","لا الناهية","مِنْ"], a:1}
+    ]},
+    { name: "النمط 2: المواجهة الموجهة", type: "target", time: 20, questions: [
+        {q: "إعراب 'المسافرون' في (وصل المسافرون):", o:["مفعول به", "فاعل مرفوع بالواو", "مبتدأ", "نعت"], a:1},
+        {q: "اسم المكان من 'وعد' هو:", o:["ميعاد", "موعد", "واعد", "وعد"], a:1},
+        {q: "الوزن الصرفي لكلمة 'انطلق' هو:", o:["انفعل", "افتعل", "تفاعل", "فعلل"], a:0},
+        {q: "صغ اسم التفضيل من 'صَغُرَ':", o:["صغير", "أصغر", "صاغر", "تصغير"], a:1},
+        {q: "جمع 'نافذة' هو جمع تكسير صورته:", o:["نافذات", "أنفذة", "نوافذ", "نافذون"], a:2}
+    ]}
+];
 
-function startMarathon() {
+let db, roomRef, teamNames = [];
+
+function startDisplay() {
     const count = document.getElementById('team-count').value;
-    for(let i=0; i<count; i++) {
-        teamNames.push(`الفريق ${i+1}`);
-        scores.push(0);
-    }
-    
+    for(let i=0; i<count; i++) teamNames.push(`الفريق ${i+1}`);
     document.getElementById('setup-screen').style.display = 'none';
-    document.getElementById('quiz-screen').style.display = 'flex';
-    
     initFirebase();
-    renderInterface();
+    renderScoreboard();
 }
 
 function initFirebase() {
@@ -138,119 +124,84 @@ function initFirebase() {
     db = firebase.database();
     roomRef = db.ref('rooms/moatark-main-room');
 
-    // 1. مراقبة الأسئلة القادمة من "الهوست"
-    roomRef.child('currentQuestion').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if(!data) return;
-        
-        updateDisplay(data);
+    // الاستماع لأوامر التحكم من الهاتف
+    roomRef.child('control').on('value', (snapshot) => {
+        const cmd = snapshot.val();
+        if(!cmd) return;
+        executeCommand(cmd);
     });
 
-    // 2. مراقبة النقاط والمساعدات
+    // تحديث النقاط والمساعدات لحظياً
     roomRef.child('teams').on('value', (snapshot) => {
         const data = snapshot.val();
-        if(!data) return;
-        updateScoresAndLifelines(data);
+        if(data) updateScores(data);
     });
 }
 
-function renderInterface() {
+function renderScoreboard() {
     const sb = document.getElementById('dynamic-scoreboard');
     sb.innerHTML = '';
-    
     teamNames.forEach((name, i) => {
         const playerUrl = `${window.location.origin}/player.html?team=${i+1}`;
-        
         sb.innerHTML += `
             <div class="team-box" id="t-card-${i}">
-                <div style="font-weight:900; color:var(--moroccan-blue);">${name}</div>
+                <div style="font-weight:900; color:var(--moroccan-blue); font-size:0.9rem;">${name}</div>
                 <div id="qr-${i}" class="qr-container"></div>
-                <div style="font-size:2.5rem; font-weight:900; color:var(--moroccan-gold);" id="s-${i}">0</div>
-                <div class="lifeline-status" id="l-status-${i}">
-                    <span id="l-del-${i}">💡</span>
-                    <span id="l-dou-${i}">🚀</span>
-                    <span id="l-stp-${i}">⏱️</span>
-                </div>
+                <div id="s-${i}" style="font-size:1.8rem; font-weight:900; color:var(--moroccan-gold);">0</div>
             </div>`;
-
-        // توليد الكيو آر
-        setTimeout(() => {
-            new QRCode(document.getElementById(`qr-${i}`), {
-                text: playerUrl,
-                width: 100,
-                height: 100,
-                colorDark : "#006847",
-                colorLight : "#ffffff"
-            });
-        }, 200);
+        setTimeout(() => { new QRCode(document.getElementById(`qr-${i}`), { text: playerUrl, width: 80, height: 80 }); }, 100);
     });
 }
 
-function updateDisplay(data) {
-    document.getElementById('q-text').innerText = data.text || "";
-    document.getElementById('phase-label').innerText = data.phaseName || "المعترك قائم";
-    document.getElementById('timer').innerText = data.timeLeft || "--";
-    
-    // إظهار المنادي (Target)
-    const announcer = document.getElementById('target-announcer');
-    if(data.targetTeamName) {
-        announcer.innerText = `🎯 الدور على: ${data.targetTeamName}`;
-        announcer.style.display = 'block';
-    } else {
-        announcer.style.display = 'none';
+function executeCommand(cmd) {
+    // الانتقال للسؤال المختار من الهاتف
+    if(cmd.type === 'show_question') {
+        const p = phasesData[cmd.pIdx];
+        const q = p.questions[cmd.qIdx];
+        document.getElementById('phase-label').innerText = p.name;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('manual-answer').style.display = 'none';
+        
+        const optCont = document.getElementById('opt-container');
+        optCont.innerHTML = '';
+        if(q.o) {
+            q.o.forEach((o, i) => {
+                optCont.innerHTML += `<div class="opt" id="opt-${i}">${o}</div>`;
+            });
+        }
+        
+        // تمييز الفريق المستهدف
+        document.querySelectorAll('.team-box').forEach(b => b.classList.remove('active-turn'));
+        if(cmd.targetIdx !== undefined) {
+            document.getElementById(`t-card-${cmd.targetIdx}`).classList.add('active-turn');
+        }
     }
 
-    // عرض الخيارات
-    const optContainer = document.getElementById('opt-container');
-    optContainer.innerHTML = '';
-    if(data.options) {
-        data.options.forEach((opt, idx) => {
-            const btn = document.createElement('div');
-            btn.className = 'opt';
-            btn.innerText = opt;
-            if(data.revealed && idx == data.correctIdx) {
-                btn.style.background = 'var(--success)';
-                btn.style.color = 'white';
-            }
-            optContainer.appendChild(btn);
-        });
+    // كشف الجواب
+    if(cmd.type === 'reveal') {
+        const p = phasesData[cmd.pIdx];
+        const q = p.questions[cmd.qIdx];
+        if(q.o) {
+            document.getElementById(`opt-${q.a}`).classList.add('correct');
+        } else {
+            const ma = document.getElementById('manual-answer');
+            ma.innerText = "الجواب: " + q.a;
+            ma.style.display = 'block';
+        }
     }
 
-    // كشف الجواب اليدوي
-    const manualZone = document.getElementById('manual-answer-zone');
-    const revealedText = document.getElementById('revealed-answer');
-    if(data.revealed && data.answerText) {
-        revealedText.innerText = "الجواب الصحيح: " + data.answerText;
-        manualZone.style.display = 'block';
-    } else {
-        manualZone.style.display = 'none';
-    }
-
-    // تمييز الفريق النشط
-    document.querySelectorAll('.team-box').forEach(box => box.classList.remove('active-turn'));
-    if(data.targetTeamIdx !== undefined) {
-        document.getElementById(`t-card-${data.targetTeamIdx}`).classList.add('active-turn');
+    // تحديث التوقيت
+    if(cmd.type === 'timer') {
+        document.getElementById('timer').innerText = cmd.val;
     }
 }
 
-function updateScoresAndLifelines(data) {
+function updateScores(data) {
     Object.keys(data).forEach(key => {
-        const teamIdx = parseInt(key.replace('team', '')) - 1;
-        const teamData = data[key];
-        
-        // تحديث النقاط
-        const scoreEl = document.getElementById(`s-${teamIdx}`);
-        if(scoreEl) scoreEl.innerText = teamData.score || 0;
-        
-        // تحديث المساعدات
-        if(teamData.lifelines) {
-            if(teamData.lifelines.del) document.getElementById(`l-del-${teamIdx}`).classList.add('active');
-            if(teamData.lifelines.dou) document.getElementById(`l-dou-${teamIdx}`).classList.add('active');
-            if(teamData.lifelines.stp) document.getElementById(`l-stp-${teamIdx}`).classList.add('active');
-        }
+        const idx = parseInt(key.replace('team','')) - 1;
+        document.getElementById(`s-${idx}`).innerText = data[key].score || 0;
     });
 }
 </script>
-
 </body>
 </html>

@@ -1,13 +1,17 @@
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
-
-export const firebaseConfig = {
-  apiKey: "AIzaSyDGVs_PTw_dgmX_d9Q_-06i7L16omRuTqo",
-  authDomain: "motarak-3097e.firebaseapp.com",
-  databaseURL: "https://console.firebase.google.com/u/0/project/motarak-3097e/database/motarak-3097e-default-rtdb/data/~2F",
-  projectId: "motarak-3097e",
-  storageBucket: "motarak-3097e.firebasestorage.app",
-  messagingSenderId: "665568373830",
-  appId: "1:665568373830:web:b38bd8fc400c813f056e47"
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-export const ROOM_ID = "moatark-main-room";
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// التصدير لاستخدامه في مشروعك (مثل معترك الضاد)
+export const db = getFirestore(app);

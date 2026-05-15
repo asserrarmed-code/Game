@@ -9,6 +9,6 @@ export const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// جعل الإعدادات متاحة للملفات الأخرى كما كانت سابقاً
+// هذه الدالة هي التي ستؤمن البيانات وتجعلها متاحة للمشروع
 window.firebaseConfig = firebaseConfig;
 window.ROOM_ID = "moatark-main-room";

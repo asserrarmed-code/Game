@@ -1,6 +1,4 @@
-// firebase-config.js
-// ضعي هنا إعدادات مشروع Firebase الخاص بك.
-// Firebase Console > Project settings > Your apps > Web app
+
 
 export const firebaseConfig = {
   apiKey: "AIzaSyDGVs_PTw_dgmX_d9Q_-06i7L16omRuTqo",

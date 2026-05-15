@@ -854,6 +854,76 @@ updateTeamInputs(4);
 
 </div>
 </div>
+<script>
+(function() {
+    // التحقق من وجود الإعدادات
+    if (!window.firebaseConfig) {
+        console.error("إعدادات Firebase غير موجودة!");
+        return;
+    }
+
+    // 1. بدء الاتصال
+    if (!firebase.apps.length) {
+        firebase.initializeApp(window.firebaseConfig);
+    }
+    const db = firebase.database();
+    const roomRef = db.ref('rooms/moatark-main-room');
+
+    // 2. إنشاء عنصر لعرض حالة الاتصال في أعلى الصفحة
+    const statusMsg = document.createElement('div');
+    statusMsg.id = 'firebase-status';
+    statusMsg.style = "position:fixed; top:5px; left:5px; padding:5px 12px; background:white; border:2px solid #ccc; border-radius:8px; font-weight:900; z-index:100001; font-size:0.8rem;";
+    document.body.appendChild(statusMsg);
+
+    // 3. مراقبة الاتصال الحقيقي
+    db.ref('.info/connected').on('value', (snap) => {
+        if (snap.val() === true) {
+            statusMsg.innerText = "✅ Firebase متصل الآن";
+            statusMsg.style.color = "#006847";
+            statusMsg.style.borderColor = "#006847";
+            // إرسال إشارة للقاعدة أن الهوست بدأ العمل
+            roomRef.update({ status: "started", hostConnected: true, lastSeen: Date.now() });
+        } else {
+            statusMsg.innerText = "❌ جاري محاولة الاتصال...";
+            statusMsg.style.color = "#ef4444";
+            statusMsg.style.borderColor = "#ef4444";
+        }
+    });
+
+    // 4. تعديل وظيفة البداية (startMarathon) لإرسال البيانات للطلاب
+    const originalStart = window.startMarathon;
+    window.startMarathon = function() {
+        if(originalStart) originalStart();
+        // تحديث أسماء الفرق في القاعدة
+        roomRef.update({
+            teams: teamNames.reduce((acc, name, i) => {
+                acc[`team${i+1}`] = { name: name, score: 0 };
+                return acc;
+            }, {})
+        });
+    };
+
+    // 5. تعديل وظيفة الأسئلة (init) لمزامنة الشاشات
+    const originalInit = window.init;
+    window.init = function() {
+        if(originalInit) originalInit();
+        const p = phasesData[currentPhase];
+        const q = (p && p.questions) ? p.questions[currentQ] : null;
+        
+        roomRef.update({
+            currentQuestion: {
+                text: document.getElementById('q-text').innerText,
+                phaseName: p ? p.name : 'جولة جديدة',
+                time: p ? p.time : 20,
+                startedAt: Date.now(),
+                options: q && q.o ? q.o : [],
+                correctIndex: q ? q.a : -1,
+                revealed: false
+            }
+        });
+    };
+})();
+</script>
 
 </body>
 </html>
